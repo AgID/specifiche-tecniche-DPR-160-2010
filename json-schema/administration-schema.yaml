@@ -2,7 +2,7 @@ definitions: {}
 "$schema": http://json-schema.org/draft-07/schema#
 "$id": "#root/administration"
 title: Amministrazione compentente censita nel Catalogo SSU
-type: object
+description: object
 required:
   - ipacode
   - code
