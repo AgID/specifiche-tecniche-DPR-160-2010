@@ -1,0 +1,42 @@
+definitions: {}
+"$schema": http://json-schema.org/draft-07/schema#
+"$id": "#root"
+title: indice istanza
+type: array
+items:
+  type: object
+  required:
+  - code
+  - ref
+  - resource_id
+  - hash
+  - alg_hash
+  properties:
+      code:
+        "$id": "#root/code"
+        title: codice della fattispecie presente nel Catalogo
+        type: string
+        minLength: 1
+      ref:
+        "$id": "#root/ref"
+        title: riferimento all'elemento dell'istanza relativo al procedimento
+        type: string
+        minLength: 1
+      resource_id:
+        "$id": "#root/resource_id"
+        title: id della risorsa, univoco per erogatore e CUI.UUID
+        type: string
+        minLength: 1
+      hash:
+        "$id": "#root/hash"
+        title: hash dell'elemento dell'istanza relativo al procedimento
+        type: string
+        minLength: 1
+      alg_hash:
+        "$id": "#root/alg_hash"
+        title: algoritmo hash applicato
+        type: string
+        enum:
+        - S256
+        - S384
+        - S512

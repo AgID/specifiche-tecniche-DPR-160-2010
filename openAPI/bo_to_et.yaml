@@ -1,0 +1,495 @@
+openapi: 3.0.3
+
+info:
+    title: BackOffice SUAP to Ente Terzo SUAP
+
+    version: 1.0.0
+
+    description: |-
+        API rese disponibili da BackOffice SUAP a Ente Terzo SUAP
+
+    contact:
+        name: AgID - Agenzia per l'Italia Digitale
+        url: https://www.agid.gov.it/
+
+    license:
+        name: CC BY-NC-SA 4.0
+        url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+servers:
+    - url: https://<system host+subdomains>.it
+      description: Ente Terzo SUAP to BackOffice SUAP endpoint
+
+paths:
+    /retry:
+        post:
+            description: Richiesta di ritrasmissione dati relativi ad una specifica operation a causa di incoerenze riscontrate sui dati ricevuti.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                cui:
+                                    $ref: "#/components/schemas/cui"
+                                operation:
+                                    description: operation per la quale si richiede la ritrasmissione
+                                    type: string
+                                    enum:
+                                        - send_instance
+                                        - notify
+                                error:
+                                    $ref: "#/components/schemas/Error"
+
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+    /send_conclusions:
+        description: Invio conclusioni
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SendConclusionRequests"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+    /request_cdss:
+        post:
+            description: Richiesta convocazione Conferenza dei Servizi Sincrona (CdSS)
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/cui"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+    /request_integration:
+        post:
+            description: Richiesta integrazioni
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/RequestIntegrationRequest"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+    /instance/{cui_uuid}/document/{resource_id}:
+        get:
+            description: | 
+                Recupero risorsa documento per un dato CUI.
+                Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
+            
+            parameters:
+                - in: header
+                  name: If-Match
+                  description: precondizione contenente l'hash della risorsa
+                  required: true
+                  schema:
+                      type: string
+                - name: cui_uuid
+                  in: path
+                  description: UUID del CUI
+                  required: true
+                  schema:
+                      type: string
+                - name: resource_id
+                  in: path
+                  description: id risorsa documento
+                  required: true
+                  schema:
+                      type: string
+
+            responses:
+                "200":
+                    description: risorsa richiesta, codificata in base64, il mime type relativo è specificato nel descrittore dell'istanza
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                format: byte
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+
+                "206":
+                    description: porzione di risorsa richiesta, codificata in base64, il mime type relativo è specificato nel descrittore dell'istanza
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                format: byte
+                    headers:
+                        Content-Range:
+                            description: espressione del range incluso nella risposta
+                            schema:
+                                type: string
+                                example: bytes 21010-47021/47022
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    description: risorsa non trovata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+                "412":
+                    description: precondizione fallita, rappresentazione risorsa non correttamente individuata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+                "416":
+                    description: richiesta di range non soddisfacibile
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+                        Content-Range:
+                            description: espressione del range non soddisfacibile
+                            schema:
+                                type: string
+                                example: bytes 21010-47021/47022
+                "428":
+                    description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+components:    
+    responses:
+        OKRequest:
+            description: Richiesta completata con successo
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+        BadRequest:
+            description: Forma della richiesta non conforme alla specifica
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        ServiceUnavaliable:
+            description: Servizio non disponibile
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+        Unauthorized:
+            description: Richiesta non autorizzata
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+        ServerError:
+            description: Errore processamento richiesta
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+    schemas:
+        cui:
+            type: object
+            description: codice unico dell'istanza
+            required:
+                - context
+                - data
+                - progressive
+                - uuid
+            properties:
+                context:
+                    title: contesto dell'istanza
+                    type: string
+                data:
+                    title: data emissione cui
+                    type: string
+                    format: date
+                
+                progressivo:
+                    title: numero progressivo a rotazione annuale
+                    type: string
+
+                uuid:
+                    title: UUID chiave del CUI
+                    type: string
+        Error:
+            type: object
+            description: codice e descrizione condizione di errore
+            properties:
+                code:
+                    type: string
+                message:
+                    type: string
+            required:
+                - code
+                - message
+        RequestIntegrationRequest:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - integration_list
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                integration_list:
+                    type: array
+                    items:
+                        type: object
+                        required:
+                            - code
+                            - ref
+                            - integration_request
+                        properties:
+                            code:
+                                title: codice della fattispecie presente nel Catalogo
+                                type: string
+                                minLength: 1
+                            ref:
+                                title: riferimento all'elemento dell'istanza relativo al procedimento
+                                type: string
+                                minLength: 1
+                            integration_request:
+                                title: integrazione richiesta
+                                type: string
+                resource_id:
+                    title: id della risorsa "documento di richiesta integrazione", univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+
+        SendConclusionRequests:
+            type: object
+            oneOf:
+                - $ref: "#/components/schemas/SuspendRequired"
+                - $ref: "#/components/schemas/ConformationRequired"
+                - $ref: "#/components/schemas/PositiveOutcome"
+            discriminator:
+                propertyName: conclusions_type
+                mapping:
+                    suspension_requested: "#/components/schemas/SuspendRequired"
+                    conformation_requested: "#/components/schemas/ConformationRequired"
+                    positive_outcome: "#/components/schemas/PositiveOutcome"
+
+        SuspendRequired:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - suspend_motivation
+                - conclusions_type
+            properties:
+                conclusions_type:
+                    type: string
+                    example: suspension_requested
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                suspend_motivation:
+                    type: string
+                    minLength: 1
+                resource_id:
+                    title: id della risorsa "documento di richiesta sospensione", univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+
+        ConformationRequired:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - date
+                - conformation_requested
+                - conclusions_type
+            properties:
+                conclusions_type:
+                    type: string
+                    example: conformation_requested
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                conformation_requested:
+                    type: string
+                    minLength: 1
+                resource_id:
+                    title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+
+        PositiveOutcome:
+            required:
+                - cui
+                - instance_descriptor_version
+                - outcome
+                - conclusions_type
+            properties:
+                conclusions_type:
+                    type: string
+                    example: positive_outcome
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                positive_outcome:
+                    type: string
+                    minLength: 1
+                resource_id:
+                    title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+
+    headers:
+        Agid-JWT-Signature:
+            schema:
+                format: JWS
+                maxLength: 4096
+                type: string
+                example: eyJzd.fafa.fafafa
+            description: |-
+                Il valore di questo header è una token JWT firmato secondo la specifica JWS.
+                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+
+    securitySchemes:
+        bearerAuth:
+            scheme: bearer
+            bearerFormat: JWT
+            type: http
+            description: Implementazione conforme ad RFC8725
+
+        Agid-JWT-Signature:
+            type: apiKey
+            description: |-
+                Il valore di questo header è una token JWT firmato secondo la specifica JWS.
+                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+            name: Agid-JWT-Signature
+            in: header

@@ -1,0 +1,105 @@
+sequenceDiagram
+    autonumber
+    
+    participant CU as ComUnica
+    actor P as Presentatore    
+    participant F as FrontOffice SUAP
+    participant C as Catalogo SSU    
+    participant B as BackOffice SUAP    
+    actor O as Operatore SUAP    
+   
+    note over P,C: procedimenti individuati
+    note over F,C: Metadati procedimenti recuperati
+    note over P,F: Istanza complilata e firmata
+    
+   
+    F ->> C: request_cui(instanceDescriptor)
+    note right of C: instanceDescriptor senza cui
+    C -->> F: instanceDescriptor
+    note right of C: InstanceDescriptor con cui
+
+    F ->> B: send_instance(cui, instance_descriptor_version,instance_index)
+    B -->> F: ack
+    F ->> C: audit(cui,instance_integrated_to_<BO>_sended)
+    note right of F: <BO> codice BackOffice
+    C -->> F: ack
+
+    alt via ComUnica
+	    F ->> CU: send_instance(cui, instance_descriptor_version,instance_code_comunica,instance_index)
+		CU -->> F: ack
+		CU ->> C: request_instance_descriptor(cui)
+		C -->> CU: instanceDescriptor
+		
+        loop per ogni procedimento parte dell'istanza
+        CU ->> F:  request_instance_document(cui, resource_id)
+        note right of CU: resource_id da instance_index
+        F -->> CU: instanceDocument
+        end
+        
+        CU -) P: receipt
+        CU ->> F: notify_receipt(cui, date)
+        F -->> CU: ack
+    else no via ComUnica
+        F -) P: receipt
+    end
+
+    F ->> C: audit(cui,receipt_sended)
+    C -->> F: ack
+
+    F ->> B: notify_receipt(cui, date)
+    F -->> B: ack
+    
+    note over  B,C: BO imposta tempi procedimento<br/>a partire dalla data della ricevuta
+    B ->> C: request_update_times(cui,times)
+    C -->> B: instanceDescriptor
+
+    loop per ogni procedimento parte dell'istanza 
+    B ->> F: request_instance_document(cui, resource_id)
+    note left of B: resource_id da instance_index
+    F -->> B: instanceDocument
+    end
+    B ->> C: audit(cui,instance_retrived)
+    C -->> B: ack
+    
+
+    O -) B: lookup_instance(cui)
+    B -->> O: instance
+        
+    opt entro tempo controllo formale
+        O -) B: formalControlOK OR formalControlKO
+        alt formal control KO
+            B ->> F: request_correction(cui,instance_descriptor_version,correction_list)
+            F -->> B: ack
+            F -) P: request_correction(cui,correction_list)
+            B ->> C: audit(cui,correction_requested)
+            C -->> B: ack
+            P --) F: instanceCorrect
+            F ->> B: send_instance(cui, instance_descriptor_version,instance_index)
+            B -->> F: ack
+            F ->> C: audit(cui,corrected_instance_to_<BO>_sended)
+            note right of F: <BO> codice BackOffice
+            C -->> F: ack
+            loop per ogni procedimento parte dell'istanza 
+            B ->> F: request_instance_document(cui, resource_id)
+            F -->> B: instanceDocument
+            end
+            B ->> C: audit(cui,corrected_instance_retrived)
+            C -->> B: ack           
+        end
+    end
+
+    O -) B: lookup_instance(cui)
+    B -->> O: instance
+    O -) B: admissibilityOK OR admissibilityKO
+    
+    alt admissibility KO
+        B ->> F: notify(cui, instance_descriptor_version, end_by_instance_refused)
+        F -->> B: ack
+        F -) P: instanceRefused            
+        B ->> C: audit(cui,end_by_instance_refused)
+        C -->> B: ack                        
+    else admissibility OK
+        
+    Note over B,F: istanza procedibile
+       
+end

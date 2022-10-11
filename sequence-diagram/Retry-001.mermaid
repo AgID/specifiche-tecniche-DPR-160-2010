@@ -1,0 +1,38 @@
+sequenceDiagram
+    autonumber
+      
+    actor O as Operatore  
+    participant A as Component A 
+    participant C as Catalogo SSU 
+    participant B as Component B
+
+   
+    Note over A,B: {Component A ,Component B} = (<br/>{FrontOffice,BackOffice} |<br/> {BackOffice,FrontOffice} |<br/> {BackOffice,Ente Terzo} | <br/>{Ente Terzo,BackOffice}<br/>)
+
+   
+    Note over A,B: istanza presentata e processo in corso
+
+    A->> B: operation_XXX(cui, ...)
+    B -->> A: ack
+
+    A->> C: audit(cui, operation_XXX)
+    C -->> A: ack
+
+    alt Rilevata incoerenza nei dai ricevuti
+        B->> A: retry(cui, operation_XXX, error)
+        A -->> B: ack
+
+        B->> C: audit(cui,retry_requested_for_<operation_XXX>)
+        C -->> B: ack
+
+        A -) O: retry_request_notification
+        O-) A: check and correction
+        note over A,B: retry operation
+        A->> B: operation_XXX(cui, ...)
+        A -->> B: ack
+
+        A->> C: audit(cui, operation_XXX)
+        C -->> A: ack
+
+    end
+

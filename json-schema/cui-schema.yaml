@@ -1,0 +1,30 @@
+definitions: {}
+"$schema": http://json-schema.org/draft-07/schema#
+"$id": "#root/cui"
+title: codice unico dell'istanza
+type: object
+required:
+- context
+- data
+- progressive
+- uuid
+properties:
+  context:
+    "$id": "#root/context"
+    title: contesto dell'istanza
+    type: string
+  data:
+    "$id": "#root/cui/data"
+    title: data emissione cui
+    type: string
+    format: date
+  
+  progressivo:
+    "$id": "#root/cui/progressivo"
+    title: numero progressivo a rotazione annuale
+    type: string
+
+  uuid:
+    "$id": "#root/cui/uuid"
+    title: UUID chiave del CUI
+    type: string

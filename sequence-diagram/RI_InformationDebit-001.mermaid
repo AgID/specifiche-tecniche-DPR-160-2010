@@ -1,0 +1,74 @@
+sequenceDiagram
+    autonumber
+    
+    participant B as BackOffice SUAP  
+    participant RI as Registro Imprese   
+    participant C as Catalogo SSU  
+
+   
+   
+    Note over B,C: istanza presentata e ricevuta emessa (dopo step 22 di General-001)
+    
+
+    B ->> RI: send_instance(cui, instance_descriptor_version,instance_index)
+    RI -->> B: ack
+    
+    RI ->> C: request_instance_descriptor(cui)
+	C -->> RI: instanceDescriptor
+    
+    loop per ogni procedimento parte dell'istanza
+        RI ->> B:  request_instance_document(cui, resource_id)
+        note right of RI: resource_id da instance_index
+        B -->> RI: instanceDocument
+    end
+    
+
+    alt istanza corretta (dopo step 43 General-001)
+
+        B ->> RI: send_instance(cui, instance_descriptor_version,instance_index)
+        RI -->> B: ack
+    
+        RI ->> C: request_instance_descriptor(cui)
+        C -->> RI: instanceDescriptor
+        
+        loop per ogni procedimento parte dell'istanza
+            RI ->> B:  request_instance_document(cui, resource_id)
+            note right of RI: resource_id da instance_index
+            B -->> RI: instanceDocument
+        end
+
+
+
+    end
+
+    alt richiesta integrazione e scaduti tempi integrazione (dopo step: 29 SCIA-001 o 49 DomandaAutorizzazione-001)
+        B ->> RI: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
+        RI -->> B: ack
+    end
+
+    alt istanza integrata (dopo step: 43 SCIA-001 o 63 DomandaAutorizzazione-001)
+
+        B ->> RI: send_instance(cui, instance_descriptor_version,instance_index)
+        RI -->> B: ack
+    
+        RI ->> C: request_instance_descriptor(cui)
+        C -->> RI: instanceDescriptor
+        
+        loop per ogni procedimento parte dell'istanza
+            RI ->> B:  request_instance_document(cui, resource_id)
+            note right of RI: resource_id da instance_index
+            B -->> RI: instanceDocument
+        end
+
+
+    end
+
+
+
+
+
+      
+
+
+
+

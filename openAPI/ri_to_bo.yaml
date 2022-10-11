@@ -1,0 +1,277 @@
+openapi: 3.0.3
+
+info:
+    title: RegistroImprese to BackOffice SUAP
+
+    version: 1.0.0
+
+    description: |-
+        API rese disponibili dal Registro Imprese a BackOffice SUAP
+
+    contact:
+        name: AgID - Agenzia per l'Italia Digitale
+        url: https://www.agid.gov.it/
+
+    license:
+        name: CC BY-NC-SA 4.0
+        url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+servers:
+    - url: https://<system host+subdomains>.it
+      description: RegistroImprese to BackOffice SUAP endpoint
+
+paths:
+    
+
+    /send_instance:
+        description: Invio riferimenti istanza
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SendInstanceRequest"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+
+    
+    /notify:
+        post:
+            description: Notifica eventi di processo
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/NotifyMessage"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+        
+
+
+components:
+    responses:
+        OKRequest:
+            description: Richiesta completata con successo
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+        BadRequest:
+            description: Forma della richiesta non conforme alla specifica
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        ServiceUnavaliable:
+            description: Servizio non disponibile
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+        Unauthorized:
+            description: Richiesta non autorizzata
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+        ServerError:
+            description: Errore processamento richiesta
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+    schemas:
+        cui:
+            type: object
+            description: codice unico dell'istanza
+            required:
+                - context
+                - data
+                - progressive
+                - uuid
+            properties:
+                context:
+                    title: contesto dell'istanza
+                    type: string
+                data:
+                    title: data emissione cui
+                    type: string
+                    format: date
+                
+                progressivo:
+                    title: numero progressivo a rotazione annuale
+                    type: string
+
+                uuid:
+                    title: UUID chiave del CUI
+                    type: string
+
+        InstanceIndex:
+            type: array
+            description: indice istanza
+            items:
+                type: object
+                required:
+                - code
+                - ref
+                - resource_id
+                - hash
+                - alg_hash
+                properties:
+                    code:                            
+                        title: codice della fattispecie presente nel Catalogo
+                        type: string
+                        minLength: 1
+                    ref:                            
+                        title: riferimento all'elemento dell'istanza relativo al procedimento
+                        type: string
+                        minLength: 1
+                    resource_id:                            
+                        title: id della risorsa, univoco per erogatore e CUI.UUID
+                        type: string
+                        minLength: 1
+                    hash:                            
+                        title: hash dell'elemento dell'istanza relativo al procedimento
+                        type: string
+                        minLength: 1
+                    alg_hash:                                
+                        title: algoritmo hash applicato
+                        type: string
+                        enum:
+                        - S256
+                        - S384
+                        - S512
+
+        Error:
+            type: object
+            description: codice e descrizione condizione di errore
+            properties:
+                code:
+                    type: string
+                message:
+                    type: string
+            required:
+                - code
+                - message
+        SendInstanceRequest:
+            required:
+                - cui
+                - instance_descriptor_version
+                - instance_status
+                - instance_index
+            type: object
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                instance_index:
+                    $ref: "#/components/schemas/InstanceIndex"
+
+        NotifyMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    enum:
+                        - end_by_instance_refused
+                        - end_by_proceeding_time_expired
+                        - end_by_suspend_required
+                        - end_by_conformation_required
+                        - end_by_positive_outcome
+                        - end_by_integration_times_expired
+                        - end_by_submitter_cancel_requested
+
+                resource_id:
+                    title: se presente, id della risorsa documento correlata all'evento notificato
+                    type: string
+                    minLength: 1
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+
+
+    headers:
+        Agid-JWT-Signature:
+            schema:
+                format: JWS
+                maxLength: 4096
+                type: string
+                example: eyJzd.fafa.fafafa
+            description: |-
+                Il valore di questo header è una token JWT firmato secondo la specifica JWS.
+                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+
+    securitySchemes:
+        bearerAuth:
+            scheme: bearer
+            bearerFormat: JWT
+            type: http
+            description: Implementazione conforme ad RFC8725
+
+        Agid-JWT-Signature:
+            type: apiKey
+            description: |-
+                Il valore di questo header è una token JWT firmato secondo la specifica JWS.
+                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+            name: Agid-JWT-Signature
+            in: header
