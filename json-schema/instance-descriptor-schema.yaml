@@ -1,7 +1,7 @@
 definitions: {}
 "$schema": http://json-schema.org/draft-07/schema#
 "$id": https://agid.gov.it/descrittore_istanza.json
-title: descrittore istanza
+description: descrittore istanza
 type: object
 required:
 - version
