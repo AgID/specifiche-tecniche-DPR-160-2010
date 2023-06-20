@@ -1,108 +1,33 @@
 sequenceDiagram
     autonumber
     
+    actor P as Presentatore    
+    participant F as FrontOffice SUAP  
     participant B as BackOffice SUAP  
-    participant RI as Registro Imprese   
+    participant E as Ente Terzo  
     participant C as Catalogo SSU  
 
    
    
-    Note over B,C: istanza presentata e ricevuta emessa (dopo step 22 di General-001)
-    
+    Note over P,C: istanza presentata e processo in corso
+          
+    P ->> F: request_cancel(cui)
+    F ->> B: request_cancel_istance(cui)
+    B -->> F: ack
 
-    B ->> RI: send_instance(cui, instance_descriptor_version,instance_index)
-    RI -->> B: ack
-    
-    RI ->> C: request_instance_descriptor(cui)
-	C -->> RI: instanceDescriptor
-    
-    loop per ogni procedimento parte dell'istanza
-        RI ->> B:  request_instance_document(cui, resource_id)
-        note right of RI: resource_id da instance_index
-        B -->> RI: instanceDocument
-    end
-    
+    F ->> C: audit(cui,submitter_cancel_requested)
+    C -->> F: ack
 
-    alt istanza corretta (dopo step 43 General-001)
+    B ->> F: notify(cui, istance_descriptor_version, end_by_submitter_cancel_requested)
+    F -->> B: ack
 
-        B ->> RI: send_instance(cui, instance_descriptor_version,instance_index)
-        RI -->> B: ack
-    
-        RI ->> C: request_instance_descriptor(cui)
-        C -->> RI: instanceDescriptor
-        
-        loop per ogni procedimento parte dell'istanza
-            RI ->> B:  request_instance_document(cui, resource_id)
-            note right of RI: resource_id da instance_index
-            B -->> RI: instanceDocument
-        end
+    par per ogni ente terzo interessato
+        B ->> E: notify(cui, istance_descriptor_version, end_by_submitter_cancel_requested)
+        E -->> B: ack
+    end 
 
-
-
-    end
-
-    alt richiesta integrazione e scaduti tempi integrazione (dopo step: 29 SCIA-001 o 49 DomandaAutorizzazione-001)
-        B ->> RI: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
-        RI -->> B: ack
-    end
-
-    alt istanza integrata (dopo step: 43 SCIA-001 o 63 DomandaAutorizzazione-001)
-
-        B ->> RI: send_instance(cui, instance_descriptor_version,instance_index)
-        RI -->> B: ack
-    
-        RI ->> C: request_instance_descriptor(cui)
-        C -->> RI: instanceDescriptor
-        
-        loop per ogni procedimento parte dell'istanza
-            RI ->> B:  request_instance_document(cui, resource_id)
-            note right of RI: resource_id da instance_index
-            B -->> RI: instanceDocument
-        end
-
-
-    end
-
-
-    alt concluso tempo istanza, senza richieste sospensione/conformazione (dopo step 65 SCIA-001 )
-        B ->> RI: notify(cui, instance_descriptor_version,end_by_proceeding_time_expired)
-        RI -->> B: ack   
-    end
-
-
-    alt sospesione richiesta (dopo step: 71 SCIA-001, 107 DomandaAutorizzazione-001  )
-        B ->> RI: notify(cui, instance_descriptor_version,end_by_suspend_required,resource_id)
-        RI -->> B: ack  
-        RI ->> B: request_instance_document(cui, resource_id)
-        note right of RI: recupero documento di provvedimento di sospensione motivata
-        B -->> RI: instanceDocument     
-    end
-
-     alt conformazione richiesta (dopo step: 78 SCIA-001, 116 DomandaAutorizzazione-001  )
-        B ->> RI: notify(cui, instance_descriptor_version,end_by_conformation_required,resource_id)
-        RI -->> B: ack  
-        RI ->> B: request_instance_document(cui, resource_id)
-        note right of RI: recupero documento di provvedimento di conformazione richiesta
-        B -->> RI: instanceDocument     
-    end
-
-
-    alt provvedimento autorizzativo emesso (dopo step 99 DomandaAutorizzazione-001)
-        B ->> RI: notify(cui, instance_descriptor_version,end_by_positive_outcome,resource_id)
-        RI -->> B: ack
-        RI ->> B: request_instance_document(cui, resource_id)
-        note right of RI: recupero documento di provvedimento di autorizzazione
-        B -->> RI: instanceDocument   
-    end
-
-
-    alt istanza annullata su richiesta del presentatore (dopo step 9 SubmitterCancel-001)
-        B ->> RI: notify(cui, instance_descriptor_version,end_by_submitter_cancel_requested)
-        RI -->> B: ack
-    end
-
-
-      
+    B ->> C: audit(cui,end_by_submitter_cancel_requested)
+    C -->> F: ack
 
 
 
