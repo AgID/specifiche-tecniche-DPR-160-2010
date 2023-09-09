@@ -41,7 +41,7 @@ paths:
         - name: municipality
           in: query
           description: paramentro di filtering sul comune richiesto, non valorizzato per richiedere l'intero set
-          required: true
+          required: false
           schema:
             type: string
 
