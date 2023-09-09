@@ -116,7 +116,6 @@ properties:
           type: object
           required:
           - xsd
-          - schematron
           properties:
             xsd:
               "$id": "#root/usecase_proceedings/form/xsd"
@@ -236,8 +235,7 @@ properties:
                 title: riferimento agli oggetti per la validazione
                 type: object
                 required:
-                - xsd
-                - schematron
+                - xsd                
                 properties:
                   xsd:
                     "$id": "#root/usecase_proceedings/form/xsd"

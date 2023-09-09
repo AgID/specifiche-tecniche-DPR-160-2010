@@ -20,7 +20,7 @@ sequenceDiagram
 
     F ->> B: send_instance(cui, instance_descriptor_version,instance_index)
     B -->> F: ack
-    F ->> C: audit(cui,instance_integrated_to_<BO>_sended)
+    F ->> C: audit(cui,instance_to_<BO>_sended)
     note right of F: <BO> codice BackOffice
     C -->> F: ack
 

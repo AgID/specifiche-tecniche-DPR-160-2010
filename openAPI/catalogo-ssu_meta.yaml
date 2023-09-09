@@ -41,7 +41,7 @@ paths:
         - name: municipality
           in: query
           description: paramentro di filtering sul comune richiesto, non valorizzato per richiedere l'intero set
-          required: true
+          required: false
           schema:
             type: string
 
@@ -287,7 +287,7 @@ paths:
             type: string
             pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
         - name: municipality
-          in: query
+          in: path
           description: identificativo del comune necessario a determinare l'amministrazione competente
           required: true
           schema:
@@ -634,8 +634,7 @@ paths:
 
       tags:
         - Attachments
-
-  /competent-administration/{competent_administration_ipacode}/{competent_administration_code}/{competent_administration_version}}/third-party-system:
+  /competent-administration/{competent_administration_ipacode}/{competent_administration_code}/{competent_administration_version}/third-party-system:  
     get:
       description: |
         Recupero Sistema Ente Terzo di una specifica amministrazione competente di uno specifico modulo digitale
@@ -1974,7 +1973,7 @@ components:
         version: 1.0.0
         description: Entita  fattispecie procedimento
         proceeding_id: string
-        lifeeproceeding_versionvent: 1.0.0
+        proceeding_version: 1.0.0
         schematron_phase: phase_1
 
   headers:
