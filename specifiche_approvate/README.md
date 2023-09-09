@@ -4,4 +4,4 @@
 
 Il presente folder contiene la versione approvate delle specifiche tecniche.
 
-E' possibile accedere alla versione navigabile delle stesse accedendo a [Versione Navigabile](./specifiche_navigabili/indice.md)
+E' possibile accedere alla versione navigabile delle stesse accedendo a [Versione Navigabile](../specifiche_navigabili/indice.md)
