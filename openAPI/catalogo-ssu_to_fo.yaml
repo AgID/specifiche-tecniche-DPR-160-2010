@@ -182,7 +182,7 @@ components:
             ^receipt_sended|
             instance_to_[0-9]{5}_sended|
             corrected_instance_to_[0-9]{5}_sended|
-            integrated__instance_to_[0-9]{5}_sended|
+            instance_integrated_to_[0-9]{5}_sended|
             submitter_cancel_requested|
             retry_requested_for_send_instance|
             retry_requested_for_request_correction|

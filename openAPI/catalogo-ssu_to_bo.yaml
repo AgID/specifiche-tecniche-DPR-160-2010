@@ -261,13 +261,14 @@ components:
             corrected_instance_retrived|
             end_by_instance_refused|
             instance_to_[0-9]{5}_sended|
+            integration_request_time_expired|
             end_by_integration_request_time_expired|
             integration_requested|
             instance_integrated_retrived|
             instance_integrated_to_[0-9]{5}_sended|
             end_by_proceeding_time_expired|
             end_by_suspension_requested|
-            end_by_conformation_requested
+            end_by_conformation_requested|
             cdss_convened|
             end_by_positive_outcome|
             end_by_submitter_cancel_requested|
