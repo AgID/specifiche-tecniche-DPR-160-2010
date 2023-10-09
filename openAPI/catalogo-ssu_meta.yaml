@@ -95,8 +95,6 @@ paths:
       tags:
         - Lookup
 
- 
-
   /proceedings:
     get:
       description: |
@@ -152,8 +150,6 @@ paths:
 
       tags:
         - Proceedings
-
- 
  
   /proceeding/{proceeding_id}/{proceeding_version}/usecase-proceedings:
     get:
@@ -432,9 +428,7 @@ paths:
       tags:
         - UseCases
 
-  
-
-  /form/{form_id}/{form_version}/xsd:
+    /form/{form_id}/{form_version}/xsd:
     get:
       description: |
         Recupero XML Schema di uno specifico modulo digitale
@@ -634,6 +628,7 @@ paths:
 
       tags:
         - Attachments
+ 
   /competent-administration/{competent_administration_ipacode}/{competent_administration_code}/{competent_administration_version}/third-party-system:  
     get:
       description: |
@@ -830,8 +825,6 @@ paths:
       tags:
         - Sportello SUAP
 
-
-
   /proceedings-by-municipality/{municipality_list}:
     get:
       description: |
@@ -927,7 +920,6 @@ paths:
 
       tags:
         - Bulk
-
 
   /proceedings-attachments/{id_proceeding_list}:
     get:
@@ -1333,7 +1325,6 @@ paths:
       tags:
         - Bulk
 
-
   /proceedings-competent-administrations/{id_proceeding_list}:
     get:
       description: |
@@ -1514,7 +1505,6 @@ paths:
       tags:
         - Bulk
 
-
   /suaps-by-municipality/{municipality_list}:
     get:
       description: |
@@ -1610,10 +1600,6 @@ paths:
 
       tags:
         - Bulk
-
-
-  
-   
 
   /suaps-fo-systems/{id_suap_list}:
     get:

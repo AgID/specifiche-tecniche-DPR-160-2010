@@ -47,7 +47,6 @@ paths:
                 - bearerAuth: []
                 - Agid-JWT-Signature: []
 
-
 components:
     responses:
         OKInstanceDescriptor:

@@ -21,9 +21,6 @@ servers:
     description: Catalogo SSU to FrontOffice SUAP endpoint
 
 paths:
-
-  
-
   /request_cui:
     post:
       requestBody:
