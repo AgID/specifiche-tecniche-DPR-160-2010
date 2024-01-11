@@ -189,32 +189,32 @@ components:
           title: data avvio dell'istanza
           type: string
           format: date
-        end:          
-          title: data entro cui l'istanza deve concludersi
-          type: string
-          format: date
-        max_admissibility:          
-          title: data limite verifica ammissibilità
-          type: string
-          format: date
-        max_integration_request:          
-          title: data limite richiesta integrazione degli enti terzi
-          type: string
-          format: date
-        max_integration_response:          
-          title: data limite integrazione del soggetto presentatore
-          type: string
-          format: date
-        max_conclusions_sending:          
-          title: data limite inoltro conclusioni degli enti terzi
-          type: string
-          format: date
+        max_gg_proc:          
+          title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
+          type: integer
+          format: int32
+        max_gg_admissibility:          
+          title: numero di giorni limite a partire da start per la verifica di ammissibilità
+          type: integer
+          format: int32
+        max_gg_int_req:          
+          title: numero di giorni limite a partire da start per la richiesta di integrazione degli enti terzi
+          type: integer
+          format: int32
+        max_gg_int_resp:          
+          title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
+          type: integer
+          format: int32
+        max_gg_concl_send:          
+          title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
+          type: integer
+          format: int32
+        max_gg_cdss_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
+          type: integer
+          format: int32
         date_cdss:          
           title: data evetuale conferenza di servizi sincrona
-          type: string
-          format: date
-        max_cdss_request:          
-          title: data entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
           type: string
           format: date
           
@@ -248,6 +248,7 @@ components:
       required:
         - cui
         - message
+        - event_time
 
       properties:
         cui:
@@ -256,26 +257,12 @@ components:
         message:
           type: string
           pattern: >-
-            ^instance_retrived|
-            correction_request|
-            corrected_instance_retrived|
-            end_by_instance_refused|
-            instance_to_[0-9]{1,10}_sended|
-            integration_request_time_expired|
-            end_by_integration_request_time_expired|
-            integration_requested|
-            instance_integrated_retrived|
-            instance_integrated_to_[0-9]{1,10}_sended|
-            end_by_proceeding_time_expired|
-            end_by_suspension_requested|
-            end_by_conformation_requested|
-            cdss_convened|
-            end_by_positive_outcome|
-            end_by_submitter_cancel_requested|
-            retry_requested_for_send_instance|
-            retry_requested_for_send_conclusions|
-            retry_requested_for_request_cdss|
-            retry_requested_for_request_integration$
+            ^instance_retrived|correction_request|corrected_instance_retrived|end_by_instance_refused|instance_to_[0-9]{1,10}_sended|integration_request_time_expired|end_by_integration_request_time_expired|integration_requested|instance_integrated_retrived|instance_integrated_to_[0-9]{1,10}_sended|end_by_proceeding_time_expired|end_by_suspension_requested|end_by_conformation_requested|cdss_convened|end_by_positive_outcome|end_by_submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_send_conclusions|retry_requested_for_request_cdss|retry_requested_for_request_integration$
+
+        event_time:
+          title: timestamp del momento in cui si è verificato l'evento
+          type: string
+          format: date-time
     
     AdministrationSchema:
       description: Amministrazione compentente censita nel Catalogo SSU

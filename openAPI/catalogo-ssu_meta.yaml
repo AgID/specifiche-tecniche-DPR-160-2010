@@ -56,13 +56,13 @@ paths:
                   type: object
                   required:
                     - typology
-                    - lifevent
+                    - lifeevent
                     - municipality
                   properties:
                     typology:
                       description: tipologia del procedimento (es. esercizio di vicinato, grande/media struttura di vendita)
                       type: string
-                    lifevent:
+                    lifeevent:
                       description: evento della vita relativo al procedimento (apertura, ampliamento, subingresso,etc.)
                       type: string
                     municipality:
@@ -103,13 +103,11 @@ paths:
         - in: query
           name: typology
           description: tipologia del procedimento (es. esercizio di vicinato, grande/media struttura di vendita)
-          required: true
           schema:
             type: string
         - name: lifeevent
           in: query
           description: Evento della vita relativo al procedimento (apertura, ampliamento, subingresso,etc.)
-          required: true
           schema:
             type: string
         - name: municipality
@@ -428,7 +426,7 @@ paths:
       tags:
         - UseCases
 
-    /form/{form_id}/{form_version}/xsd:
+  /form/{form_id}/{form_version}/xsd:
     get:
       description: |
         Recupero XML Schema di uno specifico modulo digitale
@@ -632,7 +630,7 @@ paths:
   /competent-administration/{competent_administration_ipacode}/{competent_administration_code}/{competent_administration_version}/third-party-system:  
     get:
       description: |
-        Recupero Sistema Ente Terzo di una specifica amministrazione competente di uno specifico modulo digitale
+        Recupero elenco Enti Terzi di una specifica amministrazione competente
 
       parameters:
         - in: path
@@ -657,11 +655,13 @@ paths:
 
       responses:
         "200":
-          description: Sistema Ente Terzo dell'amministrazione richiesta
+          description: Elenco sistema Ente Terzo dell'amministrazione richiesta
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SystemEntity"
+                type: array
+                items: 
+                  $ref: "#/components/schemas/third_party_system"
 
           headers:
             Agid-JWT-Signature:
@@ -700,7 +700,7 @@ paths:
 
       responses:
         "200":
-          description: Sportello SUAP del comunerichiesto
+          description: Sportello SUAP del comune richiesto
           content:
             application/json:
               schema:
@@ -752,7 +752,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SystemEntity"
+                $ref: "#/components/schemas/FOSystemEntity"
 
           headers:
             Agid-JWT-Signature:
@@ -801,7 +801,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SystemEntity"
+                $ref: "#/components/schemas/BOSystemEntity"
 
           headers:
             Agid-JWT-Signature:
@@ -982,7 +982,7 @@ paths:
   /proceedings-administrative-regimes/{id_proceeding_list}:
     get:
       description: |
-        Recupero bulk elenco tuple {procedimenti,regimi amministrativi}(tutte le versioni) per set di identificativi procedimento
+        Recupero bulk elenco tuple {fattispecie, regimi amministrativi e tempi}(tutte le versioni) per set di identificativi procedimento
       parameters:
         - in: path
           name: id_proceeding_list
@@ -996,7 +996,7 @@ paths:
 
       responses:
         "200":
-          description: Elenco tuple {procedimenti,regimi amministrativi} richiesto
+          description: Elenco tuple {fattispecie, regimi amministrativi e tempi} richiesto
           content:
             application/json:
               schema:
@@ -1004,17 +1004,15 @@ paths:
                 items:
                   type: object
                   required:
-                    - proceeding
+                    - usecase-proceeding
                     - adminstrative-regime
                   properties:
-                    proceeding:
-                      $ref: "#/components/schemas/GenericEntity"
+                    usecase-proceeding:
+                      $ref: "#/components/schemas/UseCaseProceeding"
                     adminstrative-regime:
                       $ref: "#/components/schemas/GenericEntity"
                     times:
                       $ref: "#/components/schemas/Times"
-
-
 
           headers:
             Agid-JWT-Signature:
@@ -1067,10 +1065,11 @@ paths:
                     - usecase-proceeding
                   properties:
                     proceeding:
-                      $ref: "#/components/schemas/GenericEntity"
+                        $ref: "#/components/schemas/GenericEntity"
                     usecase-proceeding:
-                     $ref: "#/components/schemas/UseCaseProceeding"
-                  
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/UseCaseProceeding"
                   
 
           headers:
@@ -1181,14 +1180,12 @@ paths:
                   type: object
                   required:
                     - proceeding
-                    - attachment
+                    - form
                   properties:
                     proceeding:
                       $ref: "#/components/schemas/GenericEntity"
-                    attachment:
-                      $ref: "#/components/schemas/DocumentEntity"
-                    mandatary:
-                      type: boolean
+                    form:
+                      $ref: "#/components/schemas/GenericEntity"
 
 
           headers:
@@ -1246,7 +1243,7 @@ paths:
                     form:
                       $ref: "#/components/schemas/GenericEntity"
                     schematron:
-                      $ref: "#/components/schemas/DocumentEntity"
+                      $ref: "#/components/schemas/GenericEntity"
                     
           headers:
             Agid-JWT-Signature:
@@ -1301,7 +1298,7 @@ paths:
                     form:
                       $ref: "#/components/schemas/GenericEntity"
                     xsd:
-                      $ref: "#/components/schemas/DocumentEntity"
+                      $ref: "#/components/schemas/GenericEntity"
                     
           headers:
             Agid-JWT-Signature:
@@ -1479,9 +1476,9 @@ paths:
                     - third_party_system
                   properties:
                     primary:
-                      $ref: "#/components/schemas/GenericEntity"
+                      $ref: "#/components/schemas/ComponentEntity"
                     third_party_system:
-                      $ref: "#/components/schemas/SystemEntity"
+                      $ref: "#/components/schemas/third_party_system"
               
           headers:
             Agid-JWT-Signature:
@@ -1577,7 +1574,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GenericEntity"
+                  $ref: "#/components/schemas/ComponentEntity"
 
           headers:
             Agid-JWT-Signature:
@@ -1630,9 +1627,9 @@ paths:
                     - fo_system
                   properties:
                     primary:
-                      $ref: "#/components/schemas/GenericEntity"
-                    third_party_system:
-                      $ref: "#/components/schemas/SystemEntity"
+                      $ref: "#/components/schemas/ComponentEntity"
+                    fo_system:
+                      $ref: "#/components/schemas/FOSystemEntity"
               
           headers:
             Agid-JWT-Signature:
@@ -1685,9 +1682,9 @@ paths:
                     - bo_system
                   properties:
                     primary:
-                      $ref: "#/components/schemas/GenericEntity"
-                    third_party_system:
-                      $ref: "#/components/schemas/SystemEntity"
+                      $ref: "#/components/schemas/ComponentEntity"
+                    bo_system:
+                      $ref: "#/components/schemas/BOSystemEntity"
               
           headers:
             Agid-JWT-Signature:
@@ -1793,41 +1790,33 @@ components:
       description: tempi amministrativi dell'istanza
       type: object
       required:
-      - start
-      - end
+      - max_gg_proc
       properties:
-        start:          
-          title: data avvio dell'istanza
-          type: string
-          format: date
-        end:          
-          title: data entro cui l'istanza deve concludersi
-          type: string
-          format: date
-        max_admissibility:          
-          title: data limite verifica ammissibilità
-          type: string
-          format: date
-        max_integration_request:          
-          title: data limite richiesta integrazione degli enti terzi
-          type: string
-          format: date
-        max_integration_response:          
-          title: data limite integrazione del soggetto presentatore
-          type: string
-          format: date
-        max_conclusions_sending:          
-          title: data limite inoltro conclusioni degli enti terzi
-          type: string
-          format: date
-        date_cdss:          
-          title: data evetuale conferenza di servizi sincrona
-          type: string
-          format: date
-        max_cdss_request:          
-          title: data entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
-          type: string
-          format: date
+
+        max_gg_proc:          
+          title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
+          type: integer
+          format: int32
+        max_gg_admissibility:          
+          title: numero di giorni limite a partire da start per la verifica di ammissibilità
+          type: integer
+          format: int32
+        max_gg_int_req:          
+          title: numero di giorni limite a partire da start per la richiesta di integrazione degli enti terzi
+          type: integer
+          format: int32
+        max_gg_int_resp:          
+          title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
+          type: integer
+          format: int32
+        max_gg_concl_send:          
+          title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
+          type: integer
+          format: int32
+        max_gg_cdss_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
+          type: integer
+          format: int32
 
     Error:
       type: object
@@ -1862,6 +1851,31 @@ components:
         id: 1
         version: 1.0.0
         description: Entità generica con id,versione, descrizione
+
+    ComponentEntity:
+      description: struttura di risorsa generica con id,versione e descrizione
+      allOf:
+        - $ref: "#/components/schemas/GenericEntity"
+        - type: object
+          required:
+            - start
+            - end
+            - state
+          properties:
+            start:          
+              title: data inizio intervallo di validità della versione
+              type: string
+              format: date
+            end:          
+              title: data fine intervallo di validità della versione
+              type: string
+              format: date
+            state:
+              title: stato di validità della versione
+              type: string
+              enum:
+                - Active
+                - Not Active
 
     DocumentEntity:
       allOf:
@@ -1911,6 +1925,35 @@ components:
         version: 1.0.0
         description: Entita id,versione, descrizione e riferimento telemantico sistema implementante
         telematic_ref: string
+    
+    FOSystemEntity:
+      allOf:
+        - $ref: "#/components/schemas/ComponentEntity"
+        - type: object
+          required:
+            - e_service_to_bo
+            - e_service_to_cu
+          properties:
+            e_service_to_bo:
+              type: string
+            e_service_to_cu:
+              type: string
+      
+    BOSystemEntity:
+      allOf:
+        - $ref: "#/components/schemas/ComponentEntity"
+        - type: object
+          required:
+            - e_service_to_fo
+            - e_service_to_et
+            - e_service_to_ri
+          properties:
+            e_service_to_fo:
+              type: string
+            e_service_to_et:
+              type: string  
+            e_service_to_ri:
+              type: string  
 
     Proceeding:
       description: procedimento amministrativo
@@ -1919,8 +1962,9 @@ components:
       type: object
       required:
         - typology
-        - life_event
+        - lifeevent
         - territorial_scope
+        - status
       properties:
         typology:
           title: tipologia del procedimento
@@ -1929,8 +1973,15 @@ components:
           title: evento della vita dell'attività afferente al procedimento
           type: string
         territorial_scope:
-          title: ambito territoriale del procedimento (codice istat a 8 cifre e 00000000 per Nazionale)
+          title: ambito territoriale del procedimento (codice istat a 6 cifre e 000000 per Nazionale)
           type: string
+        status:
+          title: stato del procedimento (attivo, non attivo)
+          type: string
+          enum: 
+            - Active
+            - Not Active
+
       example:
         id: 1
         version: 1.0.0
@@ -1961,6 +2012,26 @@ components:
         proceeding_id: string
         proceeding_version: 1.0.0
         schematron_phase: phase_1
+
+
+    third_party_system:
+      allOf:
+        - $ref: "#/components/schemas/SystemEntity"
+        - type: object
+          properties:
+            date_from:
+              type: string
+              format: date 
+            date_to:
+              type: string
+              format: date
+      example:
+        id: 1
+        version: 1.0.0
+        description: Entita id,versione, descrizione e riferimento telemantico sistema implementante
+        telematic_ref: string
+        date_from: 2023-11-14
+        date_to: 2023-12-14
 
   headers:
     Agid-JWT-Signature:
