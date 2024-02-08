@@ -154,7 +154,6 @@ paths:
                   required: true
                   schema:
                       type: string
-                
 
             responses:
                 "200":
@@ -354,22 +353,22 @@ components:
         SendConclusionRequests:
             type: object
             oneOf:
-                - $ref: "#/components/schemas/NegativeOutcomeRequired"
+                - $ref: "#/components/schemas/SuspendRequired"
                 - $ref: "#/components/schemas/ConformationRequired"
                 - $ref: "#/components/schemas/PositiveOutcome"
             discriminator:
                 propertyName: conclusions_type
                 mapping:
-                    suspension_requested: "#/components/schemas/NegativeOutcomeRequired"
+                    suspension_requested: "#/components/schemas/SuspendRequired"
                     conformation_requested: "#/components/schemas/ConformationRequired"
                     positive_outcome: "#/components/schemas/PositiveOutcome"
 
-        NegativeOutcomeRequired:
+        SuspendRequired:
             type: object
             required:
                 - cui
                 - instance_descriptor_version
-                - negative_outcome_motivation
+                - suspend_motivation
                 - conclusions_type
             properties:
                 conclusions_type:
@@ -379,7 +378,7 @@ components:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
                     type: string
-                negative_outcome_motivation:
+                suspend_motivation:
                     type: string
                     minLength: 1
                 resource_id:

@@ -118,6 +118,8 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+
+
     /send_instance:
         description: Invio riferimenti istanza
         post:
@@ -142,6 +144,7 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
@@ -232,6 +235,9 @@ paths:
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
+
+
+    
 
 components:
     responses:
