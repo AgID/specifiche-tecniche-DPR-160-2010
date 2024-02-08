@@ -21,6 +21,9 @@ servers:
     description: Catalogo SSU to FrontOffice SUAP endpoint
 
 paths:
+
+  
+
   /request_cui:
     post:
       requestBody:
@@ -70,37 +73,6 @@ paths:
       security:
         - bearerAuth: []
           Agid-JWT-Signature: []
-
-  /instance_descriptor/{cui_uuid}:
-    description: |
-        Recupero InstanceDescriptor 
-    get:
-      parameters:
-        - name: cui_uuid
-          in: path
-          description: UUID del CUI
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-            $ref: "#/components/responses/OKInstanceDescriptor"
-        "400":
-            $ref: "#/components/responses/BadRequest"
-        "401":
-            $ref: "#/components/responses/Unauthorized"
-        "404":
-            description: risorsa non trovata
-            headers:
-                Agid-JWT-Signature:
-                    $ref: "#/components/headers/Agid-JWT-Signature"
-        "500":
-            $ref: "#/components/responses/ServerError"
-        "503":
-            $ref: "#/components/responses/ServiceUnavaliable"
-      security:
-          - bearerAuth: []
-            Agid-JWT-Signature: []
 
 components:
   responses:
@@ -199,7 +171,6 @@ components:
       required:
         - cui
         - message
-        - event_time
 
       properties:
         cui:
@@ -208,13 +179,16 @@ components:
         message:
           type: string
           pattern: >-
-            ^receipt_sended|instance_to_[0-9]{1,10}_sended|corrected_instance_to_[0-9]{1,10}_sended|instance_integrated_to_[0-9]{1,10}_sended|submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_request_correction|retry_requested_for_request_integration|retry_requested_for_notify$
+            ^receipt_sended|
+            instance_to_[0-9]{5}_sended|
+            corrected_instance_to_[0-9]{5}_sended|
+            integrated__instance_to_[0-9]{5}_sended|
+            submitter_cancel_requested|
+            retry_requested_for_send_instance|
+            retry_requested_for_request_correction|
+            retry_requested_for_request_integration|
+            retry_requested_for_notify$
     
-        event_time:
-          title: timestamp del momento in cui si è verificato l'evento
-          type: string
-          format: date-time
-          
     Times:
       description: tempi amministrativi dell'istanza
       type: object
@@ -226,32 +200,32 @@ components:
           title: data avvio dell'istanza
           type: string
           format: date
-        max_gg_proc:          
-          title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
-          type: integer
-          format: int32
-        max_gg_admissibility:          
-          title: numero di giorni limite a partire da start per la verifica di ammissibilità
-          type: integer
-          format: int32
-        max_gg_int_req:          
-          title: numero di giorni limite a partire da start per la richiesta di integrazione degli enti terzi
-          type: integer
-          format: int32
-        max_gg_int_resp:          
-          title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
-          type: integer
-          format: int32
-        max_gg_concl_send:          
-          title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
-          type: integer
-          format: int32
-        max_gg_cdss_req:          
-          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
-          type: integer
-          format: int32
+        end:          
+          title: data entro cui l'istanza deve concludersi
+          type: string
+          format: date
+        max_admissibility:          
+          title: data limite verifica ammissibilità
+          type: string
+          format: date
+        max_integration_request:          
+          title: data limite richiesta integrazione degli enti terzi
+          type: string
+          format: date
+        max_integration_response:          
+          title: data limite integrazione del soggetto presentatore
+          type: string
+          format: date
+        max_conclusions_sending:          
+          title: data limite inoltro conclusioni degli enti terzi
+          type: string
+          format: date
         date_cdss:          
           title: data evetuale conferenza di servizi sincrona
+          type: string
+          format: date
+        max_cdss_request:          
+          title: data entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
           type: string
           format: date
  

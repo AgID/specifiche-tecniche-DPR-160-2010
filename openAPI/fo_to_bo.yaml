@@ -207,11 +207,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            oneOf:
-                                - $ref: "#/components/schemas/NotifyMessage"
-                                - $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
-                            discriminator:
-                                propertyName: event
+                            $ref: "#/components/schemas/NotifyMessage"
                 required: true
             responses:
                 "200":
@@ -451,27 +447,12 @@ components:
                     enum:
                         - end_by_instance_refused
                         - end_by_proceeding_time_expired
-                        - end_by_integration_times_expired
-                        - end_by_submitter_cancel_requested
-                        - cdss_convened
-
-        TransferOutcomeNotifyMessage:
-            type: object
-            required:
-                - cui
-                - instance_descriptor_version
-                - event
-            properties:
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
-                event:
-                    type: string
-                    enum:
                         - end_by_suspension_requested
                         - end_by_conformation_requested
                         - end_by_positive_outcome
+                        - end_by_integration_times_expired
+                        - end_by_submitter_cancel_requested
+                        - cdss_convened
 
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
