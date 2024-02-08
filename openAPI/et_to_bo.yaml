@@ -6,7 +6,7 @@ info:
     version: 1.0.0
 
     description: |-
-        API rese disponibili da  Ente Terzo a FrontOffice SUAP
+        API rese disponibili da  Ente Terzo a BackOffice SUAP
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -181,7 +181,13 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/NotifyMessage"
+                            oneOf:
+                                - $ref: "#/components/schemas/NotifyMessage"
+                                - $ref: "#/components/schemas/CdssNotifyMessage"
+
+                                - $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
+                            discriminator:
+                                propertyName: event
                 required: true
             responses:
                 "200":
@@ -318,6 +324,7 @@ components:
             required:
                 - code
                 - message
+        
         SendInstanceRequest:
             type: object
             required:
@@ -331,6 +338,7 @@ components:
                     type: string
                 instance_index:
                     $ref: "#/components/schemas/InstanceIndex"
+        
         NotifyMessage:
             type: object
             required:
@@ -347,13 +355,73 @@ components:
                     type: string
                     enum:
                         - end_by_proceeding_time_expired
-                        - end_by_suspension_requested
-                        - end_by_conformation_requested
-                        - end_by_positive_outcome
                         - end_by_integration_times_expired
                         - end_by_submitter_cancel_requested
                         - integration_request_time_expired
-                        - cdss_convened
+                        
+        TransferOutcomeNotifyMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    enum:
+                        - end_by_suspension_requested
+                        - end_by_conformation_requested
+                        - end_by_positive_outcome
+                resource_id:
+                    title: se presente, id della risorsa documento correlata all'evento notificato
+                    type: string
+                    minLength: 1
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+
+        CdssNotifyMessage:
+            allOf:
+              - $ref: "#/components/schemas/NotifyMessage"
+              - type: object
+                required:
+                    - cdss_channel
+                    - cdss_convocation
+                properties:
+                    event:
+                        type: string
+                        enum:
+                            - cdss_convened
+                    mime_type:
+                        title: "indica il formato dei dati previsto per l'atto amministrativo"
+                        type: string
+                        minLength: 1
+                    cdss_admin_act_filename:
+                        title: "filename dell'atto amministrativo da allegare per la convocazione della Conferenza dei Servizi Sincrona"
+                        type: string
+                        minLength: 1
+                    cdss_channel:
+                        type: string
+                        title: "canale utilizzato per la convocazione della Conferenza dei Servizi Sincrona"
+                        minLength: 1
+                    cdss_convocation:
+                        title: "data della convocazione della Conferenza dei Servizi Sincrona"
+                        type: string
+                        format: date
+                        minLength: 1
+                    
 
     headers:
         Agid-JWT-Signature:

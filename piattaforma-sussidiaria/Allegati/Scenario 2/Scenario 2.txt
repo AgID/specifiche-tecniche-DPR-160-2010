@@ -1,0 +1,47 @@
+title Scenario 2
+bottomparticipants 
+participant BO
+participantgroup #lightblue **Ente Terzo**
+actor OperatoreAssegnazioneIstanza #green
+actor OperatoreIstruttore #yellow
+end
+activate BO
+BO -->OperatoreAssegnazioneIstanza: Notifica Istanza\n(e-service **send_instance**)
+deactivate BO
+activate OperatoreAssegnazioneIstanza
+OperatoreAssegnazioneIstanza ->OperatoreIstruttore: Assegnazione Istanza
+deactivate OperatoreAssegnazioneIstanza
+
+
+activate OperatoreIstruttore
+OperatoreIstruttore ->OperatoreIstruttore: Consultazione istanza\n(e-service **instance_descriptor**)
+
+
+ 
+OperatoreIstruttore ->BO: Download documenti \n(e-service **instance_document**)
+activate BO
+BO --> OperatoreIstruttore: Documenti 
+deactivate BO
+
+
+
+group #2f2e7b Opt #white [Richiesta d'integrazione]
+OperatoreIstruttore ->BO: Inoltro \n(e-service **request_integration **)
+deactivate OperatoreIstruttore
+activate BO
+
+BO->OperatoreIstruttore: Invio Integrazione
+
+deactivate BO
+activate OperatoreIstruttore
+
+OperatoreIstruttore ->OperatoreIstruttore: Consulto Integrazione
+end
+
+
+OperatoreIstruttore ->OperatoreIstruttore: Conclusioni
+
+
+OperatoreIstruttore -> BO: Inoltro \n(e-service **send_conclusions)
+
+deactivate OperatoreIstruttore
