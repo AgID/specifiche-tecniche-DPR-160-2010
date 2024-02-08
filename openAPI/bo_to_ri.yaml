@@ -149,7 +149,6 @@ paths:
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
-
   
 components:
     responses:

@@ -36,7 +36,7 @@ paths:
                                     description: operation per la quale si richiede la ritrasmissione
                                     type: string
                                     enum:
-                                        - send_instance
+                                        - notify_receipt
                                         - cancel_instance
                                 error:
                                     $ref: "#/components/schemas/Error"
