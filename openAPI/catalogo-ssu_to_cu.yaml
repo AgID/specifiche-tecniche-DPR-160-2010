@@ -185,7 +185,7 @@ components:
             type: object
             required:
                 - ipacode
-                - code
+                - officecode
                 - version
                 - description
             properties:
@@ -193,7 +193,7 @@ components:
                     title: codice IPA dell'amministrazione
                     type: string
                     minLength: 1
-                code:
+                officecode:
                     title: codice dell'ufficio dell'amministrazione 
                     type: string
                     minLength: 1
