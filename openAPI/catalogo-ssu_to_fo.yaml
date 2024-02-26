@@ -228,6 +228,8 @@ components:
     AuditResponse:
       type: object
       description: risposta audit
+      required:
+        - type
       properties:
         type:
           title: tipo messaggio
