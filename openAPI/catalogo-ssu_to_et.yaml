@@ -59,7 +59,7 @@ paths:
 
       responses:
         "200":
-          $ref: "#/components/responses/OKAuditResponse"
+          $ref: "#/components/responses/OKRequest"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -89,16 +89,6 @@ components:
       headers:
         Agid-JWT-Signature:
           $ref: "#/components/headers/Agid-JWT-Signature"
-    
-    OKAuditResponse:
-      description: Richiesta di Audit completata con successo
-      headers:
-        Agid-JWT-Signature:
-          $ref: "#/components/headers/Agid-JWT-Signature"
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/AuditResponse"
 
     BadRequest:
       description: Forma della richiesta non conforme alla specifica
@@ -203,21 +193,6 @@ components:
           title: timestamp del momento in cui si è verificato l'evento
           type: string
           format: date-time
-
-    AuditResponse:
-      type: object
-      description: risposta audit
-      properties:
-        type:
-          title: tipo messaggio
-          type: string
-          enum:
-            - ok
-            - warning
-            - expected_time_exceeded
-        message:
-          title: messaggio
-          type: string
     
     Times:
       description: tempi amministrativi dell'istanza
