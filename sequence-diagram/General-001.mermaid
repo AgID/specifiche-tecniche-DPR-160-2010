@@ -47,7 +47,7 @@ sequenceDiagram
     C -->> F: ack
 
     F ->> B: notify_receipt(cui, date)
-    F -->> B: ack
+    B -->> F: ack
     
     note over  B,C: BO imposta tempi procedimento<br/>a partire dalla data della ricevuta
     B ->> C: request_update_times(cui,times)
