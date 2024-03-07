@@ -207,13 +207,15 @@ components:
     AuditResponse:
       type: object
       description: risposta audit
+      required:
+        - type
       properties:
         type:
           title: tipo messaggio
           type: string
           enum:
             - ok
-            - warning
+            - out_of_flow
             - expected_time_exceeded
         message:
           title: messaggio
