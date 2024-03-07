@@ -3,8 +3,9 @@
 
 Il presente repository contiene gli artefatti tecnici (BPMN, immagini, json-schema, openApi e sequence diagram) delle specifiche tecniche di cui all’articolo 5 dell’Allegato al Decreto del Presidente della Repubblica 7 settembre 2010, n. 160 e s.m.i.
 
+Il branche **approved01** contiene le modifiche approvate alla suddette specifiche tecniche dal Gruppo Tecnico, di cui all'indicato articolo 5, a partire dal 18 gennaio 2024.
 
-Il presente branch di lavoro contiene le variazioni alla suddette specifiche tecniche in lavorazione da parte dal Gruppo Tecnico, di cui all'indicato articolo 5, a partire dal 18 gennaio 2024.
+Il branch **mantaince001** contiene le variazioni in lavorazione alla suddette specifiche tecniche da parte dal Gruppo Tecnico, di cui all'indicato articolo 5, a partire dal 18 gennaio 2024.
 
 ### Proposte di aggiornamento
 
