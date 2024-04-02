@@ -77,8 +77,13 @@ properties:
     properties:
       id:
         "$id": "#root/administrative_regime/id"
-        title: identificativo univo del regime amministrativo
+        title: identificativo univoco del regime amministrativo
         type: string
+        enum:
+             - SCIA
+             - AUTORIZZAZIONE
+             - SILENZIO-ASSENSO
+             - COMUNICAZIONE
       version:
         "$id": "#root/administrative_regime/version"
         title: version del regime amministrativo
