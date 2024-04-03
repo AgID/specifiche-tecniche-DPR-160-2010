@@ -22,6 +22,36 @@ servers:
 
 paths:
 
+    /fo-portal-ref:
+        post:
+            description: Richiesta di ritrasmissione dati relativi ad una specifica operation a causa di incoerenze riscontrate sui dati ricevuti.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                municipality:
+                                    title: codice istat 6 cifre del comune in cui l'istanza è stata presentata
+                                    type: string
+                                    pattern: "^[0-9]{6}$"
+
+            responses:
+                "200":
+                    $ref: "#/components/responses/FoPortalRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+                          
     /retry:
         post:
             description: Richiesta di ritrasmissione dati relativi ad una specifica operation a causa di incoerenze riscontrate sui dati ricevuti.
@@ -186,13 +216,18 @@ paths:
                             required:
                                 - cui
                                 - date
+                                - comunica-cui
+                                - comunica-cui-signed
                             properties:
                                 cui:
                                     $ref: "#/components/schemas/cui"
                                 date:
                                     type: string
                                     format: date
-                                        
+                                comunica-cui:
+                                    $ref: "#/components/schemas/comunica-cui"
+                                comunica-cui-signed:
+                                    $ref: "#/components/schemas/comunica-cui-signed"
                                
                 required: true
             responses:
@@ -212,6 +247,15 @@ paths:
 
 components:
     responses:
+        FoPortalRequest:
+            description: Risposta url portale frontoffice
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/FOPortal"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
         OKRequest:
             description: Richiesta completata con successo
             headers:
@@ -281,6 +325,70 @@ components:
                     title: UUID chiave del CUI
                     type: string
                     
+        comunica-cui: 
+            type: object
+            description: Distinta Comunica
+            required:
+                - file
+                - filename
+                - mime_type
+            properties:
+                file:
+                    title: file distinta comunica
+                    type: string
+                    format: byte
+                filename: 
+                    title: nome del file distinta comunica
+                    type: string
+                    
+                mime_type: 
+                    title: mime type della distinta comunica
+                    type: string
+        comunica-cui-signed:             
+            type: object
+            description: Distinta Comunica firmata
+            required:
+                - file
+                - filename
+                - mime_type
+            properties:
+                file:
+                    title: file distinta comunica firmata
+                    type: string
+                    format: byte
+                filename: 
+                    title: nome del file distinta comunica firmata
+                    type: string
+                mime_type: 
+                    title: mime type della distinta comunica firmata
+                    type: string
+        FOPortal:
+            type: object
+            description: Url portale Frontoffice SUAP
+            properties:
+                method:
+                    enum: 
+                        - post
+                protocol: 
+                    enum: 
+                        - https
+                url:
+                    description: Url del portale frontoffice
+                    type: string
+                    example: foportal.it/xyz
+                municipality:
+                    description: codice istat 6 cifre del comune in cui l'istanza è stata presentata
+                    type: string
+                c_fiscale: 
+                    description: Codice fiscale 
+                    type: string
+                    maxLength: 16
+                    example: ABCDEF00A00M000A
+                istance_code_comunica: 
+                    description: codice univoco pratica ComUnica
+                    type: string
+                    maxLength: 20
+                    example:
         Error:
             type: object
             description: codice e descrizione condizione di errore
