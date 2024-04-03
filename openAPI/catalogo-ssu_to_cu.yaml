@@ -233,35 +233,35 @@ components:
                 instance_status:          
                     title: stato dell'istanza
                     type: array
-                items:
-                    type: object
-                    required:
-                    - state
-                    - timestamp
-                    properties:
-                        state:                
-                            title: stato dell'istanza
-                            type: string
-                            enum:
-                            - started
-                            - presented
-                            - correction_requested
-                            - corrected 
-                            - refused
-                            - integration_requested
-                            - ended_by_integration_times_expired
-                            - integrated
-                            - cdss_convened
-                            - ended_by_suspension_requested
-                            - ended_by_conformation_requested
-                            - ended_by_proceeding_time_expired
-                            - ended_by_positive_outcome
-                            - ended_by_submitter_cancel_requested
-                            
-                        timestamp:                
-                            title: timestamp del cambiamento di stato
-                            type: string
-                            format: date-time
+                    items:
+                        type: object
+                        required:
+                        - state
+                        - timestamp
+                        properties:
+                            state:                
+                                title: stato dell'istanza
+                                type: string
+                                enum:
+                                - started
+                                - presented
+                                - correction_requested
+                                - corrected 
+                                - refused
+                                - integration_requested
+                                - ended_by_integration_times_expired
+                                - integrated
+                                - cdss_convened
+                                - ended_by_suspension_requested
+                                - ended_by_conformation_requested
+                                - ended_by_proceeding_time_expired
+                                - ended_by_positive_outcome
+                                - ended_by_submitter_cancel_requested
+                                
+                            timestamp:                
+                                title: timestamp del cambiamento di stato
+                                type: string
+                                format: date-time
                 
                 times:          
                     $ref: "#/components/schemas/Times"  
@@ -277,6 +277,11 @@ components:
                         id:              
                             title: identificativo univo del regime amministrativo
                             type: string
+                            enum:
+                                 - SCIA
+                                 - AUTORIZZAZIONE
+                                 - SILENZIO-ASSENSO
+                                 - COMUNICAZIONE
                         version:              
                             title: version del regime amministrativo
                             type: string
@@ -291,165 +296,195 @@ components:
                         - code
                         - version
                         - competent_administration
-                    properties:
-                        code:                
-                            title: codice della fattispecie presente nel Catalogo
-                            type: string
-                            minLength: 1
-                        version:                
-                            title: versione della fattispecie presente nel Catalogo
-                            type: string
-                            minLength: 1
-                        competent_administration:                
-                            title: amministrazione competente del procedimento
-                            $ref: "#/components/schemas/AdministrationSchema"
-                        form:                
-                            title: riferimento agli oggetti per la validazione
-                            type: object
-                            required:
-                            - xsd
-                            - schematron
-                            properties:
-                                xsd:                    
-                                    title: xsd per la validazione
-                                    type: object
-                                    required:
-                                    - code
-                                    - version
-                                    properties:
-                                        code:                        
-                                            title: codice dell'XSD per la validazione
-                                            type: string
-                                            minLength: 1
-                                        version:                        
-                                            title: versione dell'XSD per la validazione
-                                            type: string
-                                            minLength: 1
-                                schematron:                    
-                                    title: schematron per la validazione
-                                    type: object
-                                    required:
-                                    - code
-                                    - version
-                                    - phase
-                                    properties:
-                                        code:                        
-                                            title: codice dello schematron per la validazione
-                                            type: string
-                                            minLength: 1
-                                        version:                        
-                                            title: versione dello schematron per la validazione
-                                            type: string
-                                            minLength: 1
-                                        phase:                        
-                                            title: fasi dello schematron per la validazione
-                                            type: array
-                                            items:
+                        - instance
+                        properties:
+                            code:                
+                                title: codice della fattispecie presente nel Catalogo
+                                type: string
+                                minLength: 1
+                            version:                
+                                title: versione della fattispecie presente nel Catalogo
+                                type: string
+                                minLength: 1
+                            competent_administration:                
+                                title: amministrazione competente del procedimento
+                                $ref: "#/components/schemas/AdministrationSchema"
+                            form:                
+                                title: riferimento agli oggetti per la validazione
+                                type: object
+                                required:
+                                - xsd
+                                - schematron
+                                properties:
+                                    xsd:                    
+                                        title: xsd per la validazione
+                                        type: object
+                                        required:
+                                        - code
+                                        - version
+                                        properties:
+                                            code:                        
+                                                title: codice dell'XSD per la validazione
                                                 type: string
-                        instance:                
-                            title: porzione istanza relativa al procedimento
-                            type: object
-                            required:
-                            - ref
-                            - hash
-                            - alg_hash
-                            properties:
-                                ref:                    
-                                    title: riferimento all'elemento dell'istanza relativo al procedimento
-                                    type: string
-                                    minLength: 1
-                                filename:                      
-                                    title: filename dell'istanza
-                                    type: string
-                                    minLength: 1
-                                hash:                    
-                                    title: hash dell'istanza relativo al procedimento
-                                    type: string
-                                    minLength: 1
-                                alg_hash:                    
-                                    title: algoritmo hash dell'istanza relativo al procedimento
-                                    type: string
-                                    enum:
-                                    - S256
-                                    - S384
-                                    - S512
-                                mime_type:
-                                    type: string
-                        attachments:                
-                            title: allegati all'istanza relativi al procedimento
-                            type: array
-                            items:
+                                                minLength: 1
+                                            version:                        
+                                                title: versione dell'XSD per la validazione
+                                                type: string
+                                                minLength: 1
+                                    schematron:                    
+                                        title: schematron per la validazione
+                                        type: object
+                                        required:
+                                        - code
+                                        - version
+                                        - phase
+                                        properties:
+                                            code:                        
+                                                title: codice dello schematron per la validazione
+                                                type: string
+                                                minLength: 1
+                                            version:                        
+                                                title: versione dello schematron per la validazione
+                                                type: string
+                                                minLength: 1
+                                            phase:                        
+                                                title: fasi dello schematron per la validazione
+                                                type: array
+                                                items:
+                                                    type: string
+                            instance:                
+                                title: porzione istanza relativa al procedimento
                                 type: object
                                 required:
                                 - ref
                                 - hash
                                 - alg_hash
-                                - mime_type
                                 properties:
-                                    ref:                      
-                                        title: riferimento all'allegato dell'istanza relativo al procedimento
+                                    ref:                    
+                                        title: riferimento all'elemento dell'istanza relativo al procedimento
                                         type: string
                                         minLength: 1
                                     filename:                      
-                                        title: filename dell'allegato
+                                        title: filename dell'istanza
                                         type: string
                                         minLength: 1
-                                    hash:                      
-                                        title: hash dell'allegato
+                                    hash:                    
+                                        title: hash dell'istanza relativo al procedimento
                                         type: string
                                         minLength: 1
-                                    alg_hash:                      
-                                        title: algoritmo hash dell'allegato 
+                                    alg_hash:                    
+                                        title: algoritmo hash dell'istanza relativo al procedimento
                                         type: string
                                         enum:
                                         - S256
                                         - S384
                                         - S512
-                                    form:                      
-                                        title: riferimento agli oggetti per la validazione
-                                        type: object
-                                        required:
-                                        - xsd
-                                        - schematron
-                                        properties:
-                                            xsd:                          
-                                                title: xsd per la validazione
-                                                type: object
-                                                required:
-                                                - code
-                                                - version
-                                                properties:
-                                                    code:                              
-                                                        title: codice dell'XSD per la validazione
-                                                        type: string
-                                                        minLength: 1
-                                                    version:                              
-                                                        title: versione dell'XSD per la validazione
-                                                        type: string
-                                                        minLength: 1
-                                            schematron:                          
-                                                title: schematron per la validazione
-                                                type: object
-                                                required:
-                                                - code
-                                                - version
-                                                - phase
-                                                properties:
-                                                    code:                              
-                                                        title: codice dello schematron per la validazione
-                                                        type: string
-                                                        minLength: 1
-                                                    version:                              
-                                                        title: versione dello schematron per la validazione
-                                                        type: string
-                                                        minLength: 1
-                                                    phase:                              
-                                                        title: fasi dello schematron per la validazione
-                                                        type: array
-                                                        items:
-                                                            type: string
                                     mime_type:
-                                        type: string            
+                                        type: string
+                                        enum: 
+                                           - application/xml
+                                    activity_model: 
+                                       title: porzione distinta modello attivita 
+                                       type: object
+                                       properties:
+                                          ref:                    
+                                            title: distinta modello attivita 
+                                            type: string
+                                            minLength: 1
+                                          filename:                      
+                                              title: filename del modello distinta attivita 
+                                              type: string
+                                              minLength: 1
+                                          hash:                    
+                                            title: hash del modello distinta attivita 
+                                            type: string
+                                            minLength: 1
+                                          alg_hash:                    
+                                            title: algoritmo hash del modello distinta attivita 
+                                            type: string
+                                            enum:
+                                            - S256
+                                            - S384
+                                            - S512
+                                          mime_type:
+                                            type: string
+                                            enum: 
+                                               - application/pdf
+                            attachments:                
+                                title: allegati all'istanza relativi al procedimento
+                                type: array
+                                items:
+                                    type: object
+                                    required:
+                                    - ref
+                                    - hash
+                                    - alg_hash
+                                    - mime_type
+                                    properties:
+                                        ref:                      
+                                            title: riferimento all'allegato dell'istanza relativo al procedimento
+                                            type: string
+                                            minLength: 1
+                                        filename:                      
+                                            title: filename dell'allegato
+                                            type: string
+                                            minLength: 1
+                                        hash:                      
+                                            title: hash dell'allegato
+                                            type: string
+                                            minLength: 1
+                                        alg_hash:                      
+                                            title: algoritmo hash dell'allegato 
+                                            type: string
+                                            enum:
+                                            - S256
+                                            - S384
+                                            - S512
+                                        form:                      
+                                            title: riferimento agli oggetti per la validazione
+                                            type: object
+                                            required:
+                                            - xsd
+                                            - schematron
+                                            properties:
+                                                xsd:                          
+                                                    title: xsd per la validazione
+                                                    type: object
+                                                    required:
+                                                    - code
+                                                    - version
+                                                    properties:
+                                                        code:                              
+                                                            title: codice dell'XSD per la validazione
+                                                            type: string
+                                                            minLength: 1
+                                                        version:                              
+                                                            title: versione dell'XSD per la validazione
+                                                            type: string
+                                                            minLength: 1
+                                                schematron:                          
+                                                    title: schematron per la validazione
+                                                    type: object
+                                                    required:
+                                                    - code
+                                                    - version
+                                                    - phase
+                                                    properties:
+                                                        code:                              
+                                                            title: codice dello schematron per la validazione
+                                                            type: string
+                                                            minLength: 1
+                                                        version:                              
+                                                            title: versione dello schematron per la validazione
+                                                            type: string
+                                                            minLength: 1
+                                                        phase:                              
+                                                            title: fasi dello schematron per la validazione
+                                                            type: array
+                                                            items:
+                                                                type: string
+                                        mime_type:
+                                            type: string            
 
     headers:
         Agid-JWT-Signature:
