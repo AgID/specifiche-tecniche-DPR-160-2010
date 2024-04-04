@@ -376,16 +376,6 @@ components:
                     description: Url del portale frontoffice
                     type: string
                     example: foportal.it/xyz
-                method:
-                    enum: 
-                        - post
-                protocol: 
-                    enum: 
-                        - https
-                url:
-                    description: Url del portale frontoffice
-                    type: string
-                    example: foportal.it/xyz
                 municipality:
                     description: nome attributo form che conterrà il valore municipality
                     type: string
