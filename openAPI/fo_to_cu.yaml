@@ -376,19 +376,25 @@ components:
                     description: Url del portale frontoffice
                     type: string
                     example: foportal.it/xyz
+                method:
+                    enum: 
+                        - post
+                protocol: 
+                    enum: 
+                        - https
+                url:
+                    description: Url del portale frontoffice
+                    type: string
+                    example: foportal.it/xyz
                 municipality:
-                    description: codice istat 6 cifre del comune in cui l'istanza è stata presentata
+                    description: nome attributo form che conterrà il valore municipality
                     type: string
                 c_fiscale: 
-                    description: Codice fiscale 
+                    description: nome attributo form che conterrà il valore Codice fiscale 
                     type: string
-                    maxLength: 16
-                    example: ABCDEF00A00M000A
                 istance_code_comunica: 
-                    description: codice univoco pratica ComUnica
+                    description: nome attributo form che conterrà il valore codice univoco pratica ComUnica
                     type: string
-                    maxLength: 20
-                    example:
         Error:
             type: object
             description: codice e descrizione condizione di errore
