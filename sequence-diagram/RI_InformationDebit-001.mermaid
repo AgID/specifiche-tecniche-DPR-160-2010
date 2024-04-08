@@ -62,13 +62,13 @@ sequenceDiagram
 
 
     end
+    
+    alt chiusura istruttoria (dopo step: 69/76/83 SCIA-001 o 105 DomandaAutorizzazione-001)
 
+        B ->> RI: notify(cui, instance_descriptor_version,end_by_positive_outcome,resource_id)
+        RI -->> B: ack
+    
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument
 
-
-
-
-      
-
-
-
-
+    end

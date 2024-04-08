@@ -39,7 +39,8 @@ paths:
                                 date:
                                     type: string
                                     format: date
-                                        
+                                general_index: 
+                                    $ref: "#/components/schemas/GeneralIndex"
                                
                 required: true
             responses:
@@ -340,6 +341,46 @@ components:
                                 - S256
                                 - S384
                                 - S512
+        GeneralIndex:
+                    type: array
+                    description: indice allegati trasversali
+                    items:
+                        type: object
+                        required:
+                        - type
+                        - resource_id
+                        - hash
+                        - alg_hash
+                        properties:
+                            type:                            
+                                title: tipologia di allegato trasversale alle fattispecie
+                                type: string
+                                enum:
+                                - RICEVUTA_XML
+                                - RICEVUTA_PDF
+                                - SUAP_XML
+                                - SUAP_PDF
+                                - SUAP_REA_START_XML
+                                - SUAP_REA_UPDATE_XML
+                                - SUAP_REA_END_XML
+                                - COMUNICA_CUI_XML
+                                - COMUNICA_CUI_PDF
+                                minLength: 1
+                            resource_id:                            
+                                title: id della risorsa, univoco per erogatore e CUI.UUID
+                                type: string
+                                minLength: 1
+                            hash:                            
+                                title: hash dell'elemento dell'istanza relativo al procedimento
+                                type: string
+                                minLength: 1
+                            alg_hash:                                
+                                title: algoritmo hash applicato
+                                type: string
+                                enum:
+                                - S256
+                                - S384
+                                - S512
 
         Error:
             type: object
@@ -358,6 +399,7 @@ components:
                 - cui
                 - instance_descriptor_version
                 - instance_index
+                - general_index
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -365,6 +407,8 @@ components:
                     type: string
                 instance_index:
                     $ref: "#/components/schemas/InstanceIndex"
+                general_index:
+                    $ref: "#/components/schemas/GeneralIndex"
 
      
     headers:

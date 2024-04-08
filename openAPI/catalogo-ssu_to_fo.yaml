@@ -377,8 +377,13 @@ components:
             - version
           properties:
             id:              
-              title: identificativo univo del regime amministrativo
+              title: identificativo univoco del regime amministrativo
               type: string
+              enum:
+               - SCIA
+               - AUTORIZZAZIONE
+               - SILENZIO-ASSENSO
+               - COMUNICAZIONE
             version:              
               title: version del regime amministrativo
               type: string

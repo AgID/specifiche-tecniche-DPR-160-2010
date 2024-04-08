@@ -277,6 +277,11 @@ components:
                         id:              
                             title: identificativo univo del regime amministrativo
                             type: string
+                            enum:
+                                 - SCIA
+                                 - AUTORIZZAZIONE
+                                 - SILENZIO-ASSENSO
+                                 - COMUNICAZIONE
                         version:              
                             title: version del regime amministrativo
                             type: string
