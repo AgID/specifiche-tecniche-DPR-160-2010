@@ -192,16 +192,16 @@ components:
       type: object
       required:
       - start
-      - end
+      - max_gg_proc
       properties:
-        start:          
+        start:
           title: data avvio dell'istanza
           type: string
           format: date
         max_gg_proc:          
-          title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
-          type: integer
-          format: int32
+                title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
+                type: integer
+                format: int32
         max_gg_admissibility:          
           title: numero di giorni limite a partire da start per la verifica di ammissibilità
           type: integer
@@ -222,7 +222,7 @@ components:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
           type: integer
           format: int32
-        date_cdss:          
+        date_cdss:
           title: data evetuale conferenza di servizi sincrona
           type: string
           format: date
