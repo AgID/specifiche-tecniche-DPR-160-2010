@@ -309,7 +309,7 @@ components:
         legal_person:          
           title: codice fiscale persona giuridica
           type: string
-          pattern: "^[0-9]{9}$"
+          pattern: "^[0-9]{11}|^[A-Z0-9]{16}$"
         
         instance_status:          
           title: stato dell'istanza
