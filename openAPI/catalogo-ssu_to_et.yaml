@@ -226,9 +226,9 @@ components:
       type: object
       required:
       - start
-      - end
+      - max_gg_proc
       properties:
-        start:          
+        start:
           title: data avvio dell'istanza
           type: string
           format: date
@@ -256,7 +256,7 @@ components:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
           type: integer
           format: int32
-        date_cdss:          
+        date_cdss:
           title: data evetuale conferenza di servizi sincrona
           type: string
           format: date
