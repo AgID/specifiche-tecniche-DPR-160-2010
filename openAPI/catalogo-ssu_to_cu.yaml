@@ -145,40 +145,40 @@ components:
             type: object
             required:
             - start
-            - end
+            - max_gg_proc
             properties:
-                start:          
-                    title: data avvio dell'istanza
-                    type: string
-                    format: date
-                end:          
-                    title: data entro cui l'istanza deve concludersi
-                    type: string
-                    format: date
-                max_admissibility:          
-                    title: data limite verifica ammissibilità
-                    type: string
-                    format: date
-                max_integration_request:          
-                    title: data limite richiesta integrazione degli enti terzi
-                    type: string
-                    format: date
-                max_integration_response:          
-                    title: data limite integrazione del soggetto presentatore
-                    type: string
-                    format: date
-                max_conclusions_sending:          
-                    title: data limite inoltro conclusioni degli enti terzi
-                    type: string
-                    format: date
-                date_cdss:          
-                    title: data evetuale conferenza di servizi sincrona
-                    type: string
-                    format: date
-                max_cdss_request:          
-                    title: data entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
-                    type: string
-                    format: date
+              start:
+                title: data avvio dell'istanza
+                type: string
+                format: date
+              max_gg_proc:          
+                title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
+                type: integer
+                format: int32
+              max_gg_admissibility:          
+                title: numero di giorni limite a partire da start per la verifica di ammissibilità
+                type: integer
+                format: int32
+              max_gg_int_req:          
+                title: numero di giorni limite a partire da start per la richiesta di integrazione degli enti terzi
+                type: integer
+                format: int32
+              max_gg_int_resp:          
+                title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
+                type: integer
+                format: int32
+              max_gg_concl_send:          
+                title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
+                type: integer
+                format: int32
+              max_gg_cdss_req:          
+                title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
+                type: integer
+                format: int32
+              date_cdss:
+                title: data evetuale conferenza di servizi sincrona
+                type: string
+                format: date
             
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
