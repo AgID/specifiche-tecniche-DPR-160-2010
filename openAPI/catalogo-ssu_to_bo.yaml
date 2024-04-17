@@ -424,7 +424,6 @@ components:
                 type: object
                 required:
                 - xsd
-                - schematron
                 properties:
                   xsd:                    
                     title: xsd per la validazione
@@ -556,7 +555,6 @@ components:
                       type: object
                       required:
                       - xsd
-                      - schematron
                       properties:
                         xsd:                          
                           title: xsd per la validazione
