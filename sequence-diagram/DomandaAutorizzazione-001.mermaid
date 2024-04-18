@@ -199,9 +199,9 @@ sequenceDiagram
                         par per ogni ente terzo interessato
                             B ->> E: notify(cui, instance_descriptor_version,end_by_positive_outcome)
                             E -->> B: ack
-                            B ->> E: request_instance_document(cui, resource_id)
-                        note right of F: recupero documento di provvedimento di autorizzazione
-                            E -->> B: instanceDocument 
+                            E ->> B: request_instance_document(cui, resource_id)
+                        note right of B: recupero documento di provvedimento di autorizzazione
+                            B -->> E: instanceDocument 
                         end
                         B ->> C: audit(cui,end_by_positive_outcome)
                         C -->> B: ack
@@ -215,9 +215,9 @@ sequenceDiagram
                         par per ogni ente terzo interessato
                             B ->> E: notify(cui, instance_descriptor_version,end_by_negative_outcome)
                             E -->> B: ack
-                            B ->> E: request_instance_document(cui, resource_id)
-                        note right of F: recupero documento di negazione provvedimento di autorizzazione
-                            E -->> B: instanceDocument 
+                            E ->> B: request_instance_document(cui, resource_id)
+                        note right of B: recupero documento di negazione provvedimento di autorizzazione
+                            B -->> E: instanceDocument 
                         end
                         B ->> C: audit(cui,end_by_negative_outcome)
                         C -->> B: ack
