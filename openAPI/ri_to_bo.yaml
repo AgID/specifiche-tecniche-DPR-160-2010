@@ -276,7 +276,7 @@ components:
                         - end_by_proceeding_time_expired
                         - end_by_integration_times_expired
                         - end_by_submitter_cancel_requested
-                        - end_by_negative_outcome
+                        
 
 
         TransferOutcomeNotifyMessage:
@@ -296,6 +296,7 @@ components:
                         - end_by_suspension_requested
                         - end_by_conformation_requested
                         - end_by_positive_outcome
+                        - end_by_negative_outcome
 
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
