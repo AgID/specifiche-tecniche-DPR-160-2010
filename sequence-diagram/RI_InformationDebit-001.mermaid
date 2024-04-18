@@ -63,11 +63,53 @@ sequenceDiagram
 
     end
     
-    alt chiusura istruttoria (dopo step: 69/76/83 SCIA-001 o 105 DomandaAutorizzazione-001)
+    alt chiusura istruttoria (dopo step: 69 SCIA-001 o 95 DomandaAutorizzazione-001)
 
         B ->> RI: notify(cui, instance_descriptor_version,end_by_positive_outcome,resource_id)
         RI -->> B: ack
-    
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument 
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument
+
+    end
+
+    alt chiusura istruttoria (dopo step: 105 DomandaAutorizzazione-001)
+
+        B ->> RI: notify(cui, instance_descriptor_version,end_by_negative_outcome,resource_id)
+        RI -->> B: ack
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument 
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument
+
+    end
+
+    alt chiusura istruttoria (dopo step: 76 SCIA-001)
+
+        B ->> RI: notify(cui, instance_descriptor_version,end_by_suspension_requested,resource_id)
+        RI -->> B: ack
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument 
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument
+
+    end
+
+    alt chiusura istruttoria (dopo step: 83 SCIA-001)
+
+        B ->> RI: notify(cui, instance_descriptor_version,end_by_conformation_requested,resource_id)
+        RI -->> B: ack
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument 
+
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument
 
