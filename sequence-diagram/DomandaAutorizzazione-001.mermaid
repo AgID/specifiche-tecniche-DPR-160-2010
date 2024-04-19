@@ -156,7 +156,7 @@ sequenceDiagram
 
                 par
                     alt 
-                        opt parere esplicito, in alternativa al silezio assenso
+                        opt parere esplicito positivo, in alternativa al silezio assenso
                             E ->> B: send_conclusions(cui, instance_descriptor_version,positive_outcome,resource_id)
                             B -->> E: ack 
                             E ->> C: audit(cui,positive_outcome_sended)
@@ -164,6 +164,17 @@ sequenceDiagram
                             opt
                                 B ->> E: request_instance_document(cui, resource_id)
                                 note right of B: recupero documento di parere positivo
+                                E -->> B: instanceDocument    
+                            end
+                        end
+                         opt parere esplicito negativo, in alternativa al silezio assenso
+                            E ->> B: send_conclusions(cui, instance_descriptor_version,negative_outcome,resource_id)
+                            B -->> E: ack 
+                            E ->> C: audit(cui,negative_outcome_sended)
+                            C -->> E: ack
+                            opt
+                                B ->> E: request_instance_document(cui, resource_id)
+                                note right of B: recupero documento di parere negativo
                                 E -->> B: instanceDocument    
                             end
                         end
