@@ -167,7 +167,7 @@ sequenceDiagram
                                 E -->> B: instanceDocument    
                             end
                         end
-                         opt parere esplicito negativo, in alternativa al silezio assenso
+                         opt parere esplicito negativo
                             E ->> B: send_conclusions(cui, instance_descriptor_version,negative_outcome,resource_id)
                             B -->> E: ack 
                             E ->> C: audit(cui,negative_outcome_sended)
