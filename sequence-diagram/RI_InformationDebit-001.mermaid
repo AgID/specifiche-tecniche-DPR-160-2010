@@ -41,11 +41,6 @@ sequenceDiagram
 
     end
 
-    alt richiesta integrazione e scaduti tempi integrazione (dopo step: 29 SCIA-001 o 49 DomandaAutorizzazione-001)
-        B ->> RI: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
-        RI -->> B: ack
-    end
-
     alt istanza integrata (dopo step: 43 SCIA-001 o 63 DomandaAutorizzazione-001)
 
         B ->> RI: send_instance(cui, instance_descriptor_version,instance_index)
@@ -62,8 +57,12 @@ sequenceDiagram
 
 
     end
-    
-    alt chiusura istruttoria con esito positivo (dopo step: 69 SCIA-001 o 95 DomandaAutorizzazione-001)
+
+    alt richiesta integrazione e scaduti tempi integrazione (dopo step: 29 SCIA-001 o 49 DomandaAutorizzazione-001)
+        B ->> RI: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
+        RI -->> B: ack
+
+    else chiusura istruttoria con esito positivo (dopo step: 69 SCIA-001 o 112 DomandaAutorizzazione-001)
 
         B ->> RI: notify(cui, instance_descriptor_version,end_by_positive_outcome,resource_id)
         RI -->> B: ack
@@ -74,9 +73,7 @@ sequenceDiagram
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument
 
-    end
-
-    alt chiusura istruttoria con esito negativo (dopo step: 105 DomandaAutorizzazione-001)
+    else chiusura istruttoria con esito negativo (dopo step: 105 DomandaAutorizzazione-001)
 
         B ->> RI: notify(cui, instance_descriptor_version,end_by_negative_outcome,resource_id)
         RI -->> B: ack
@@ -87,9 +84,7 @@ sequenceDiagram
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument
 
-    end
-
-    alt chiusura istruttoria per sospensione (dopo step: 76 SCIA-001)
+    else chiusura istruttoria per sospensione (dopo step: 76 SCIA-001)
 
         B ->> RI: notify(cui, instance_descriptor_version,end_by_suspension_requested,resource_id)
         RI -->> B: ack
@@ -100,9 +95,7 @@ sequenceDiagram
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument
 
-    end
-
-    alt chiusura istruttoria per conformazione (dopo step: 83 SCIA-001)
+    else chiusura istruttoria per conformazione (dopo step: 83 SCIA-001)
 
         B ->> RI: notify(cui, instance_descriptor_version,end_by_conformation_requested,resource_id)
         RI -->> B: ack
