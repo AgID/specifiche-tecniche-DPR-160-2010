@@ -206,6 +206,10 @@ components:
                           - $ref: '#/components/schemas/comunica_cui_pdf'
         ricevuta_xml:
                       type: object
+                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
+                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
+                        del portale impresainungiorno
+                        (https://www.impresainungiorno.gov.it/documents/155997/157492/SUAP-ricevuta-1.1.4.xsd/58b9d8e8-2b76-4b8b-adee-0cf9c2bbe04a)
                       additionalProperties: false
                       required:
                         - name
@@ -266,6 +270,11 @@ components:
                             - S512
         suap_xml:
                       type: object
+                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
+                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
+                        del portale impresainungiorno
+                        (https://www.impresainungiorno.gov.it/documents/155997/157492/pratica_suap-2.0.0.xsd/74b7ffb2-fe01-41c6-b210-be36139923e4 , 
+                        https://www.impresainungiorno.gov.it/documents/155997/157492/Definizione+delle+strutture+dati+elementari+di+impresainungiorno.xsd/43929369-48f0-4b7b-883e-f57dc5cdd41e)
                       additionalProperties: false
                       required:
                         - name
@@ -326,6 +335,10 @@ components:
                             - S512
         suap_rea_start_xml:
                       type: object
+                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
+                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
+                        del portale impresainungiorno
+                        (https://www.impresainungiorno.gov.it/documents/155997/157488/suap-rea-1.1.1.xsd/2094658b-c981-4795-8d18-ffa91fa97069)
                       additionalProperties: false
                       required:
                         - name
@@ -356,6 +369,10 @@ components:
                             - S512
         suap_rea_update_xml:
                       type: object
+                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
+                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
+                        del portale impresainungiorno
+                        (https://www.impresainungiorno.gov.it/documents/155997/157488/suap-rea-1.1.1.xsd/2094658b-c981-4795-8d18-ffa91fa97069)
                       additionalProperties: false
                       required:
                         - name
@@ -386,6 +403,10 @@ components:
                             - S512
         suap_rea_end_xml:
                       type: object
+                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
+                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
+                        del portale impresainungiorno
+                        (https://www.impresainungiorno.gov.it/documents/155997/157488/suap-rea-1.1.1.xsd/2094658b-c981-4795-8d18-ffa91fa97069)
                       additionalProperties: false
                       required:
                         - name
