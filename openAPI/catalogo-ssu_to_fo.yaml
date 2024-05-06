@@ -247,9 +247,9 @@ components:
       type: object
       required:
       - start
-      - end
+      - max_gg_proc
       properties:
-        start:          
+        start:
           title: data avvio dell'istanza
           type: string
           format: date
@@ -277,7 +277,7 @@ components:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
           type: integer
           format: int32
-        date_cdss:          
+        date_cdss:
           title: data evetuale conferenza di servizi sincrona
           type: string
           format: date
@@ -330,7 +330,7 @@ components:
         legal_person:          
           title: codice fiscale persona giuridica
           type: string
-          pattern: "^[0-9]{9}$"
+          pattern: "^[0-9]{11}|^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$"
         
         instance_status:          
           title: stato dell'istanza
@@ -377,8 +377,13 @@ components:
             - version
           properties:
             id:              
-              title: identificativo univo del regime amministrativo
+              title: identificativo univoco del regime amministrativo
               type: string
+              enum:
+               - SCIA
+               - AUTORIZZAZIONE
+               - SILENZIO-ASSENSO
+               - COMUNICAZIONE
             version:              
               title: version del regime amministrativo
               type: string
@@ -393,6 +398,7 @@ components:
             - code
             - version
             - competent_administration
+            - instance
             properties:
               code:                
                 title: codice della fattispecie presente nel Catalogo
@@ -410,7 +416,6 @@ components:
                 type: object
                 required:
                 - xsd
-                - schematron
                 properties:
                   xsd:                    
                     title: xsd per la validazione
@@ -477,6 +482,35 @@ components:
                     - S512
                   mime_type:
                     type: string
+                    enum: 
+                       - application/xml
+                  activity_model: 
+                     title: porzione distinta modello attivita
+                     type: object
+                     properties:
+                        ref:                    
+                          title: distinta modello attivita
+                          type: string
+                          minLength: 1
+                        filename:                      
+                            title: filename del modello distinta attivita
+                            type: string
+                            minLength: 1
+                        hash:                    
+                          title: hash del modello distinta attivita
+                          type: string
+                          minLength: 1
+                        alg_hash:                    
+                          title: algoritmo hash del modello distinta attivita
+                          type: string
+                          enum:
+                          - S256
+                          - S384
+                          - S512
+                        mime_type:
+                          type: string
+                          enum: 
+                             - application/pdf
               attachments:                
                 title: allegati all'istanza relativi al procedimento
                 type: array
@@ -513,7 +547,6 @@ components:
                       type: object
                       required:
                       - xsd
-                      - schematron
                       properties:
                         xsd:                          
                           title: xsd per la validazione

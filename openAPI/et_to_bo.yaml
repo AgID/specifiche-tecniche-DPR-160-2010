@@ -312,6 +312,313 @@ components:
                         - S256
                         - S384
                         - S512
+        GeneralIndex:
+                      type: array
+                      description: indice allegati trasversali
+                      minItems: 0
+                      uniqueItems: true
+                      items:
+                        anyOf:
+                          - $ref: '#/components/schemas/ricevuta_xml'
+                          - $ref: '#/components/schemas/ricevuta_pdf'
+                          - $ref: '#/components/schemas/suap_xml'
+                          - $ref: '#/components/schemas/suap_pdf'
+                          - $ref: '#/components/schemas/suap_rea_start_xml'
+                          - $ref: '#/components/schemas/suap_rea_update_xml'
+                          - $ref: '#/components/schemas/suap_rea_end_xml'
+                          - $ref: '#/components/schemas/comunica_cui_xml'
+                          - $ref: '#/components/schemas/comunica_cui_pdf'
+        ricevuta_xml:
+                      type: object
+                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
+                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
+                        del portale impresainungiorno
+                        (https://www.impresainungiorno.gov.it/documents/155997/157492/SUAP-ricevuta-1.1.4.xsd/58b9d8e8-2b76-4b8b-adee-0cf9c2bbe04a)
+                      additionalProperties: false
+                      required:
+                        - name
+                        - mime_type
+                        - resource_id
+                        - hash
+                        - alg_hash
+                      properties:
+                        name:
+                          type: string
+                          enum:
+                            - RICEVUTA_XML
+                        mime_type:
+                          type: string
+                          enum:
+                            - application/xml
+                        resource_id:
+                          type: string
+                          minLength: 1
+                        hash:
+                          type: string
+                          minLength: 1
+                        alg_hash:
+                          type: string
+                          enum:
+                            - S256
+                            - S384
+                            - S512
+        ricevuta_pdf:
+                      type: object
+                      additionalProperties: false
+                      required:
+                        - name
+                        - mime_type
+                        - resource_id
+                        - hash
+                        - alg_hash
+                      properties:
+                        name:
+                          type: string
+                          enum:
+                            - RICEVUTA_PDF
+                        mime_type:
+                          type: string
+                          enum:
+                            - application/pdf
+                        resource_id:
+                          type: string
+                          minLength: 1
+                        hash:
+                          type: string
+                          minLength: 1
+                        alg_hash:
+                          type: string
+                          enum:
+                            - S256
+                            - S384
+                            - S512
+        suap_xml:
+                      type: object
+                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
+                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
+                        del portale impresainungiorno
+                        (https://www.impresainungiorno.gov.it/documents/155997/157492/pratica_suap-2.0.0.xsd/74b7ffb2-fe01-41c6-b210-be36139923e4 , 
+                        https://www.impresainungiorno.gov.it/documents/155997/157492/Definizione+delle+strutture+dati+elementari+di+impresainungiorno.xsd/43929369-48f0-4b7b-883e-f57dc5cdd41e)
+                      additionalProperties: false
+                      required:
+                        - name
+                        - mime_type
+                        - resource_id
+                        - hash
+                        - alg_hash
+                      properties:
+                        name:
+                          type: string
+                          enum:
+                            - SUAP_XML
+                        mime_type:
+                          type: string
+                          enum:
+                            - application/xml
+                        resource_id:
+                          type: string
+                          minLength: 1
+                        hash:
+                          type: string
+                          minLength: 1
+                        alg_hash:
+                          type: string
+                          enum:
+                            - S256
+                            - S384
+                            - S512
+        suap_pdf:
+                      type: object
+                      additionalProperties: false
+                      required:
+                        - name
+                        - mime_type
+                        - resource_id
+                        - hash
+                        - alg_hash
+                      properties:
+                        name:
+                          type: string
+                          enum:
+                            - SUAP_PDF
+                        mime_type:
+                          type: string
+                          enum:
+                            - application/pdf
+                        resource_id:
+                          type: string
+                          minLength: 1
+                        hash:
+                          type: string
+                          minLength: 1
+                        alg_hash:
+                          type: string
+                          enum:
+                            - S256
+                            - S384
+                            - S512
+        suap_rea_start_xml:
+                      type: object
+                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
+                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
+                        del portale impresainungiorno
+                        (https://www.impresainungiorno.gov.it/documents/155997/157488/suap-rea-1.1.1.xsd/2094658b-c981-4795-8d18-ffa91fa97069)
+                      additionalProperties: false
+                      required:
+                        - name
+                        - mime_type
+                        - resource_id
+                        - hash
+                        - alg_hash
+                      properties:
+                        name:
+                          type: string
+                          enum:
+                            - SUAP_REA_START_XML
+                        mime_type:
+                          type: string
+                          enum:
+                            - application/xml
+                        resource_id:
+                          type: string
+                          minLength: 1
+                        hash:
+                          type: string
+                          minLength: 1
+                        alg_hash:
+                          type: string
+                          enum:
+                            - S256
+                            - S384
+                            - S512
+        suap_rea_update_xml:
+                      type: object
+                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
+                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
+                        del portale impresainungiorno
+                        (https://www.impresainungiorno.gov.it/documents/155997/157488/suap-rea-1.1.1.xsd/2094658b-c981-4795-8d18-ffa91fa97069)
+                      additionalProperties: false
+                      required:
+                        - name
+                        - mime_type
+                        - resource_id
+                        - hash
+                        - alg_hash
+                      properties:
+                        name:
+                          type: string
+                          enum:
+                            - SUAP_REA_UPDATE_XML
+                        mime_type:
+                          type: string
+                          enum:
+                            - application/xml
+                        resource_id:
+                          type: string
+                          minLength: 1
+                        hash:
+                          type: string
+                          minLength: 1
+                        alg_hash:
+                          type: string
+                          enum:
+                            - S256
+                            - S384
+                            - S512
+        suap_rea_end_xml:
+                      type: object
+                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
+                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
+                        del portale impresainungiorno
+                        (https://www.impresainungiorno.gov.it/documents/155997/157488/suap-rea-1.1.1.xsd/2094658b-c981-4795-8d18-ffa91fa97069)
+                      additionalProperties: false
+                      required:
+                        - name
+                        - mime_type
+                        - resource_id
+                        - hash
+                        - alg_hash
+                      properties:
+                        name:
+                          type: string
+                          enum:
+                            - SUAP_REA_END_XML
+                        mime_type:
+                          type: string
+                          enum:
+                            - application/xml
+                        resource_id:
+                          type: string
+                          minLength: 1
+                        hash:
+                          type: string
+                          minLength: 1
+                        alg_hash:
+                          type: string
+                          enum:
+                            - S256
+                            - S384
+                            - S512
+        comunica_cui_xml:
+                      type: object
+                      additionalProperties: false
+                      required:
+                        - name
+                        - mime_type
+                        - resource_id
+                        - hash
+                        - alg_hash
+                      properties:
+                        name:
+                          type: string
+                          enum:
+                            - COMUNICA_CUI_XML
+                        mime_type:
+                          type: string
+                          enum:
+                            - application/xml
+                        resource_id:
+                          type: string
+                          minLength: 1
+                        hash:
+                          type: string
+                          minLength: 1
+                        alg_hash:
+                          type: string
+                          enum:
+                            - S256
+                            - S384
+                            - S512
+        comunica_cui_pdf:
+                      type: object
+                      additionalProperties: false
+                      required:
+                        - name
+                        - mime_type
+                        - resource_id
+                        - hash
+                        - alg_hash
+                      properties:
+                        name:
+                          type: string
+                          enum:
+                            - COMUNICA_CUI_PDF
+                        mime_type:
+                          type: string
+                          enum:
+                            - application/pdf
+                        resource_id:
+                          type: string
+                          minLength: 1
+                        hash:
+                          type: string
+                          minLength: 1
+                        alg_hash:
+                          type: string
+                          enum:
+                            - S256
+                            - S384
+                            - S512
 
         Error:
             type: object
@@ -331,6 +638,7 @@ components:
                 - cui
                 - instance_descriptor_version
                 - instance_index
+                - general_index
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -338,6 +646,8 @@ components:
                     type: string
                 instance_index:
                     $ref: "#/components/schemas/InstanceIndex"
+                general_index:
+                    $ref: "#/components/schemas/GeneralIndex"
         
         NotifyMessage:
             type: object
@@ -376,6 +686,7 @@ components:
                         - end_by_suspension_requested
                         - end_by_conformation_requested
                         - end_by_positive_outcome
+                        - end_by_negative_outcome
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
                     type: string

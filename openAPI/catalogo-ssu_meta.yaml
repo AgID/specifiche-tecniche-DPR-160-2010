@@ -1010,7 +1010,7 @@ paths:
                     usecase-proceeding:
                       $ref: "#/components/schemas/UseCaseProceeding"
                     adminstrative-regime:
-                      $ref: "#/components/schemas/GenericEntity"
+                      $ref: "#/components/schemas/AdministrativeRegime"
                     times:
                       $ref: "#/components/schemas/Times"
 
@@ -1829,7 +1829,7 @@ components:
       required:
         - code
         - message
-
+	
     GenericEntity:
       description: struttura di risorsa generica con id,versione e descrizione
       type: object
@@ -2012,8 +2012,33 @@ components:
         proceeding_id: string
         proceeding_version: 1.0.0
         schematron_phase: phase_1
-
-
+    
+    AdministrativeRegime:
+      description: Regimi amministrativi dei procedimenti
+      type: object
+      required:
+        - id
+        - version
+        - description
+      properties:
+        id:
+          title: regime amministrativo
+          type: string
+          enum:
+               - SCIA
+               - AUTORIZZAZIONE
+               - SILENZIO-ASSENSO
+               - COMUNICAZIONE
+        version:
+          title: version del regime amministrativo
+          type: string
+        description:
+          title: descrizione del regime amministrativo
+          type: string
+      example:
+        id: SCIA
+        version: 1.0.0
+        description: Entità regime amministrativo con id,versione, descrizione
     third_party_system:
       allOf:
         - $ref: "#/components/schemas/SystemEntity"
