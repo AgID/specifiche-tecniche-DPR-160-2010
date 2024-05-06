@@ -590,6 +590,10 @@ components:
                             - S512
         comunica_cui_xml:
                       type: object
+                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
+                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
+                        del portale impresainungiorno
+                        (https://www.registroimprese.it/documents/20195/0/specifichecomunicazioneunica.zip)
                       additionalProperties: false
                       required:
                         - name
