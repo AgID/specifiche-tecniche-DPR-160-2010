@@ -70,9 +70,6 @@ sequenceDiagram
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument 
 
-        RI ->> B: request_instance_document(cui, resource_id)
-        B -->> RI: instanceDocument
-
     else chiusura istruttoria con esito negativo (dopo step: 105 DomandaAutorizzazione-001)
 
         B ->> RI: notify(cui, instance_descriptor_version,end_by_negative_outcome,resource_id)
@@ -80,9 +77,6 @@ sequenceDiagram
 
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument 
-
-        RI ->> B: request_instance_document(cui, resource_id)
-        B -->> RI: instanceDocument
 
     else chiusura istruttoria per sospensione (dopo step: 76 SCIA-001)
 
@@ -92,9 +86,6 @@ sequenceDiagram
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument 
 
-        RI ->> B: request_instance_document(cui, resource_id)
-        B -->> RI: instanceDocument
-
     else chiusura istruttoria per conformazione (dopo step: 83 SCIA-001)
 
         B ->> RI: notify(cui, instance_descriptor_version,end_by_conformation_requested,resource_id)
@@ -102,8 +93,5 @@ sequenceDiagram
 
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument 
-
-        RI ->> B: request_instance_document(cui, resource_id)
-        B -->> RI: instanceDocument
 
     end
