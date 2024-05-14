@@ -10,7 +10,7 @@ sequenceDiagram
     Note over B,C: istanza presentata e ricevuta emessa (dopo step 22 di General-001)
     
 
-    B ->> RI: send_instance(cui, instance_descriptor_version,instance_index)
+    B ->> RI: send_instance(SendInstanceRequest)
     RI -->> B: ack
     
     RI ->> C: request_instance_descriptor(cui)
@@ -25,7 +25,7 @@ sequenceDiagram
 
     alt istanza corretta (dopo step 43 General-001)
 
-        B ->> RI: send_instance(cui, instance_descriptor_version,instance_index)
+        B ->> RI: send_instance(SendInstanceRequest)
         RI -->> B: ack
     
         RI ->> C: request_instance_descriptor(cui)
@@ -48,7 +48,7 @@ sequenceDiagram
 
     alt istanza integrata (dopo step: 43 SCIA-001 o 63 DomandaAutorizzazione-001)
 
-        B ->> RI: send_instance(cui, instance_descriptor_version,instance_index)
+        B ->> RI: send_instance(SendInstanceRequest)
         RI -->> B: ack
     
         RI ->> C: request_instance_descriptor(cui)
