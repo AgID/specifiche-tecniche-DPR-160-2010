@@ -440,7 +440,7 @@ components:
             required:
                 - cui
                 - instance_descriptor_version
-                - outcome
+                - positive_outcome
                 - conclusions_type
             properties:
                 conclusions_type:
