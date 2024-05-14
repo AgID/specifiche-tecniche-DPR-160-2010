@@ -29,7 +29,7 @@ sequenceDiagram
     else No CdSS da SUAP
 
         par per ogni ente terzo interessato        
-            B ->> E: send_instance(cui, instance_descriptor_version,instance_index)
+            B ->> E: send_instance(SendInstanceRequest)
             E -->> B: ack
             B ->> C: audit(cui,instance_to_<ET>_sended)
             note right of B: <ET> codice ente terzo 
@@ -121,7 +121,7 @@ sequenceDiagram
                     F -) P: notification(cui,end_by_integration_times_expired)
                 else entro il tempo di integrazione del presentatore 
                     P --) F: instanceIntegrated
-                    F ->> B: send_instance(cui, instance_descriptor_version,instance_index)
+                    F ->> B: send_instance(SendInstanceRequest)
                     B -->> F: ack
                     F ->> C: audit(cui,instance_integrated_to_<BO>_sended)
                     note right of F: <BO> codice BackOffice
@@ -134,7 +134,7 @@ sequenceDiagram
                     B ->> C: audit(cui,instance_integrated_retrived)
                     C -->> B: ack
                     par per ogni ente terzo interessato                
-                        B ->> E: send_instance(cui, instance_descriptor_version,instance_index)
+                        B ->> E: send_instance(SendInstanceRequest)
                         E -->> B: ack
                         B ->> C: audit(cui,instance_integrated_to_<ET>_sended)
                         note right of B: <ET> codice ente terzo
