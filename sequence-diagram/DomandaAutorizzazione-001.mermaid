@@ -157,7 +157,7 @@ sequenceDiagram
                 par
                     alt 
                         opt parere esplicito, in alternativa al silezio assenso
-                            E ->> B: send_conclusions(cui, instance_descriptor_version,positive_outcome,resource_id)
+                            E ->> B: send_conclusions(PositiveOutcome)
                             B -->> E: ack 
                             E ->> C: audit(cui,positive_outcome_sended)
                             C -->> E: ack
