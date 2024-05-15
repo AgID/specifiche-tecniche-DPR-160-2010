@@ -18,14 +18,14 @@ sequenceDiagram
     C -->> F: instanceDescriptor
     note right of C: InstanceDescriptor con cui
 
-    F ->> B: send_instance(cui, instance_descriptor_version,instance_index)
+    F ->> B: send_instance(SendInstanceRequest)
     B -->> F: ack
     F ->> C: audit(cui,instance_to_<BO>_sended)
     note right of F: <BO> codice BackOffice
     C -->> F: ack
 
     alt via ComUnica
-	    F ->> CU: send_instance(cui, instance_descriptor_version,instance_code_comunica,instance_index)
+	    F ->> CU: send_instance(SendInstanceRequest)
 		CU -->> F: ack
 		CU ->> C: request_instance_descriptor(cui)
 		C -->> CU: instanceDescriptor
@@ -74,7 +74,7 @@ sequenceDiagram
             B ->> C: audit(cui,correction_requested)
             C -->> B: ack
             P --) F: instanceCorrect
-            F ->> B: send_instance(cui, instance_descriptor_version,instance_index)
+            F ->> B: send_instance(SendInstanceRequest)
             B -->> F: ack
             F ->> C: audit(cui,corrected_instance_to_<BO>_sended)
             note right of F: <BO> codice BackOffice
