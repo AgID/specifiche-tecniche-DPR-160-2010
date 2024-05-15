@@ -690,6 +690,7 @@ components:
                         - end_by_suspension_requested
                         - end_by_conformation_requested
                         - end_by_positive_outcome
+                        - end_by_negative_outcome
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
                     type: string

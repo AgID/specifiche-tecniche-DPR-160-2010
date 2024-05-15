@@ -24,7 +24,7 @@ paths:
 
     /fo-portal-ref:
         post:
-            description: Richiesta di ritrasmissione dati relativi ad una specifica operation a causa di incoerenze riscontrate sui dati ricevuti.
+            description: Recupero URL del portale del FO SUAP.
             requestBody:
                 content:
                     application/json:
@@ -34,11 +34,15 @@ paths:
                                 municipality:
                                     title: codice istat 6 cifre del comune in cui l'istanza è stata presentata
                                     type: string
-                                    pattern: "^[0-9]{6}$"
-
+                                c_fiscale:
+                                    title: codice fiscale
+                                    type: string
+                                instance_code_comunica:
+                                    title: codice univoco pratica ComUnica
+                                    type: string
             responses:
                 "200":
-                    $ref: "#/components/responses/FoPortalRequest"
+                    $ref: "#/components/responses/FoPortalResponse"
                 "400":
                     $ref: "#/components/responses/BadRequest"
                 "401":
@@ -247,7 +251,7 @@ paths:
 
 components:
     responses:
-        FoPortalRequest:
+        FoPortalResponse:
             description: Risposta url portale frontoffice
             content:
                 application/json:
@@ -366,24 +370,12 @@ components:
             type: object
             description: Url portale Frontoffice SUAP
             properties:
-                method:
-                    enum: 
-                        - post
-                protocol: 
-                    enum: 
-                        - https
                 url:
                     description: Url del portale frontoffice
                     type: string
                     example: foportal.it/xyz
-                municipality:
-                    description: nome attributo form che conterrà il valore municipality
-                    type: string
-                c_fiscale: 
-                    description: nome attributo form che conterrà il valore Codice fiscale 
-                    type: string
-                istance_code_comunica: 
-                    description: nome attributo form che conterrà il valore codice univoco pratica ComUnica
+                secretToken:
+                    description: token segreto per identificazione del ComUnica da concatenare all'URL come path parameter ad esempio https://foportal.it/xyz/<secretToken>
                     type: string
         Error:
             type: object
