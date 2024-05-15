@@ -374,7 +374,8 @@ components:
             properties:
                 conclusions_type:
                     type: string
-                    example: suspension_requested
+                    enum: 
+                    - suspension_requested
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
@@ -409,7 +410,8 @@ components:
             properties:
                 conclusions_type:
                     type: string
-                    example: conformation_requested
+                    enum: 
+                    - conformation_requested
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
@@ -440,12 +442,13 @@ components:
             required:
                 - cui
                 - instance_descriptor_version
-                - outcome
+                - positive_outcome
                 - conclusions_type
             properties:
                 conclusions_type:
                     type: string
-                    example: positive_outcome
+                    enum: 
+                    - positive_outcome
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
