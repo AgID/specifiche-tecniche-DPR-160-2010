@@ -322,34 +322,52 @@ components:
                         required:
                             - code
                             - ref
-                            - integration_request
+                            - integration_requested
                         properties:
                             code:
                                 title: codice della fattispecie presente nel Catalogo
                                 type: string
                                 minLength: 1
                             ref:
-                                title: riferimento all'elemento dell'istanza relativo al procedimento
+                                title: riferimento all'elemento dell'istanza relativo al procedimento (procedimento o allegato)
                                 type: string
                                 minLength: 1
                             integration_request:
-                                title: integrazione richiesta
+                                title: elenco integrazioni richieste da uno o più enti terzi
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        request:
+                                            title: testo integrazione richiesta
+                                            type: string
+                                        requester_administration:
+                                            title: amministrazione richiedente
+                                            $ref: "#/components/schemas/AdministrationSchema"
+
+                integration_document_list:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            requester_administration:
+                                title: amministrazione richiedente
+                                $ref: "#/components/schemas/AdministrationSchema"
+                            resource_id:
+                                title: id della risorsa "documento di richiesta integrazioni", univoco per erogatore e CUI.UUID
                                 type: string
-                resource_id:
-                    title: id della risorsa "documento di richiesta integrazione", univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
+                                minLength: 1
+                            hash:
+                                title: hash risorsa
+                                type: string
+                                minLength: 1
+                            alg_hash:
+                                title: algoritmo hash applicato
+                                type: string
+                                enum:
+                                - S256
+                                - S384
+                                - S512
 
         SendConclusionRequests:
             type: object
