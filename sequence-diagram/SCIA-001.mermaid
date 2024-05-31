@@ -36,7 +36,7 @@ sequenceDiagram
                 note right of B: recupero documento di richiesta integrazione
                 E -->> B: instanceDocument    
             end
-            E ->> C: audit(cui,integration_requested)
+            E ->> C: audit(cui,integration_requested_from_<ET>)
             C -->> E: ack           
         end
 
@@ -115,7 +115,7 @@ sequenceDiagram
             alt 
                 E ->> B: send_conclusions(NegativeOutcomeRequired)
                 B -->> E: ack 
-                E ->> C: audit(cui,suspension_requested)
+                E ->> C: audit(cui,suspension_requested_from_<ET>)
                 C -->> E: ack
                 opt
                     B ->> E: request_instance_document(cui, resource_id)
@@ -126,7 +126,7 @@ sequenceDiagram
             else
                 E ->> B: send_conclusions(ConformationRequired)
                 B -->> E: ack 
-                E ->> C: audit(cui,conformation_requested)
+                E ->> C: audit(cui,conformation_requested_from_<ET>)
                 C -->> E: ack 
                 opt
                     B ->> E: request_instance_document(cui, resource_id)
