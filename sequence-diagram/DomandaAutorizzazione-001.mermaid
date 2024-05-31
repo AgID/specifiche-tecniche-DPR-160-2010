@@ -49,7 +49,7 @@ sequenceDiagram
             par almeno un ente terzo
                 E ->> B: request_cdss(cui)
                 B -->> E: ack 
-                E ->> C: audit(cui,cdss_requested)
+                E ->> C: audit(cui,cdss_requested_from_<ET>)
                 C -->> E: ack           
             end
 
@@ -81,7 +81,7 @@ sequenceDiagram
                         note right of B: recupero documento di richiesta integrazione
                         E -->> B: instanceDocument    
                     end
-                    E ->> C: audit(cui,integration_requested)
+                    E ->> C: audit(cui,integration_requested_from_<ET>)
                     C -->> E: ack           
                 end
 
@@ -159,7 +159,7 @@ sequenceDiagram
                         alt parere esplicito positivo
                             E ->> B: send_conclusions(PostiveOutcome)
                             B -->> E: ack 
-                            E ->> C: audit(cui,positive_outcome_sended)
+                            E ->> C: audit(cui,positive_outcome_sended_from_<ET>)
                             C -->> E: ack
                             opt
                                 B ->> E: request_instance_document(cui, resource_id)
