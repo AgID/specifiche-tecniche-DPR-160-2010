@@ -202,6 +202,10 @@ components:
           title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
           type: integer
           format: int32
+        max_gg_correction:
+          title: numero di giorni limite a partire da start per la correzione a valle di un controllo formale
+          type: integer
+          format: int32
         max_gg_admissibility:          
           title: numero di giorni limite a partire da start per la verifica di ammissibilità
           type: integer
