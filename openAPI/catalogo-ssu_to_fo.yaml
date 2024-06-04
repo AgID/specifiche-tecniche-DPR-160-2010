@@ -362,6 +362,7 @@ components:
                 - ended_by_conformation_requested
                 - ended_by_proceeding_time_expired
                 - ended_by_positive_outcome
+                - ended_by_negative_outcome
                 - ended_by_submitter_cancel_requested
                 
               timestamp:                
