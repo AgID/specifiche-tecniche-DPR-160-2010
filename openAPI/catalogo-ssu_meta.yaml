@@ -1880,6 +1880,13 @@ components:
               enum:
                 - Active
                 - Not Active
+      example:
+        id: 1
+        version: 1.0.0
+        description: Entità generica con id,versione, descrizione
+        start: 2024-01-01
+        end: 2024-12-31
+        state: Active
 
     DocumentEntity:
       allOf:
@@ -1942,6 +1949,15 @@ components:
               type: string
             e_service_to_cu:
               type: string
+      example:
+        id: 1
+        version: 1.0.0
+        description: Entità generica con id,versione, descrizione
+        start: 2024-01-01
+        end: 2024-12-31
+        state: Active
+        e_service_to_bo: string
+        e_service_to_cu: string
       
     BOSystemEntity:
       allOf:
@@ -1958,7 +1974,17 @@ components:
               type: string  
             e_service_to_ri:
               type: string  
-
+      example:
+        id: 1
+        version: 1.0.0
+        description: Entità generica con id,versione, descrizione
+        start: 2024-01-01
+        end: 2024-12-31
+        state: Active
+        e_service_to_fo: string
+        e_service_to_et: string  
+        e_service_to_ri: string
+	
     Proceeding:
       description: procedimento amministrativo
       allOf:
@@ -1993,6 +2019,7 @@ components:
         typology: esercizio_vicinato
         lifeevent: apertura
         territorial_scope: 00000000
+	status: Active
 
 
     UseCaseProceeding:
