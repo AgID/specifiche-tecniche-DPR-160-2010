@@ -1797,6 +1797,10 @@ components:
           title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
           type: integer
           format: int32
+        max_gg_correction:
+          title: numero di giorni limite a partire da start per la correzione a valle di un controllo formale
+          type: integer
+          format: int32
         max_gg_admissibility:          
           title: numero di giorni limite a partire da start per la verifica di ammissibilità
           type: integer
@@ -1959,28 +1963,28 @@ components:
       description: procedimento amministrativo
       allOf:
         - $ref: "#/components/schemas/GenericEntity"
-      type: object
-      required:
-        - typology
-        - lifeevent
-        - territorial_scope
-        - status
-      properties:
-        typology:
-          title: tipologia del procedimento
-          type: string
-        lifeevent:
-          title: evento della vita dell'attività afferente al procedimento
-          type: string
-        territorial_scope:
-          title: ambito territoriale del procedimento (codice istat a 6 cifre e 000000 per Nazionale)
-          type: string
-        status:
-          title: stato del procedimento (attivo, non attivo)
-          type: string
-          enum: 
-            - Active
-            - Not Active
+        - type: object
+          required:
+            - typology
+            - lifeevent
+            - territorial_scope
+            - status
+          properties:
+            typology:
+              title: tipologia del procedimento
+              type: string
+            lifeevent:
+              title: evento della vita dell'attività afferente al procedimento
+              type: string
+            territorial_scope:
+              title: ambito territoriale del procedimento (codice istat a 6 cifre e 000000 per Nazionale)
+              type: string
+            status:
+              title: stato del procedimento (attivo, non attivo)
+              type: string
+              enum: 
+                - Active
+                - Not Active
 
       example:
         id: 1

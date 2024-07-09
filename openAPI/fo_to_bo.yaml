@@ -388,7 +388,7 @@ components:
                         required:
                             - code
                             - ref
-                            - integration_requested
+                            - integration_request
                         properties:
                             code:
                                 title: codice della fattispecie presente nel Catalogo
