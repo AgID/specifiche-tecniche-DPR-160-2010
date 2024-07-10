@@ -442,7 +442,19 @@ components:
                     - S256
                     - S384
                     - S512
-
+            example:
+                cui: 
+                    context: "string"
+                    data: "2024-07-10"
+                    progressivo: "string"
+                    uuid: "string"
+                instance_descriptor_version: "string"
+                negative_outcome_motivation: "string"
+                resource_id: "string"
+                hash: "string"
+                alg_hash: "S256"
+                conclusions_type: "suspension_requested"
+                
         ConformationRequired:
             type: object
             required:
