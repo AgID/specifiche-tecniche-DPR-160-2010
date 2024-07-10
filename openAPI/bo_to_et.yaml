@@ -443,6 +443,7 @@ components:
                     - S384
                     - S512
             example:
+                conclusions_type: "suspension_requested"
                 cui: 
                     context: "string"
                     data: "2024-07-10"
@@ -453,7 +454,6 @@ components:
                 resource_id: "string"
                 hash: "string"
                 alg_hash: "S256"
-                conclusions_type: "suspension_requested"
                 
         ConformationRequired:
             type: object
