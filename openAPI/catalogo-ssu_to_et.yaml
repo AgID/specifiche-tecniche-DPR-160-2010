@@ -188,7 +188,7 @@ components:
 
         message:
           type: string
-          pattern: ^instance_retrived|integration_requested_from_[0-9]{1,10}|instance_integrated_retrived|suspension_requested_from_[0-9]{1,10}|conformation_requested_from_[0-9]{1,10}|cdss_requested_from_[0-9]{1,10}|positive_outcome_sended_from_[0-9]{1,10}|retry_requested_for_send_instance|retry_requested_for_notify|negative_outcome_sended$
+          pattern: ^instance_retrived|integration_requested_from_[0-9]{1,10}|instance_integrated_retrived|suspension_requested_from_[0-9]{1,10}|conformation_requested_from_[0-9]{1,10}|cdss_requested_from_[0-9]{1,10}|positive_outcome_sended_from_[0-9]{1,10}|retry_requested_for_send_instance|retry_requested_for_notify|negative_outcome_sended_from_[0-9]{1,10}$
 
         event_time:
           title: timestamp del momento in cui si è verificato l'evento
