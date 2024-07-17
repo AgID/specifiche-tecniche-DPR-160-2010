@@ -58,7 +58,7 @@ paths:
                   Agid-JWT-Signature: []
 
     /send_conclusions:
-        description: Invio conclusioni
+        description: Inoltrare le conclusioni delle proprie istruttorie in relazione a una data instanza di procedimento
         post:
             requestBody:
                 content:
@@ -83,7 +83,7 @@ paths:
 
     /request_cdss:
         post:
-            description: Richiesta convocazione Conferenza dei Servizi Sincrona (CdSS)
+            description: Richiesta convocazione Conferenza dei Servizi Sincrona (CdSS) in relazione a una data instanza di procedimento
             requestBody:
                 content:
                     application/json:
@@ -107,7 +107,7 @@ paths:
 
     /request_integration:
         post:
-            description: Richiesta integrazioni
+            description: Richiesta integrazioni in relazione a una data instanza di procedimento
             requestBody:
                 content:
                     application/json:
@@ -132,7 +132,7 @@ paths:
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
-                Recupero risorsa documento per un dato CUI.
+                Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
                 Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
             
             parameters:
@@ -537,7 +537,7 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
 
     securitySchemes:
         bearerAuth:
@@ -550,6 +550,6 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
             name: Agid-JWT-Signature
             in: header
