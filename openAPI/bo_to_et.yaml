@@ -58,7 +58,7 @@ paths:
                   Agid-JWT-Signature: []
 
     /send_conclusions:
-        description: Inoltrare le conclusioni delle proprie istruttorie in relazione a una data instanza di procedimento
+        description: Inoltro delle conclusioni delle proprie istruttorie in relazione a una data instanza di procedimento
         post:
             requestBody:
                 content:
