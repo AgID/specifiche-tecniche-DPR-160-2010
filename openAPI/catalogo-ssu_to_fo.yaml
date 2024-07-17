@@ -47,7 +47,7 @@ paths:
           Agid-JWT-Signature: []
 
   /audit:
-    description: Audit azioni realizzate dalla componenti
+    description: Audit azioni realizzate dalle componenti
     post:
       requestBody:
         content:
