@@ -23,7 +23,7 @@ servers:
 paths:
 
     /notify_receipt:
-        description: notifica invio ricevuta al presentatore
+        description: notifica dell'avvenuto rilascio della ricevuta al Soggetto Presentatore
         post:
             requestBody:
                 content:
@@ -59,7 +59,7 @@ paths:
                   Agid-JWT-Signature: []
 
     /cancel_instance:
-        description: richiesta annullamento istanza da parte del presentatore
+        description: richiesta di cancellazione di una data istanza di procedimento da parte del Soggetto Presentatore
         post:
             requestBody:
                 content:
@@ -120,7 +120,7 @@ paths:
                   Agid-JWT-Signature: []
 
     /send_instance:
-        description: Invio riferimenti istanza
+        description: Inoltro dei riferimenti a un' istanza di procedimento
         post:
             requestBody:
                 content:
@@ -146,7 +146,7 @@ paths:
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
-                Recupero risorsa documento per un dato CUI.
+                Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
                 Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
             parameters:
                 - in: header
