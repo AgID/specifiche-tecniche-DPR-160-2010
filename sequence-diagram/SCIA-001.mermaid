@@ -160,6 +160,7 @@ sequenceDiagram
             F -->> B: ack
             F -) P: notification(cui,conformation_requested)
             B ->> C: request_update_times(cui,times)
+            C -->> B: instanceDescriptor
                 alt concluso tempo di conformazione senza risposta dal presentatore
                     B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_time_expired)
                     F -->> B: ack
