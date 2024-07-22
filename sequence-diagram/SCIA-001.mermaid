@@ -172,11 +172,11 @@ sequenceDiagram
                     C -->> B: ack
                 else entro il tempo di conformazione del presentatore
                     P --) F: instanceConformated
-                    F -> B: send_instance(SendInstanceRequest)
+                    F ->> B: send_instance(SendInstanceRequest)
                     B -->> F: ack
-                    B ->> C: audit(cui, instance_conformated_to_<BO>_sended)
-                    note right of B: <BO> codice BackOffice
-                    C -->> B: ack
+                    F ->> C: audit(cui, instance_conformated_to_<BO>_sended)
+                    note right of F: <BO> codice BackOffice
+                    C -->> F: ack
                     loop per ogni procedimento di interesse parte dell'istanza soggetto a conformazione
                         B ->> F: request_instance_document(cui, resource_id)
                         note left of B: resource_id da instance_index
@@ -188,7 +188,7 @@ sequenceDiagram
                         B ->> E: send_instance(SendInstanceRequest)
                         E -->> B: ack
                         B ->> C: audit(cui, instance_conformated_to_<ET>_sended)
-                        note right of E: <ET> codice ente terzo
+                        note left of E: <ET> codice ente terzo
                         C -->> B: ack
                         loop per ogni procedimento di interesse parte dell'istanza soggetto a conformazione
                             E ->> B: request_instance_document(cui, resource_id)
@@ -196,17 +196,17 @@ sequenceDiagram
                             B -->> E: instanceDocument
                         end
                         E ->> C: audit(cui, instance_conformated_retrived)
-                        C -->> B: ack
+                        C -->> E: ack
                         alt
                             E ->> B: notify(cui, instance_descriptor_version, negative_conformation)
                             B -->> E: ack
                             E ->> C: audit(cui, negative_conformation)
-                            C -->> B: ack
+                            C -->> E: ack
                         else
                             E ->> B: notify(cui, instance_descriptor_version, positive_conformation)
                             B -->> E: ack
                             E ->> C: audit(cui, positive_conformation)
-                            C -->> B: ack
+                            C -->> E: ack
                         end
                     end
                     alt tutti gli enti hanno inoltrato un esito positivo per la conformazione
