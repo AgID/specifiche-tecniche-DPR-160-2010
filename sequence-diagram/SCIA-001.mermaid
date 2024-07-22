@@ -162,10 +162,10 @@ sequenceDiagram
             B ->> C: request_update_times(cui,times)
             C -->> B: instanceDescriptor
                 alt concluso tempo di conformazione senza risposta dal presentatore
-                    B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_time_expired)
+                    B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
                     F -->> B: ack
                     par per ogni ente terzo interessato
-                        B ->> E: notify(cui, instance_descriptor_version,end_by_conformation_time_expired)
+                        B ->> E: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
                         E -->> B: ack
                     end
                     B ->> C: audit(cui,end_by_negative_conformation_requested)
@@ -219,7 +219,7 @@ sequenceDiagram
                         end
                         B ->> C: audit(cui,end_by_positive_conformation)
                         C -->> B: ack
-                    else tutti gli enti hanno inoltrato un esito negativo per la conformazione
+                    else almeno un ente ha inoltrato un esito negativo per la conformazione
                         B ->> F: notify(cui, instance_descriptor_version,end_by_negative_conformation)
                         F -->> B: ack  
                         F -) P: notification(cui,end_by_negative_conformation)          

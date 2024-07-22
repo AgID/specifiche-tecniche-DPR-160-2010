@@ -58,8 +58,21 @@ sequenceDiagram
 
     end
 
+    alt richiesta di conformazione e risposta del presentatore nei tempi (dopo step: 96 SCIA-001)
+
+        B ->> RI: notify(cui, instance_descriptor_version, instance_conformated_retrived)
+        RI -->> B: ack
+
+    end
+
     alt richiesta integrazione e scaduti tempi integrazione (dopo step: 29 SCIA-001 o 49 DomandaAutorizzazione-001)
+
         B ->> RI: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
+        RI -->> B: ack
+
+    else richiesta di conformazione e scaduti i tempi di conformazione (dopo step: 87 SCIA-001)
+    
+        B ->> RI: notify(cui, instance_descriptor_version, end_by_conformation_times_expired)
         RI -->> B: ack
 
     else chiusura istruttoria con esito positivo (dopo step: 69 SCIA-001 o 112 DomandaAutorizzazione-001)
@@ -86,9 +99,17 @@ sequenceDiagram
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument 
 
-    else chiusura istruttoria per conformazione (dopo step: 83 SCIA-001)
+    else chiusura istruttoria per conformazione con esito positivo (dopo step: 119 SCIA-001)
 
-        B ->> RI: notify(cui, instance_descriptor_version,end_by_conformation_requested,resource_id)
+        B ->> RI: notify(cui, instance_descriptor_version, end_by_positive_conformation,resource_id)
+        RI -->> B: ack
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument 
+
+    else chiusura istruttoria per conformazione con esito negativo (dopo step: 119 SCIA-001)
+
+        B ->> RI: notify(cui, instance_descriptor_version, end_by_negative_conformation,resource_id)
         RI -->> B: ack
 
         RI ->> B: request_instance_document(cui, resource_id)
