@@ -172,7 +172,7 @@ sequenceDiagram
                         B ->> E: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
                         E -->> B: ack
                     end
-                    B ->> C: audit(cui,end_by_negative_conformation_requested)
+                    B ->> C: audit(cui,end_by_conformation_times_expired)
                     C -->> B: ack
                 else entro il tempo di conformazione del presentatore
                     P --) F: instanceConformated
