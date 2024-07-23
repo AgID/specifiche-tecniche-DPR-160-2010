@@ -50,7 +50,7 @@ sequenceDiagram
 			C -->> B: ack
 		end 
 		
-		Note over B: concluso il tempo di richiesta integrazione OR tutti gli enti terzi hanno richiesto integrazione
+		Note over B: concluso il tempo di richiesta integrazione OR almeno un ente terzo ha richiesto integrazione
         B ->> F: request_integration(cui, instance_descriptor_version,list_of_integration_list,integration_document_list)
         F -->> B: ack
         B ->> C: audit(cui,integration_requested)
