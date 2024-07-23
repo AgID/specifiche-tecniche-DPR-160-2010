@@ -41,7 +41,7 @@ sequenceDiagram
 
     end
 
-    alt istanza integrata (dopo step: 43 SCIA-001 o 63 DomandaAutorizzazione-001)
+    alt istanza integrata o conformata (dopo step: 43 SCIA-001 o 96 SCIA-001  o 63 DomandaAutorizzazione-001)
 
         B ->> RI: send_instance(SendInstanceRequest)
         RI -->> B: ack
@@ -55,13 +55,6 @@ sequenceDiagram
             B -->> RI: instanceDocument
         end
 
-
-    end
-
-    alt richiesta di conformazione e risposta del presentatore nei tempi (dopo step: 98 SCIA-001)
-
-        B ->> RI: notify(cui, instance_descriptor_version, instance_conformated_retrived)
-        RI -->> B: ack
 
     end
 
@@ -101,11 +94,8 @@ sequenceDiagram
 
     else chiusura istruttoria per conformazione con esito positivo (dopo step: 121 SCIA-001)
 
-        B ->> RI: notify(cui, instance_descriptor_version, end_by_positive_conformation,resource_id)
+        B ->> RI: notify(cui, instance_descriptor_version, end_by_positive_conformation)
         RI -->> B: ack
-
-        RI ->> B: request_instance_document(cui, resource_id)
-        B -->> RI: instanceDocument 
 
     else chiusura istruttoria per conformazione con esito negativo (dopo step: 128 SCIA-001)
 
