@@ -1833,7 +1833,7 @@ components:
       required:
         - code
         - message
-	
+
     GenericEntity:
       description: struttura di risorsa generica con id,versione e descrizione
       type: object
