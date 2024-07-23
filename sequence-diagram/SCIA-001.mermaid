@@ -161,6 +161,10 @@ sequenceDiagram
             F -) P: notification(cui,conformation_requested)
             B ->> C: request_update_times(cui,times)
             C -->> B: instanceDescriptor
+            par per ogni ente terzo interessato
+                B ->> E: notify(cui, instance_descriptor_version,conformation_requested)
+                E -->> B: ack
+            end
                 alt concluso tempo di conformazione senza risposta dal presentatore
                     B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
                     F -->> B: ack
