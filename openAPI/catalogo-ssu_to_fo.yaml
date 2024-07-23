@@ -220,10 +220,6 @@ components:
           pattern: >-
             ^receipt_sended|instance_to_[0-9]{1,10}_sended|corrected_instance_to_[0-9]{1,10}_sended|instance_integrated_to_[0-9]{1,10}_sended|submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_request_correction|retry_requested_for_request_integration|retry_requested_for_notify$
 
-        requester_administration:
-          title: amministrazione richiedente
-          $ref: "#/components/schemas/AdministrationSchema"
-
         event_time:
           title: timestamp del momento in cui si è verificato l'evento
           type: string
