@@ -156,8 +156,15 @@ sequenceDiagram
             B ->> C: audit(cui,end_by_suspension_requested)
             C -->> B: ack
         else concluso tempo istanza o tutti gli enti terzi hanno inoltrato conclusione, nessuna richiesta sospesione,almeno una richiesta conformazione
-            B ->> F: notify(cui, instance_descriptor_version,conformation_requested)
+            B ->> F: notify(cui, instance_descriptor_version, resource_id)
             F -->> B: ack
+            opt
+            loop recupero documenti di richiesta conformazione degli ET
+                F ->> B: request_instance_document(cui, resource_id)
+                note right of F: resource_id in integration_document_list #cambiare il nome di integration_document_list con uno generico
+                B -->> F: instanceDocument    
+                end
+            end 
             F -) P: notification(cui,conformation_requested)
             B ->> C: request_update_times(cui,times)
             C -->> B: instanceDescriptor
@@ -224,8 +231,14 @@ sequenceDiagram
                         B ->> C: audit(cui,end_by_positive_conformation)
                         C -->> B: ack
                     else almeno un ente ha inoltrato un esito negativo per la conformazione
-                        B ->> F: notify(cui, instance_descriptor_version,end_by_negative_conformation)
-                        F -->> B: ack  
+                        B ->> F: notify(cui, instance_descriptor_version,end_by_negative_conformation, resource_id)
+                        F -->> B: ack
+                        loop recupero documenti di richiesta conformazione degli ET
+                            F ->> B: request_instance_document(cui, resource_id)
+                            note right of F: resource_id in integration_document_list #cambiare il nome di integration_document_list con uno generico
+                            B -->> F: instanceDocument    
+                        end
+            end   
                         F -) P: notification(cui,end_by_negative_conformation)          
                         par per ogni ente terzo interessato
                             B ->> E: notify(cui, instance_descriptor_version,end_by_negative_conformation)
