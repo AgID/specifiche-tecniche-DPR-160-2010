@@ -58,7 +58,7 @@ sequenceDiagram
 
     end
 
-    alt richiesta di conformazione e risposta del presentatore nei tempi (dopo step: 96 SCIA-001)
+    alt richiesta di conformazione e risposta del presentatore nei tempi (dopo step: 98 SCIA-001)
 
         B ->> RI: notify(cui, instance_descriptor_version, instance_conformated_retrived)
         RI -->> B: ack
@@ -99,7 +99,7 @@ sequenceDiagram
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument 
 
-    else chiusura istruttoria per conformazione con esito positivo (dopo step: 119 SCIA-001)
+    else chiusura istruttoria per conformazione con esito positivo (dopo step: 121 SCIA-001)
 
         B ->> RI: notify(cui, instance_descriptor_version, end_by_positive_conformation,resource_id)
         RI -->> B: ack
@@ -107,7 +107,7 @@ sequenceDiagram
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument 
 
-    else chiusura istruttoria per conformazione con esito negativo (dopo step: 119 SCIA-001)
+    else chiusura istruttoria per conformazione con esito negativo (dopo step: 128 SCIA-001)
 
         B ->> RI: notify(cui, instance_descriptor_version, end_by_negative_conformation,resource_id)
         RI -->> B: ack
