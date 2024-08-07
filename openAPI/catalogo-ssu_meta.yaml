@@ -1521,7 +1521,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GenericEntity"
+                  $ref: "#/components/schemas/ComponentEntity"
 
           headers:
             Agid-JWT-Signature:
