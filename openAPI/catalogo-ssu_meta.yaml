@@ -1821,10 +1821,6 @@ components:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
           type: integer
           format: int32
-        max_gg_conformation:
-          title: numero di giorni limite per la conformazione
-          type: integer
-          format: int32
 
     Error:
       type: object
