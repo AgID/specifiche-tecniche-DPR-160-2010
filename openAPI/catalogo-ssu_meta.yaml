@@ -228,11 +228,11 @@ paths:
                   type: object 
                   required:
                     - attachment
-                    - mandatary
+                    - mandatory
                   properties:
                     attachment:
                       $ref: "#/components/schemas/DocumentEntity"
-                    mandatary:
+                    mandatory:
                       type: boolean
 
 
@@ -393,11 +393,11 @@ paths:
                   type: object
                   required:
                     - usecase-proceeding
-                    - mandatary
+                    - mandatory
                   properties:
                     usecase-proceeding:
                       $ref: "#/components/schemas/UseCaseProceeding"
-                    mandatary:
+                    mandatory:
                       type: boolean
 
           headers:
@@ -944,13 +944,13 @@ paths:
                   required:
                     - proceeding
                     - attachment
-                    - mandatary
+                    - mandatory
                   properties:
                     proceeding:
                       $ref: "#/components/schemas/GenericEntity"
                     attachment:
                       $ref: "#/components/schemas/DocumentEntity"
-                    mandatary:
+                    mandatory:
                       type: boolean
 
           headers:
@@ -1119,13 +1119,13 @@ paths:
                   required:
                     - primary
                     - secondary
-                    - mandatary
+                    - mandatory
                   properties:
                     primary:
                       $ref: "#/components/schemas/UseCaseProceeding"
                     secondary:
                       $ref: "#/components/schemas/UseCaseProceeding"
-                    mandatary:
+                    mandatory:
                       type: boolean
 
           headers:
