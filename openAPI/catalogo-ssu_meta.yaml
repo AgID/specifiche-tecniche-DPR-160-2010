@@ -1525,8 +1525,15 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GenericEntity"
-
+                  type: object
+                  required:
+                    - competent_administration
+                    - municipality
+                  properties:
+                    competent_administration:
+                      $ref: "#/components/schemas/ComponentEntity"
+                    municipality:
+                      type: string
           headers:
             Agid-JWT-Signature:
               $ref: "#/components/headers/Agid-JWT-Signature"
@@ -1880,6 +1887,7 @@ components:
               enum:
                 - Active
                 - Not Active
+                - Revocated
 
     DocumentEntity:
       allOf:
