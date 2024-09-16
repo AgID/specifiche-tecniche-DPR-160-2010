@@ -59,7 +59,7 @@ paths:
                   Agid-JWT-Signature: []
 
     /send_instance:
-        description: Invio riferimenti istanza
+        description: Inoltro dei riferimenti a un' istanza di procedimento.
         post:
             requestBody:
                 content:
@@ -85,7 +85,7 @@ paths:
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: |
-                Recupero risorsa documento per un dato CUI.
+                Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
                 Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
 
             parameters:
@@ -176,7 +176,7 @@ paths:
 
     /notify:
         post:
-            description: Notifica eventi di processo
+            description: Notifica eventi di processo di una data istanza di procedimento.
             requestBody:
                 content:
                     application/json:

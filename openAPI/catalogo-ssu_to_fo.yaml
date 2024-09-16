@@ -22,6 +22,7 @@ servers:
 
 paths:
   /request_cui:
+    descrption: Richiesta del CUI
     post:
       requestBody:
         content:
@@ -46,7 +47,7 @@ paths:
           Agid-JWT-Signature: []
 
   /audit:
-    description: Audit azioni realizzate dalla componenti
+    description: Audit azioni realizzate dalle componenti
     post:
       requestBody:
         content:
@@ -72,8 +73,7 @@ paths:
           Agid-JWT-Signature: []
 
   /instance_descriptor/{cui_uuid}:
-    description: |
-        Recupero InstanceDescriptor 
+    description: Recupero descrittore istanza 
     get:
       parameters:
         - name: cui_uuid
@@ -601,7 +601,7 @@ components:
         example: eyJzd.fafa.fafafa
       description: |-
         Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-        Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+        Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
 
   securitySchemes:
     bearerAuth:
@@ -614,6 +614,6 @@ components:
       type: apiKey
       description: |-
         Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-        Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+        Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
       name: Agid-JWT-Signature
       in: header

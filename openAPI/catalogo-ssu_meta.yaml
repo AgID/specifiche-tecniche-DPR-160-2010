@@ -23,8 +23,7 @@ servers:
 paths:
   /typologies-lifeevents:
     get:
-      description: |
-        Recupero elenco tipologie ed eventi della vita dei procedimenti
+      description: Recupero elenco tipologie ed eventi della vita dei procedimenti
       parameters:
         - in: query
           name: typology
@@ -47,7 +46,7 @@ paths:
 
       responses:
         "200":
-          description: Elenco dei tuple {typology,lifeevent,municipality} filtrato in base ai paramentri di richiesta
+          description: Elenco delle tuple {typology,lifeevent,municipality} filtrato in base ai paramentri di richiesta
           content:
             application/json:
               schema:
@@ -97,8 +96,7 @@ paths:
 
   /proceedings:
     get:
-      description: |
-        Recupero elenco procedimenti per tipologia,evento della vita e comune (mapping su ambito territoriale)
+      description: Recupero elenco procedimenti per tipologia,evento della vita e comune (mapping su ambito territoriale)
       parameters:
         - in: query
           name: typology
@@ -151,9 +149,7 @@ paths:
  
   /proceeding/{proceeding_id}/{proceeding_version}/usecase-proceedings:
     get:
-      description: |
-        Recupero elenco fattispecie di uno specifico procedimento
-
+      description: Recupero elenco fattispecie (usecase-proceedings) di uno specifico procedimento
       parameters:
         - in: path
           name: proceeding_id
@@ -232,11 +228,11 @@ paths:
                   type: object 
                   required:
                     - attachment
-                    - mandatary
+                    - mandatory
                   properties:
                     attachment:
                       $ref: "#/components/schemas/DocumentEntity"
-                    mandatary:
+                    mandatory:
                       type: boolean
 
 
@@ -369,7 +365,7 @@ paths:
   /usecase-proceedings/{usecase_proceedings_id}/{usecase_proceedings_version}/usecase-proceedings:
     get:
       description: |
-        Recupero elenco fattispecie di relazionate ad una data fattispecie
+        Recupero elenco delle fattispecie relazionate a una data fattispecie
 
       parameters:
         - in: path
@@ -397,11 +393,11 @@ paths:
                   type: object
                   required:
                     - usecase-proceeding
-                    - mandatary
+                    - mandatory
                   properties:
                     usecase-proceeding:
                       $ref: "#/components/schemas/UseCaseProceeding"
-                    mandatary:
+                    mandatory:
                       type: boolean
 
           headers:
@@ -530,7 +526,7 @@ paths:
   /attachment/{attachment_id}/{attachment_version}/xsd:
     get:
       description: |
-        Recupero XML Schema riferito ad un specifico allegato
+        Recupero XML Schema riferito a un specifico allegato
 
       parameters:
         - in: path
@@ -828,7 +824,7 @@ paths:
   /proceedings-by-municipality/{municipality_list}:
     get:
       description: |
-        Recupero bulk elenco procedimenti(tutte le versioni) per elenco comuni
+        Recupero bulk elenco procedimenti(tutte le versioni) per una lista di comuni
       parameters:
         - in: path
           name: municipality_list
@@ -875,7 +871,7 @@ paths:
   /proceedings-by-id/{id_proceeding_list}:
     get:
       description: |
-        Recupero bulk elenco procedimenti(tutte le versioni) per set di identificativi procedimento
+        Recupero bulk elenco procedimenti(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_proceeding_list
@@ -924,7 +920,7 @@ paths:
   /proceedings-attachments/{id_proceeding_list}:
     get:
       description: |
-         Recupero bulk elenco tuple {procedimento,allegato,obbligatorio}(tutte le versioni) per set di identificativi procedimento
+         Recupero bulk elenco tuple {procedimento,allegato,obbligatorio}(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_proceeding_list
@@ -948,13 +944,13 @@ paths:
                   required:
                     - proceeding
                     - attachment
-                    - mandatary
+                    - mandatory
                   properties:
                     proceeding:
                       $ref: "#/components/schemas/GenericEntity"
                     attachment:
                       $ref: "#/components/schemas/DocumentEntity"
-                    mandatary:
+                    mandatory:
                       type: boolean
 
           headers:
@@ -982,7 +978,7 @@ paths:
   /proceedings-administrative-regimes/{id_proceeding_list}:
     get:
       description: |
-        Recupero bulk elenco tuple {fattispecie, regimi amministrativi e tempi}(tutte le versioni) per set di identificativi procedimento
+        Recupero bulk elenco tuple {fattispecie, regimi amministrativi e tempi}(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_proceeding_list
@@ -1039,7 +1035,7 @@ paths:
   /proceedings-usecases/{id_proceeding_list}:
     get:
       description: |
-        Recupero bulk elenco tuple {procedimento,fattispecie}(tutte le versioni) per set di identificativi procedimento
+        Recupero bulk elenco tuple {procedimento,fattispecie}(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_proceeding_list
@@ -1097,7 +1093,7 @@ paths:
   /usecase-proceedings-endoproceedings/{id_usecase_proceeding_list}:
     get:
       description: |
-         Recupero bulk tuple {fattispecie,fattispecie,obbligatorio}(tutte le versioni)(tutte le versioni) per set di identificativi procedimento
+         Recupero bulk tuple {fattispecie,fattispecie,obbligatorio}(tutte le versioni)(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_usecase_proceeding_list
@@ -1123,13 +1119,13 @@ paths:
                   required:
                     - primary
                     - secondary
-                    - mandatary
+                    - mandatory
                   properties:
                     primary:
                       $ref: "#/components/schemas/UseCaseProceeding"
                     secondary:
                       $ref: "#/components/schemas/UseCaseProceeding"
-                    mandatary:
+                    mandatory:
                       type: boolean
 
           headers:
@@ -1157,7 +1153,7 @@ paths:
   /proceedings-forms/{id_proceeding_list}:
     get:
       description: |
-        Recupero bulk elenco tuple  {procedimenti,moduli digitali}(tutte le versioni) per set di identificativi procedimento
+        Recupero bulk elenco tuple  {procedimenti,moduli digitali}(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_proceeding_list
@@ -1213,7 +1209,7 @@ paths:
   /forms-schematrons/{id_form_list}:
     get:
       description: |
-        Recupero bulk elenco tuple  {moduli digitali,schematron}(tutte le versioni) per set di identificativi procedimento
+        Recupero bulk elenco tuple  {moduli digitali,schematron}(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_form_list
@@ -1270,7 +1266,7 @@ paths:
   /forms-xsds/{id_form_list}:
     get:
       description: |
-        Recupero bulk elenco tuple  {moduli digitali,xml schema}(tutte le versioni) per set di identificativi procedimento
+        Recupero bulk elenco tuple  {moduli digitali,xml schema}(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_form_list
@@ -1325,7 +1321,7 @@ paths:
   /proceedings-competent-administrations/{id_proceeding_list}:
     get:
       description: |
-         Recupero bulk tuple {procedimento,amministrazione competente,comune}(tutte le versioni) per set di identificativi procedimento
+         Recupero bulk tuple {procedimento,amministrazione competente,comune}(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_proceeding_list
@@ -1383,7 +1379,7 @@ paths:
   /proceedings-competent-administrations/{id_proceeding_list}/{municipality_list}:  
     get:
       description: |
-         Recupero bulk tuple {procedimento,amministrazione competente,comune}(tutte le versioni)(tutte le versioni) per set di identificativi procedimento
+         Recupero bulk tuple {procedimento,amministrazione competente,comune}(tutte le versioni)(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_proceeding_list
@@ -1406,7 +1402,7 @@ paths:
 
       responses:
         "200":
-          description: Elenco  tuple {procedimento,amministrazione competente,comune} richiesto
+          description: Elenco tuple {procedimento,amministrazione competente,comune} richiesto
           content:
             application/json:
               schema:
@@ -1450,7 +1446,7 @@ paths:
   /competent-administrations-systems/{id_competent_administrations_list}:
     get:
       description: |
-         Recupero bulk tuple {amministrazione competente,sistema ente terzo}(tutte le versioni) per set di identificativi procedimento
+         Recupero bulk tuple {amministrazione competente,sistema ente terzo}(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_competent_administrations_list
@@ -1505,7 +1501,7 @@ paths:
   /suaps-by-municipality/{municipality_list}:
     get:
       description: |
-        Recupero bulk elenco SUAP(tutte le versioni) per elenco comuni
+        Recupero bulk elenco SUAP(tutte le versioni) per una lista di comuni
       parameters:
         - in: path
           name: municipality_list
@@ -1525,7 +1521,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GenericEntity"
+                  $ref: "#/components/schemas/ComponentEntity"
 
           headers:
             Agid-JWT-Signature:
@@ -1552,7 +1548,7 @@ paths:
   /suaps-by-id/{id_suap_list}:
     get:
       description: |
-        Recupero bulk elenco SUAP(tutte le versioni) per set di identificativi suap
+        Recupero bulk elenco SUAP(tutte le versioni) per una lista di identificativi suap
       parameters:
         - in: path
           name: id_suap_list
@@ -1601,7 +1597,7 @@ paths:
   /suaps-fo-systems/{id_suap_list}:
     get:
       description: |
-         Recupero bulk tuple {SUAP,sistema FrontOffice SUAP}(tutte le versioni) per set di identificativi SUAP
+         Recupero bulk tuple {SUAP,sistema FrontOffice SUAP}(tutte le versioni) per una lista di identificativi SUAP
       parameters:
         - in: path
           name: id_suap_list
@@ -1656,7 +1652,7 @@ paths:
   /suaps-bo-systems/{id_suap_list}: 
     get:
       description: |
-         Recupero bulk tuple {SUAP,sistema BackOffice SUAP}(tutte le versioni) per set di identificativi SUAP
+         Recupero bulk tuple {SUAP,sistema BackOffice SUAP}(tutte le versioni) per una lista di identificativi SUAP
       parameters:
         - in: path
           name: id_suap_list
@@ -1880,6 +1876,13 @@ components:
               enum:
                 - Active
                 - Not Active
+      example:
+        id: 1
+        version: 1.0.0
+        description: Entità generica con id,versione, descrizione
+        start: 2024-01-01
+        end: 2024-12-31
+        state: Active
 
     DocumentEntity:
       allOf:
@@ -1942,6 +1945,15 @@ components:
               type: string
             e_service_to_cu:
               type: string
+      example:
+        id: 1
+        version: 1.0.0
+        description: Entità generica con id,versione, descrizione
+        start: 2024-01-01
+        end: 2024-12-31
+        state: Active
+        e_service_to_bo: string
+        e_service_to_cu: string
       
     BOSystemEntity:
       allOf:
@@ -1958,7 +1970,17 @@ components:
               type: string  
             e_service_to_ri:
               type: string  
-
+      example:
+        id: 1
+        version: 1.0.0
+        description: Entità generica con id,versione, descrizione
+        start: 2024-01-01
+        end: 2024-12-31
+        state: Active
+        e_service_to_fo: string
+        e_service_to_et: string  
+        e_service_to_ri: string
+	
     Proceeding:
       description: procedimento amministrativo
       allOf:
@@ -1993,6 +2015,7 @@ components:
         typology: esercizio_vicinato
         lifeevent: apertura
         territorial_scope: 00000000
+	status: Active
 
 
     UseCaseProceeding:
@@ -2071,7 +2094,7 @@ components:
         example: eyJzd.fafa.fafafa
       description: |-
         Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-        Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+        Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
 
   securitySchemes:
     bearerAuth:
@@ -2084,6 +2107,6 @@ components:
       type: apiKey
       description: |-
         Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-        Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+        Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
       name: Agid-JWT-Signature
       in: header
