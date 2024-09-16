@@ -47,6 +47,8 @@ paths:
                                     $ref: "#/components/schemas/AdministrationSchema"
                                 error:
                                     $ref: "#/components/schemas/Error"
+                                requester_administration:
+                                    $ref: "#/components/schemas/AdministrationSchema"
 
             responses:
                 "200":

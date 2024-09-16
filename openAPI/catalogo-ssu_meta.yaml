@@ -1521,8 +1521,15 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ComponentEntity"
-
+                  type: object
+                  required:
+                    - competent_administration
+                    - municipality
+                  properties:
+                    competent_administration:
+                      $ref: "#/components/schemas/ComponentEntity"
+                    municipality:
+                      type: string
           headers:
             Agid-JWT-Signature:
               $ref: "#/components/headers/Agid-JWT-Signature"
@@ -1876,6 +1883,7 @@ components:
               enum:
                 - Active
                 - Not Active
+                - Revocated
       example:
         id: 1
         version: 1.0.0
@@ -2015,7 +2023,7 @@ components:
         typology: esercizio_vicinato
         lifeevent: apertura
         territorial_scope: 00000000
-	status: Active
+        status: Active
 
 
     UseCaseProceeding:
