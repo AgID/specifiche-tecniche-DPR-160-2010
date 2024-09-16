@@ -29,6 +29,10 @@ paths:
                     application/json:
                         schema:
                             type: object
+                            required:
+                                - cui
+                                - requester_administration
+                                - operation
                             properties:
                                 cui:
                                     $ref: "#/components/schemas/cui"
@@ -38,6 +42,9 @@ paths:
                                     enum:
                                         - send_instance
                                         - notify
+                                requester_administration:
+                                    title: amministrazione richiedente
+                                    $ref: "#/components/schemas/AdministrationSchema"
                                 error:
                                     $ref: "#/components/schemas/Error"
 
@@ -88,7 +95,16 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/cui"
+                            type: object
+                            required:
+                                - cui
+                                - requester_administration
+                            properties:
+                                cui: 
+                                    $ref: "#/components/schemas/cui"
+                                requester_administration:
+                                    title: amministrazione richiedente
+                                    $ref: "#/components/schemas/AdministrationSchema"
                 required: true
             responses:
                 "200":
@@ -415,6 +431,7 @@ components:
                 - instance_descriptor_version
                 - negative_outcome_motivation
                 - conclusions_type
+                - requester_administration
             properties:
                 conclusions_type:
                     type: string
@@ -427,6 +444,9 @@ components:
                 negative_outcome_motivation:
                     type: string
                     minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di richiesta sospensione", univoco per erogatore e CUI.UUID
                     type: string
@@ -463,6 +483,7 @@ components:
                 - date
                 - conformation_requested
                 - conclusions_type
+                - requester_administration
             properties:
                 conclusions_type:
                     type: string
@@ -478,6 +499,9 @@ components:
                 conformation_requested:
                     type: string
                     minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
                     type: string
@@ -500,6 +524,7 @@ components:
                 - instance_descriptor_version
                 - positive_outcome
                 - conclusions_type
+                - requester_administration
             properties:
                 conclusions_type:
                     type: string
@@ -512,6 +537,9 @@ components:
                 positive_outcome:
                     type: string
                     minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
                     type: string
