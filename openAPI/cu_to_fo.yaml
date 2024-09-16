@@ -58,7 +58,7 @@ paths:
                   Agid-JWT-Signature: []
 
     /send_instance:
-        description: Invio riferimenti istanza
+        description: Inoltro dei riferimenti a un' istanza di procedimento
         post:
             requestBody:
                 content:

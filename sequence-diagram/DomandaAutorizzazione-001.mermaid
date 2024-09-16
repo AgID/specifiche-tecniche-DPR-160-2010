@@ -47,7 +47,7 @@ sequenceDiagram
 
         alt almeno un ET richiede CdSS entro i tempi
             par almeno un ente terzo
-                E ->> B: request_cdss(cui)
+                E ->> B: request_cdss(cui, requester_administration)
                 B -->> E: ack 
                 E ->> C: audit(cui,cdss_requested_from_<ET>)
                 C -->> E: ack           
@@ -169,7 +169,7 @@ sequenceDiagram
                         else parere esplicito negativo
                             E ->> B: send_conclusions(NegativeOutcomeRequired)
                             B -->> E: ack 
-                            E ->> C: audit(cui,negative_outcome_sended)
+                            E ->> C: audit(cui,negative_outcome_sended_from_<ET>)
                             C -->> E: ack
                             opt
                                 B ->> E: request_instance_document(cui, resource_id)

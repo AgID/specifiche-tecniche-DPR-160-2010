@@ -61,7 +61,7 @@ paths:
 
     /request_correction:
         post:
-            description: Richiesta regolarizzazione
+            description: Inoltro di una richiesta di correzione a una data istanza di procedimento.
             requestBody:
                 content:
                     application/json:
@@ -86,7 +86,7 @@ paths:
 
     /request_integration:
         post:
-            description: Richiesta integrazioni
+            description: Inoltro di una richiesta di integrazioni a una data istanza di procedimento.
             requestBody:
                 content:
                     application/json:
@@ -202,7 +202,7 @@ paths:
 
     /notify:
         post:
-            description: Notifica eventi di processo
+            description: Notifica eventi di processo di una data istanza di procedimento.
             requestBody:
                 content:
                     application/json:
@@ -499,7 +499,7 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
 
     securitySchemes:
         bearerAuth:
@@ -512,6 +512,6 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
             name: Agid-JWT-Signature
             in: header

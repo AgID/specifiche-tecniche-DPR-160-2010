@@ -29,6 +29,10 @@ paths:
                     application/json:
                         schema:
                             type: object
+                            required:
+                                - cui
+                                - requester_administration
+                                - operation
                             properties:
                                 cui:
                                     $ref: "#/components/schemas/cui"
@@ -38,6 +42,9 @@ paths:
                                     enum:
                                         - send_instance
                                         - notify
+                                requester_administration:
+                                    title: amministrazione richiedente
+                                    $ref: "#/components/schemas/AdministrationSchema"
                                 error:
                                     $ref: "#/components/schemas/Error"
                                 requester_administration:
@@ -60,7 +67,7 @@ paths:
                   Agid-JWT-Signature: []
 
     /send_conclusions:
-        description: Invio conclusioni
+        description: Inoltro delle conclusioni delle proprie istruttorie in relazione a una data instanza di procedimento
         post:
             requestBody:
                 content:
@@ -85,12 +92,21 @@ paths:
 
     /request_cdss:
         post:
-            description: Richiesta convocazione Conferenza dei Servizi Sincrona (CdSS)
+            description: Richiesta convocazione Conferenza dei Servizi Sincrona (CdSS) in relazione a una data instanza di procedimento
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/cui"
+                            type: object
+                            required:
+                                - cui
+                                - requester_administration
+                            properties:
+                                cui: 
+                                    $ref: "#/components/schemas/cui"
+                                requester_administration:
+                                    title: amministrazione richiedente
+                                    $ref: "#/components/schemas/AdministrationSchema"
                 required: true
             responses:
                 "200":
@@ -109,7 +125,7 @@ paths:
 
     /request_integration:
         post:
-            description: Richiesta integrazioni
+            description: Richiesta integrazioni in relazione a una data instanza di procedimento
             requestBody:
                 content:
                     application/json:
@@ -134,7 +150,7 @@ paths:
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
-                Recupero risorsa documento per un dato CUI.
+                Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
                 Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
             
             parameters:
@@ -417,6 +433,7 @@ components:
                 - instance_descriptor_version
                 - negative_outcome_motivation
                 - conclusions_type
+                - requester_administration
             properties:
                 conclusions_type:
                     type: string
@@ -429,6 +446,9 @@ components:
                 negative_outcome_motivation:
                     type: string
                     minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di richiesta sospensione", univoco per erogatore e CUI.UUID
                     type: string
@@ -444,7 +464,19 @@ components:
                     - S256
                     - S384
                     - S512
-
+            example:
+                conclusions_type: "suspension_requested"
+                cui: 
+                    context: "string"
+                    data: "2024-07-10"
+                    progressivo: "string"
+                    uuid: "string"
+                instance_descriptor_version: "string"
+                negative_outcome_motivation: "string"
+                resource_id: "string"
+                hash: "string"
+                alg_hash: "S256"
+                
         ConformationRequired:
             type: object
             required:
@@ -453,6 +485,7 @@ components:
                 - date
                 - conformation_requested
                 - conclusions_type
+                - requester_administration
             properties:
                 conclusions_type:
                     type: string
@@ -468,6 +501,9 @@ components:
                 conformation_requested:
                     type: string
                     minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
                     type: string
@@ -490,6 +526,7 @@ components:
                 - instance_descriptor_version
                 - positive_outcome
                 - conclusions_type
+                - requester_administration
             properties:
                 conclusions_type:
                     type: string
@@ -502,6 +539,9 @@ components:
                 positive_outcome:
                     type: string
                     minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
                     type: string
@@ -527,7 +567,7 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
 
     securitySchemes:
         bearerAuth:
@@ -540,6 +580,6 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
             name: Agid-JWT-Signature
             in: header
