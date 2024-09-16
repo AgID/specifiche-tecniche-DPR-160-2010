@@ -1515,7 +1515,7 @@ paths:
 
       responses:
         "200":
-          description: Elenco dei procedimenti richiesti
+          description: Elenco SUAP richiesto
           content:
             application/json:
               schema:

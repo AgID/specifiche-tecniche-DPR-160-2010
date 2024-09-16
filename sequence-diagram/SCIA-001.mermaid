@@ -50,7 +50,7 @@ sequenceDiagram
 			C -->> B: ack
 		end 
 		
-		Note over B: concluso il tempo di richiesta integrazione OR tutti gli enti terzi hanno richiesto integrazione
+		Note over B: concluso il tempo di richiesta integrazione OR almeno un ente terzo ha richiesto integrazione
         B ->> F: request_integration(cui, instance_descriptor_version,list_of_integration_list,integration_document_list)
         F -->> B: ack
         B ->> C: audit(cui,integration_requested)
@@ -156,15 +156,99 @@ sequenceDiagram
             B ->> C: audit(cui,end_by_suspension_requested)
             C -->> B: ack
         else concluso tempo istanza o tutti gli enti terzi hanno inoltrato conclusione, nessuna richiesta sospesione,almeno una richiesta conformazione
-            B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_requested)
+            B ->> F: notify(cui, instance_descriptor_version, resource_id)
             F -->> B: ack
-            F -) P: notification(cui,end_by_conformation_requested)               
+            opt
+            loop recupero documenti di richiesta conformazione degli ET
+                F ->> B: request_instance_document(cui, resource_id)
+                note right of F: resource_id in integration_document_list #cambiare il nome di integration_document_list con uno generico
+                B -->> F: instanceDocument    
+                end
+            end 
+            F -) P: notification(cui,conformation_requested)
+            B ->> C: request_update_times(cui,times)
+            C -->> B: instanceDescriptor
             par per ogni ente terzo interessato
-                B ->> E: notify(cui, instance_descriptor_version,end_by_conformation_requested)
+                B ->> E: notify(cui, instance_descriptor_version,conformation_requested)
                 E -->> B: ack
             end
-            B ->> C: audit(cui,end_by_conformation_requested)
-            C -->> B: ack
+                alt concluso tempo di conformazione senza risposta dal presentatore
+                    B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
+                    F -->> B: ack
+                    par per ogni ente terzo interessato
+                        B ->> E: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
+                        E -->> B: ack
+                    end
+                    B ->> C: audit(cui,end_by_conformation_times_expired)
+                    C -->> B: ack
+                else entro il tempo di conformazione del presentatore
+                    P --) F: instanceConformated
+                    F ->> B: send_instance(SendInstanceRequest)
+                    B -->> F: ack
+                    F ->> C: audit(cui, instance_conformated_to_<BO>_sended)
+                    note right of F: <BO> codice BackOffice
+                    C -->> F: ack
+                    loop per ogni procedimento di interesse parte dell'istanza soggetto a conformazione
+                        B ->> F: request_instance_document(cui, resource_id)
+                        note left of B: resource_id da instance_index
+                        F -->> B: instanceDocument
+                    end
+                    B ->> C: audit(cui, instance_conformated_retrived)
+                    C -->> B: ack
+                    par per ogni ente terzo interessato
+                        B ->> E: send_instance(SendInstanceRequest)
+                        E -->> B: ack
+                        B ->> C: audit(cui, instance_conformated_to_<ET>_sended)
+                        note left of E: <ET> codice ente terzo
+                        C -->> B: ack
+                        loop per ogni procedimento di interesse parte dell'istanza soggetto a conformazione
+                            E ->> B: request_instance_document(cui, resource_id)
+                            note left of E: resource_id da instance_index
+                            B -->> E: instanceDocument
+                        end
+                        E ->> C: audit(cui, instance_conformated_retrived)
+                        C -->> E: ack
+                        alt
+                            E ->> B: notify(cui, instance_descriptor_version, negative_conformation)
+                            B -->> E: ack
+                            E ->> C: audit(cui, negative_conformation_from_<ET>)
+                            C -->> E: ack
+                        else
+                            E ->> B: notify(cui, instance_descriptor_version, positive_conformation)
+                            B -->> E: ack
+                            E ->> C: audit(cui, positive_conformation_from_<ET>)
+                            C -->> E: ack
+                        end
+                    end
+                    alt tutti gli enti hanno inoltrato un esito positivo per la conformazione
+                        B ->> F: notify(cui, instance_descriptor_version,end_by_positive_conformation)
+                        F -->> B: ack  
+                        F -) P: notification(cui,end_by_positive_conformation)          
+                        par per ogni ente terzo interessato
+                            B ->> E: notify(cui, instance_descriptor_version,end_by_positive_conformation)
+                            E -->> B: ack
+                        end
+                        B ->> C: audit(cui,end_by_positive_conformation_from_<ET>)
+                        C -->> B: ack
+                    else almeno un ente ha inoltrato un esito negativo per la conformazione
+                        B ->> F: notify(cui, instance_descriptor_version,end_by_negative_conformation)
+                        F -->> B: ack
+                        opt
+                            loop recupero documenti di richiesta integrazione degli ET
+                                F ->> B: request_instance_document(cui, resource_id)
+                                note right of F: resource_id in integration_document_list
+                                B -->> F: instanceDocument    
+                            end
+                        end 
+                        F -) P: notification(cui,end_by_negative_conformation)          
+                        par per ogni ente terzo interessato
+                            B ->> E: notify(cui, instance_descriptor_version,end_by_negative_conformation)
+                            E -->> B: ack
+                        end
+                        B ->> C: audit(cui,end_by_negative_conformation_from_<ET>)
+                        C -->> B: ack
+                    end
+                end
         end
 
 
