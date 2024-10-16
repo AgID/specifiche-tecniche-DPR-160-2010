@@ -331,7 +331,6 @@ components:
                                 title: dscrizione della risorsa
                                 type: string
                                 minLength: 1
-                                
                             resource_id:                            
                                 title: id della risorsa, univoco per erogatore e CUI.UUID
                                 type: string
