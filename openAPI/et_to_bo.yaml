@@ -282,9 +282,10 @@ components:
             description: indice istanza
             items:
                 type: object
-                required:
+                required: 
                 - code
                 - ref
+                - description
                 - resource_id
                 - hash
                 - alg_hash
@@ -295,6 +296,10 @@ components:
                         minLength: 1
                     ref:                            
                         title: riferimento all'elemento dell'istanza relativo al procedimento
+                        type: string
+                        minLength: 1
+                    description:                            
+                        title: dscrizione della risorsa
                         type: string
                         minLength: 1
                     resource_id:                            
