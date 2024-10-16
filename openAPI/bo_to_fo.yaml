@@ -314,6 +314,7 @@ components:
                         required:
                         - code
                         - ref
+                        - description
                         - resource_id
                         - hash
                         - alg_hash
@@ -326,6 +327,11 @@ components:
                                 title: riferimento all'elemento dell'istanza relativo al procedimento
                                 type: string
                                 minLength: 1
+                            description:                            
+                                title: dscrizione della risorsa
+                                type: string
+                                minLength: 1
+                                
                             resource_id:                            
                                 title: id della risorsa, univoco per erogatore e CUI.UUID
                                 type: string
