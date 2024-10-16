@@ -7,6 +7,9 @@ required:
 - version
 - municipality
 - usecase_proceedings
+- instance_status
+- times
+- administrative_regime 
 properties:
   version:
     "$id": "#root/version"
@@ -23,7 +26,7 @@ properties:
   
   legal_person:
     "$id": "#root/legal_person"
-    title: codice fiscale persona giuridica
+    title: codice fiscale persona giuridica necessario sempre tranne nei flussi previsti tra front office suap e comunica per i quali il codice fiscale non è ancora noto
     type: string
     pattern: "^[0-9]{11}|^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$"
   instance_status:
@@ -38,7 +41,7 @@ properties:
       properties:
         state:
           "$id": "#root/instance_status/state"
-          title: stato dell'istanza
+          title: stato dell'istanza, stato inziiale da impostare in started
           type: string
           enum:
           - started
