@@ -314,6 +314,7 @@ components:
                         required:
                         - code
                         - ref
+                        - description
                         - resource_id
                         - hash
                         - alg_hash
@@ -324,6 +325,10 @@ components:
                                 minLength: 1
                             ref:                            
                                 title: riferimento all'elemento dell'istanza relativo al procedimento
+                                type: string
+                                minLength: 1
+                            description:                            
+                                title: dscrizione della risorsa
                                 type: string
                                 minLength: 1
                             resource_id:                            
@@ -639,7 +644,7 @@ components:
                         mime_type:
                           type: string
                           enum:
-                            - application/pdf
+                            - application/pdf|application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1

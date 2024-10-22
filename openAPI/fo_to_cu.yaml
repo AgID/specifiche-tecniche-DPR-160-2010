@@ -348,6 +348,8 @@ components:
                 mime_type: 
                     title: mime type della distinta comunica
                     type: string
+                    enum:
+                      - application/xml
         comunica-cui-signed:             
             type: object
             description: Distinta Comunica firmata
@@ -366,6 +368,8 @@ components:
                 mime_type: 
                     title: mime type della distinta comunica firmata
                     type: string
+                    enum:
+                      - application/pdf|application/pkcs7-mime
         FOPortal:
             type: object
             description: Url portale Frontoffice SUAP
