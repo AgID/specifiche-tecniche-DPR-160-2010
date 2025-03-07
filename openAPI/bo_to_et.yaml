@@ -467,6 +467,11 @@ components:
                     uuid: "string"
                 instance_descriptor_version: "string"
                 negative_outcome_motivation: "string"
+                requester_administration: 
+                    ipacode: "string"
+                    officecode: "string"
+                    version: "00.00.00"
+                    description: "string"
                 resource_id: "string"
                 hash: "string"
                 alg_hash: "S256"
@@ -572,6 +577,9 @@ components:
                 conformation_outcome:
                     type: string
                     minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di parere della conformazione", univoco per erogatore e CUI.UUID
                     type: string
