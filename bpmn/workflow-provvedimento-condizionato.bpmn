@@ -1220,8 +1220,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0k24tao_di" bpmnElement="Flow_0k24tao">
-        <di:waypoint x="4140" y="1112" />
-        <di:waypoint x="4140" y="745" />
+        <di:waypoint x="4120" y="1112" />
+        <di:waypoint x="4120" y="745" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mr34l5_di" bpmnElement="Flow_1mr34l5">
         <di:waypoint x="3545" y="720" />
@@ -1276,8 +1276,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_012dbh1_di" bpmnElement="Flow_012dbh1">
         <di:waypoint x="4437" y="950" />
-        <di:waypoint x="4140" y="950" />
-        <di:waypoint x="4140" y="745" />
+        <di:waypoint x="4160" y="950" />
+        <di:waypoint x="4160" y="740" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_1q6vlqe_di" bpmnElement="Activity_1v4302t">
         <dc:Bounds x="3470" y="1040" width="100" height="80" />
@@ -1446,9 +1446,9 @@
         <dc:Bounds x="4437" y="909" width="165" height="82" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1r1buj3" bpmnElement="Event_1s6fa1j">
-        <dc:Bounds x="4122" y="1112" width="36" height="36" />
+        <dc:Bounds x="4102" y="1112" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="4160" y="1144" width="39" height="14" />
+          <dc:Bounds x="4140" y="1144" width="39" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_1har0bp_di" bpmnElement="Participant_1har0bp" isHorizontal="true">
@@ -2671,8 +2671,8 @@
       <bpmndi:BPMNEdge id="Flow_11ztxk9_di" bpmnElement="Flow_11ztxk9" bioc:stroke="#fb8c00" color:border-color="#fb8c00">
         <di:waypoint x="4370" y="1892" />
         <di:waypoint x="4370" y="1520" />
-        <di:waypoint x="4140" y="1520" />
-        <di:waypoint x="4140" y="1148" />
+        <di:waypoint x="4120" y="1520" />
+        <di:waypoint x="4120" y="1148" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_14124sr_di" bpmnElement="Flow_14124sr" bioc:stroke="#1e88e5" color:border-color="#1e88e5">
         <di:waypoint x="5020" y="2291" />
