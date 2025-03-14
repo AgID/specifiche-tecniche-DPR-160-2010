@@ -24,7 +24,8 @@ paths:
     
 
     /send_instance:
-        description: Invio riferimenti istanza
+        description: Inoltro dei riferimenti a un' istanza di procedimento.
+ 
         post:
             requestBody:
                 content:
@@ -51,7 +52,7 @@ paths:
     
     /notify:
         post:
-            description: Notifica eventi di processo
+            description: Notifica eventi di processo di una data istanza di procedimento.
             requestBody:
                 content:
                     application/json:
@@ -161,6 +162,7 @@ components:
                 required:
                 - code
                 - ref
+                - description
                 - resource_id
                 - hash
                 - alg_hash
@@ -171,6 +173,10 @@ components:
                         minLength: 1
                     ref:                            
                         title: riferimento all'elemento dell'istanza relativo al procedimento
+                        type: string
+                        minLength: 1
+                    description:                            
+                        title: dscrizione della risorsa
                         type: string
                         minLength: 1
                     resource_id:                            
@@ -595,7 +601,7 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
 
     securitySchemes:
         bearerAuth:
@@ -608,6 +614,6 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
             name: Agid-JWT-Signature
             in: header
