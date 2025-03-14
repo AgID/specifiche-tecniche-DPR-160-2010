@@ -143,6 +143,30 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+      /delete_instance:
+        description: Eliminazione di sistema di una istanza
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DeleteInstanceRequest"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
@@ -665,6 +689,7 @@ components:
             required:
                 - code
                 - message
+
         SendInstanceRequest:
             type: object
             required:
@@ -682,6 +707,13 @@ components:
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
 
+        DeleteInstanceRequest:
+            type: object
+            required:
+                - cui
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
      
     headers:
         Agid-JWT-Signature:
