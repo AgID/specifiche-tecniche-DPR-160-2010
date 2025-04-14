@@ -817,7 +817,7 @@
       <bpmn:incoming>Flow_0hlssrq</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1deyc9l" />
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_002dpa7" name="Prima conclusione per conformazione positiva o esito positivo" sourceRef="Gateway_1a9kkun" targetRef="Event_1cxz5uw" />
+    <bpmn:sequenceFlow id="Flow_002dpa7" name="Rilascio provvedimento condizionato in caso di conformazione positiva o esito positivo" sourceRef="Gateway_1a9kkun" targetRef="Event_1cxz5uw" />
     <bpmn:sendTask id="Activity_098w9u4" name="trasmissione per controllo">
       <bpmn:incoming>Flow_1qmwsav</bpmn:incoming>
       <bpmn:outgoing>Flow_0y8g24v</bpmn:outgoing>
@@ -1620,7 +1620,7 @@
         <di:waypoint x="3750" y="2050" />
         <di:waypoint x="3892" y="2050" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="3765" y="1947" width="79" height="66" />
+          <dc:Bounds x="3768" y="1947" width="74" height="93" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0jiog3x_di" bpmnElement="Flow_0jiog3x">
