@@ -99,6 +99,7 @@ paths:
                                     enum:
                                         - request_correction
                                         - request_integration
+                                        - request_conformation
                                         - notify
                                 error:
                                     $ref: "#/components/schemas/Error"
