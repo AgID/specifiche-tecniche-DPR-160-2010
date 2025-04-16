@@ -22,7 +22,7 @@ servers:
 
 paths:
   /request_cui:
-    descrption: Richiesta del CUI
+    description: Richiesta del CUI
     post:
       requestBody:
         content:
