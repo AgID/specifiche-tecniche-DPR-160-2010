@@ -262,9 +262,10 @@ components:
                                 - refused
                                 - integration_requested
                                 - ended_by_integration_times_expired
+                                - integrated
                                 - conformation_requested
                                 - ended_by_conformation_times_expired
-                                - integrated
+                                - conformated
                                 - cdss_convened
                                 - ended_by_suspension_requested
                                 - ended_by_positive_outcome
