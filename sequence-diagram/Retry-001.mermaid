@@ -19,7 +19,7 @@ sequenceDiagram
     C -->> A: ack
 
     alt Rilevata incoerenza nei dai ricevuti
-        B->> A: retry(cui, operation_XXX, error)
+        B->> A: retry(cui, operation_XXX, requester_administration, error)
         A -->> B: ack
 
         B->> C: audit(cui,retry_requested_for_<operation_XXX>)
