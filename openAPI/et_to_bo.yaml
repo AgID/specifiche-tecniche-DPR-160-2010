@@ -59,7 +59,7 @@ paths:
                   Agid-JWT-Signature: []
 
     /send_instance:
-        description: Invio riferimenti istanza
+        description: Inoltro dei riferimenti a un' istanza di procedimento.
         post:
             requestBody:
                 content:
@@ -85,7 +85,7 @@ paths:
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: |
-                Recupero risorsa documento per un dato CUI.
+                Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
                 Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
 
             parameters:
@@ -176,7 +176,7 @@ paths:
 
     /notify:
         post:
-            description: Notifica eventi di processo
+            description: Notifica eventi di processo di una data istanza di procedimento.
             requestBody:
                 content:
                     application/json:
@@ -282,9 +282,10 @@ components:
             description: indice istanza
             items:
                 type: object
-                required:
+                required: 
                 - code
                 - ref
+                - description
                 - resource_id
                 - hash
                 - alg_hash
@@ -295,6 +296,10 @@ components:
                         minLength: 1
                     ref:                            
                         title: riferimento all'elemento dell'istanza relativo al procedimento
+                        type: string
+                        minLength: 1
+                    description:                            
+                        title: dscrizione della risorsa
                         type: string
                         minLength: 1
                     resource_id:                            
@@ -672,6 +677,7 @@ components:
                         - end_by_integration_times_expired
                         - end_by_submitter_cancel_requested
                         - integration_request_time_expired
+                        - conformation_outcome_times_expired
                         
         TransferOutcomeNotifyMessage:
             type: object
@@ -689,6 +695,8 @@ components:
                     enum:
                         - end_by_suspension_requested
                         - end_by_conformation_requested
+                        - end_by_positive_conformation
+                        - end_by_negative_conformation
                         - end_by_positive_outcome
                         - end_by_negative_outcome
                 resource_id:
@@ -723,10 +731,21 @@ components:
                         title: "indica il formato dei dati previsto per l'atto amministrativo"
                         type: string
                         minLength: 1
-                    cdss_admin_act_filename:
-                        title: "filename dell'atto amministrativo da allegare per la convocazione della Conferenza dei Servizi Sincrona"
+                    resource_id:
+                        title: se presente, id della risorsa documento correlata all'evento notificato
                         type: string
                         minLength: 1
+                    hash:
+                        title: hash risorsa
+                        type: string
+                        minLength: 1
+                    alg_hash:
+                        title: algoritmo hash applicato
+                        type: string
+                        enum:
+                        - S256
+                        - S384
+                        - S512
                     cdss_channel:
                         type: string
                         title: "canale utilizzato per la convocazione della Conferenza dei Servizi Sincrona"

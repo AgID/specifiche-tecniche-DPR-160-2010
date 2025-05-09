@@ -258,7 +258,8 @@ components:
                                 - integrated
                                 - cdss_convened
                                 - ended_by_suspension_requested
-                                - ended_by_conformation_requested
+                                - ended_by_positive_conformation
+                                - ended_by_negative_conformation
                                 - ended_by_proceeding_time_expired
                                 - ended_by_positive_outcome
                                 - ended_by_negative_outcome
@@ -445,6 +446,14 @@ components:
                                             - S256
                                             - S384
                                             - S512
+                                        code:
+                                          title: identificativo dell'allegato presente nel Catalogo
+                                          type: string
+                                          minLength: 1
+                                        version:
+                                          title: versione dell'allegato presente nel Catalogo
+                                          type: string
+                                          minLength: 1                                            
                                         form:                      
                                             title: riferimento agli oggetti per la validazione
                                             type: object
@@ -499,7 +508,7 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
 
     securitySchemes:
         bearerAuth:
@@ -512,6 +521,6 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
             name: Agid-JWT-Signature
             in: header

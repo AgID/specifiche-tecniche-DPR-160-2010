@@ -9,6 +9,7 @@ items:
   - code
   - ref
   - resource_id
+  - decription
   - hash
   - alg_hash
   properties:
@@ -22,6 +23,10 @@ items:
         title: riferimento all'elemento dell'istanza relativo al procedimento
         type: string
         minLength: 1
+      description:                            
+          title: dscrizione della risorsa
+          type: string
+          minLength: 1        
       resource_id:
         "$id": "#root/resource_id"
         title: id della risorsa, univoco per erogatore e CUI.UUID
