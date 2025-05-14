@@ -320,7 +320,7 @@ components:
       - usecase_proceedings
       - instance_status
       - times
-      - administrative_regime      
+      - workflow      
       properties:
         version:          
           title: numero versione del descrittore
@@ -376,7 +376,7 @@ components:
         times:          
           $ref: "#/components/schemas/Times"  
         
-        administrative_regime:          
+        workflow:          
           type: object
           title: regime amministrativo dell'istanza          
           
