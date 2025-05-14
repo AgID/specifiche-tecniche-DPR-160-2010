@@ -217,6 +217,9 @@ components:
             - version
             - municipality
             - usecase_proceedings
+            - instance_status
+            - times
+            - administrative_regime
             properties:
                 version:          
                     title: numero versione del descrittore
