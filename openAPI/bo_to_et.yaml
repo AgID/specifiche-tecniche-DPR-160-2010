@@ -437,6 +437,7 @@ components:
                     type: string
                     enum: 
                     - suspension_requested
+                    - suspension_requested_for_impediments
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
