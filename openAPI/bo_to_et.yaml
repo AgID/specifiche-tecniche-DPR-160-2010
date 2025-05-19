@@ -302,7 +302,7 @@ components:
                     type: string
                     format: date
                 
-                progressivo:
+                progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
 
@@ -463,7 +463,7 @@ components:
                 cui: 
                     context: "string"
                     data: "2024-07-10"
-                    progressivo: "string"
+                    progressive: "string"
                     uuid: "string"
                 instance_descriptor_version: "string"
                 negative_outcome_motivation: "string"
