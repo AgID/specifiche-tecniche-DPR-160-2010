@@ -29,8 +29,8 @@
     <bpmn:messageFlow id="Flow_0elppbb" name="rich. regolarizzazione SUAP" sourceRef="Participant_1w8ua7s" targetRef="IntermediateCatchEvent_0w0gxh5" />
     <bpmn:messageFlow id="Flow_1wud7os" name="rigetto pratica" sourceRef="Participant_1w8ua7s" targetRef="IntermediateCatchEvent_1vshc3j" />
     <bpmn:messageFlow id="Flow_1giqtf1" name="superamento tempi max procedimento" sourceRef="Participant_1w8ua7s" targetRef="IntermediateCatchEvent_18z7wn4" />
-    <bpmn:messageFlow id="Flow_0nspmi7" name="superamento tempi max integrazione" sourceRef="Participant_1w8ua7s" targetRef="IntermediateCatchEvent_1n05eu9" />
-    <bpmn:messageFlow id="Flow_19vkw02" name="riceziome integrazione" sourceRef="IntermediateThrowEvent_0ox84ha" targetRef="Participant_1w8ua7s" />
+    <bpmn:messageFlow id="Flow_0nspmi7" name="superamento tempi max conformazione" sourceRef="Participant_1w8ua7s" targetRef="IntermediateCatchEvent_1n05eu9" />
+    <bpmn:messageFlow id="Flow_19vkw02" name="riceziome conformazione" sourceRef="IntermediateThrowEvent_0ox84ha" targetRef="Participant_1w8ua7s" />
     <bpmn:messageFlow id="Flow_111c6uy" name="Inoltro conclusione" sourceRef="Participant_1w8ua7s" targetRef="ReceiveTask_1otfv5x" />
     <bpmn:messageFlow id="Flow_0beef7n" name="notifica invio ricevuta" sourceRef="Event_0q6239c" targetRef="Participant_1w8ua7s" />
     <bpmn:messageFlow id="Flow_1mz6tsa" name="richiesta conformazione" sourceRef="Participant_1xn6pbn" targetRef="Participant_1w8ua7s" />
@@ -234,7 +234,7 @@
       <bpmn:incoming>Flow_0qd1ody</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0sgf5zc" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_0h2qvus" name="richieste integrazione">
+    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_0h2qvus" name="richieste conformazione">
       <bpmn:incoming>SequenceFlow_1uqnbqa</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1n02qy4</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1pvnklj</bpmn:outgoing>
@@ -244,7 +244,7 @@
       <bpmn:incoming>SequenceFlow_1pvnklj</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0xt55n8</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_1n05eu9" name="timeout integrazione">
+    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_1n05eu9" name="timeout conformazione">
       <bpmn:incoming>SequenceFlow_1n02qy4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_06fi274</bpmn:outgoing>
       <bpmn:messageEventDefinition />
@@ -719,7 +719,7 @@
       <bpmndi:BPMNShape id="IntermediateCatchEvent_0tmn77t_di" bpmnElement="IntermediateCatchEvent_0h2qvus">
         <dc:Bounds x="1672" y="2077" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1614" y="2104" width="60" height="27" />
+          <dc:Bounds x="1608" y="2104" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="CallActivity_0dwhurt_di" bpmnElement="CallActivity_0dwhurt">
@@ -729,7 +729,7 @@
       <bpmndi:BPMNShape id="IntermediateCatchEvent_13bcsz3_di" bpmnElement="IntermediateCatchEvent_1n05eu9">
         <dc:Bounds x="1902" y="2082" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1833" y="2096" width="60" height="27" />
+          <dc:Bounds x="1827" y="2096" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateThrowEvent_0ox84ha_di" bpmnElement="IntermediateThrowEvent_0ox84ha">
@@ -1069,14 +1069,14 @@
         <di:waypoint x="1920" y="2327" />
         <di:waypoint x="1920" y="2118" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1886" y="2337" width="65" height="40" />
+          <dc:Bounds x="1882" y="2337" width="73" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_19vkw02_di" bpmnElement="Flow_19vkw02" bioc:stroke="#e53935" color:border-color="#e53935">
         <di:waypoint x="2000" y="1712" />
         <di:waypoint x="2000" y="2327" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1973" y="2334.000000000001" width="60" height="27" />
+          <dc:Bounds x="1967" y="2334" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_111c6uy_di" bpmnElement="Flow_111c6uy" bioc:stroke="#fb8c00" color:border-color="#fb8c00">

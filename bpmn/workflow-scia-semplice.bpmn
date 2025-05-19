@@ -14,9 +14,9 @@
     <bpmn:messageFlow id="Flow_0ft84ro" name="ricezione pratica" sourceRef="Task_17mf4pa" targetRef="Participant_0l0guf4" />
     <bpmn:messageFlow id="Flow_1fozt6g" name="chiusura pratica" sourceRef="Activity_0r6myyh" targetRef="Participant_0l0guf4" />
     <bpmn:messageFlow id="Flow_1vqf3xs" name="stop richieste" sourceRef="Task_1x5qyi6" targetRef="Participant_0l0guf4" />
-    <bpmn:messageFlow id="Flow_0vbjaji" name="richieste integrazione" sourceRef="Participant_0l0guf4" targetRef="Task_1wksm3i" />
-    <bpmn:messageFlow id="Flow_17upt1e" name="timeout integrazione" sourceRef="IntermediateThrowEvent_1w90vur" targetRef="Participant_0l0guf4" />
-    <bpmn:messageFlow id="Flow_0rdqo27" name="ricezione integrazione" sourceRef="Task_1j7al3k" targetRef="Participant_0l0guf4" />
+    <bpmn:messageFlow id="Flow_0vbjaji" name="richieste conformazione" sourceRef="Participant_0l0guf4" targetRef="Task_1wksm3i" />
+    <bpmn:messageFlow id="Flow_17upt1e" name="timeout conformazione" sourceRef="IntermediateThrowEvent_1w90vur" targetRef="Participant_0l0guf4" />
+    <bpmn:messageFlow id="Flow_0rdqo27" name="ricezione conformazione" sourceRef="Task_1j7al3k" targetRef="Participant_0l0guf4" />
     <bpmn:messageFlow id="Flow_0z80t3e" name="invio esito controllo" sourceRef="Participant_0l0guf4" targetRef="Task_1tjptl2" />
     <bpmn:messageFlow id="Flow_0k82xg5" name="ricezione conclusione" sourceRef="Task_13g52gj" targetRef="Participant_0l0guf4" />
     <bpmn:messageFlow id="Flow_0p9cwak" sourceRef="IntermediateThrowEvent_0jxewsd" targetRef="IntermediateThrowEvent_1sle98b" />
@@ -423,8 +423,8 @@
     <bpmn:sequenceFlow id="Flow_1mlk1qx" sourceRef="Gateway_0gmzigr" targetRef="Event_0rvr4o5" />
     <bpmn:sequenceFlow id="Flow_1f1wi88" sourceRef="Task_0rm2beb" targetRef="Gateway_1m851z7" />
     <bpmn:sequenceFlow id="Flow_0rtwpsm" sourceRef="IntermediateThrowEvent_0cbtmcv" targetRef="Gateway_1m851z7" />
-    <bpmn:sequenceFlow id="Flow_1jrd0b8" name="&#62;t max integrazione AND NOT(ricezione conformazione)" sourceRef="Gateway_1m851z7" targetRef="Task_0lbnso8" />
-    <bpmn:sequenceFlow id="Flow_18rudsf" name="&#60;= t max integrazione AND ricezione conformazione" sourceRef="Gateway_1m851z7" targetRef="Task_0q3u43v" />
+    <bpmn:sequenceFlow id="Flow_1jrd0b8" name="Superati tempi conformazione" sourceRef="Gateway_1m851z7" targetRef="Task_0lbnso8" />
+    <bpmn:sequenceFlow id="Flow_18rudsf" name="Entro i tempi di conformazione" sourceRef="Gateway_1m851z7" targetRef="Task_0q3u43v" />
     <bpmn:sequenceFlow id="Flow_1s1qwm7" sourceRef="Task_1x5qyi6" targetRef="Gateway_0gmzigr" />
     <bpmn:sequenceFlow id="Flow_1pvelvv" sourceRef="Task_1wksm3i" targetRef="Gateway_0gmzigr" />
     <bpmn:sequenceFlow id="Flow_0emv8o2" name="(t max richieste ET OR (rET1 OR rET2 OR  rETn)) OR (rET1 AND rET2 AND rETn)" sourceRef="Gateway_0gmzigr" targetRef="Task_0aowb4n" />
@@ -753,6 +753,13 @@
         <dc:Bounds x="394" y="1390" width="3486" height="1060" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0nje2zz_di" bpmnElement="Flow_0nje2zz">
+        <di:waypoint x="2820" y="1899" />
+        <di:waypoint x="3005" y="1899" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2920" y="1881" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_11c06lm_di" bpmnElement="Flow_11c06lm">
         <di:waypoint x="3030" y="1924" />
         <di:waypoint x="3030" y="2180" />
@@ -882,7 +889,7 @@
         <di:waypoint x="2276" y="1785" />
         <di:waypoint x="2276" y="1859" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2297" y="1796" width="86" height="53" />
+          <dc:Bounds x="2293" y="1806" width="74" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jrd0b8_di" bpmnElement="Flow_1jrd0b8">
@@ -891,7 +898,7 @@
         <di:waypoint x="2480" y="1899" />
         <di:waypoint x="2530" y="1899" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2317" y="1693" width="86" height="53" />
+          <dc:Bounds x="2324" y="1716" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0rtwpsm_di" bpmnElement="Flow_0rtwpsm">
@@ -992,13 +999,6 @@
       <bpmndi:BPMNEdge id="SequenceFlow_1vorrop_di" bpmnElement="SequenceFlow_1vorrop">
         <di:waypoint x="728" y="1870" />
         <di:waypoint x="1250" y="1870" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nje2zz_di" bpmnElement="Flow_0nje2zz">
-        <di:waypoint x="2820" y="1899" />
-        <di:waypoint x="3005" y="1899" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2920" y="1881" width="59" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_0a87yfw_di" bpmnElement="Task_0kgisnl">
         <dc:Bounds x="1250" y="1848" width="100" height="80" />
@@ -1338,21 +1338,21 @@
         <di:waypoint x="1930" y="2508" />
         <di:waypoint x="1930" y="2280" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1900" y="2517" width="60" height="27" />
+          <dc:Bounds x="1894" y="2517" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17upt1e_di" bpmnElement="Flow_17upt1e" bioc:stroke="#1e88e5" color:border-color="#1e88e5">
         <di:waypoint x="2108" y="1861" />
         <di:waypoint x="2108" y="2508" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2080" y="2512.9999999999964" width="60" height="27" />
+          <dc:Bounds x="2074" y="2513" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0rdqo27_di" bpmnElement="Flow_0rdqo27" bioc:stroke="#1e88e5" color:border-color="#1e88e5">
         <di:waypoint x="2276" y="2280" />
         <di:waypoint x="2276" y="2508" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2250" y="2513.0000000000005" width="60" height="27" />
+          <dc:Bounds x="2244" y="2513" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0z80t3e_di" bpmnElement="Flow_0z80t3e" bioc:stroke="#8e24aa" color:border-color="#8e24aa">
