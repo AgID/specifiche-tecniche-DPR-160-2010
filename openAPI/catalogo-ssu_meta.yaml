@@ -1345,7 +1345,7 @@ paths:
                     - competent_administration
                     - municipality
                   properties:
-                    primary:
+                    proceeding:
                       $ref: "#/components/schemas/GenericEntity"
                     competent_administration:
                       $ref: "#/components/schemas/GenericEntity"
@@ -1412,7 +1412,7 @@ paths:
                     - competent_administration
                     - municipality
                   properties:
-                    primary:
+                    proceeding:
                       $ref: "#/components/schemas/GenericEntity"
                     competent_administration:
                       $ref: "#/components/schemas/GenericEntity"
@@ -1444,7 +1444,7 @@ paths:
   /competent-administrations-systems/{id_competent_administrations_list}:
     get:
       description: |
-         Recupero bulk tuple {amministrazione competente,sistema ente terzo}(tutte le versioni) per una lista di identificativi procedimento
+         Recupero bulk tuple {amministrazione competente,sistema ente terzo}(tutte le versioni) per una lista di identificativi delle amministrazioni competenti
       parameters:
         - in: path
           name: id_competent_administrations_list
@@ -1469,7 +1469,7 @@ paths:
                     - competent_administration
                     - third_party_system
                   properties:
-                    primary:
+                    competent_administration:
                       $ref: "#/components/schemas/ComponentEntity"
                     third_party_system:
                       $ref: "#/components/schemas/third_party_system"
@@ -1627,7 +1627,7 @@ paths:
                     - competent_administration
                     - fo_system
                   properties:
-                    primary:
+                    competent_administration:
                       $ref: "#/components/schemas/ComponentEntity"
                     fo_system:
                       $ref: "#/components/schemas/FOSystemEntity"
@@ -1682,7 +1682,7 @@ paths:
                     - competent_administration
                     - bo_system
                   properties:
-                    primary:
+                    competent_administration:
                       $ref: "#/components/schemas/ComponentEntity"
                     bo_system:
                       $ref: "#/components/schemas/BOSystemEntity"
