@@ -50,7 +50,7 @@ sequenceDiagram
 			C -->> B: ack
 		end 
 		
-		Note over B: concluso il tempo di richiesta conformazione AND almeno un ente terzo ha richiesto integrazione
+		Note over B: concluso il tempo di richiesta conformazione AND almeno un ente terzo ha richiesto la conformazione
         B ->> F: request_conformation(cui, instance_descriptor_version,conformation_list, conformation_document_list)
         F -->> B: ack
         B ->> C: audit(cui,conformation_requested)
@@ -79,7 +79,7 @@ sequenceDiagram
             C -->> B: ack
 
             F -) P: notification(cui,end_by_conformation_times_expired)
-        else entro il tempo di integrazione del presentatore 
+        else entro il tempo di conformazione del presentatore 
             P --) F: instanceConformated
             F ->> B: send_instance(SendInstanceRequest)
             B -->> F: ack
@@ -94,7 +94,7 @@ sequenceDiagram
             B ->> C: audit(cui,instance_conformated_retrived)
             C -->> B: ack
             B ->> C: request_update_times(cui,times)
-            Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per l'integrazione e i giorni passati dall'invio della richiesta
+            Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per la conformazione e i giorni passati dall'invio della richiesta
             C -->> B: instanceDescriptor
             par per ogni ente terzo interessato                
                 B ->> E: send_instance(SendInstanceRequest)
