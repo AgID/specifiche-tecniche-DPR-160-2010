@@ -421,6 +421,13 @@ components:
                                 title: id della risorsa "documento di richiesta integrazioni", univoco per erogatore e CUI.UUID
                                 type: string
                                 minLength: 1
+                            filename:                      
+                                title: filename della risorsa "documento di richiesta integrazioni"
+                                type: string
+                                minLength: 1
+                            mime_type:
+                                title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
+                                type: string
                             hash:
                                 title: hash risorsa
                                 type: string
@@ -483,6 +490,14 @@ components:
                     title: se presente, id della risorsa documento correlata all'evento notificato
                     type: string
                     minLength: 1
+                filename:                      
+                    title: filename della risorsa documento correlata all'evento notificato 
+                    type: string
+                    minLength: 1
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf|application/pkcs7-mime
                 hash:
                     title: hash risorsa
                     type: string
