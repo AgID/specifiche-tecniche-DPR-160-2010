@@ -140,6 +140,44 @@ sequenceDiagram
                 end
             end
             
+            opt L'ente terzo invia dei motivi ostativi
+                E ->> B: notify(cui, instance_descriptor_version,existence_of_impediments)
+                B -->> E: ack
+                E ->> C: audit(cui, existence_of_impediments_from_<ET>, resource_id)
+                C ->> E: ack
+                B ->> E: request_instance_document(cui, resource_id)
+                E ->> B: instanceDocument
+                B ->> F: notify(cui, instance_descriptor_version,existence_of_impediments)
+                F -->> B: ack
+                B ->> C: audit(cui, existence_of_impediments, resource_id)
+                C ->> B: ack
+                B ->> C: request_update_times(cui, times)
+                C ->> B: instanceDescriptor
+                Note right of B: Aggiorna i tempi procedimentali incrementantoli di 10 giorni
+                F ->> B: request_instance_document(cui, resource_id)
+                B ->> F: instanceDocument
+                F -) P: notification(cui,existence_of_impediments)
+                P --) F: response_to_impediments
+                F ->> B: notify(cui, instance_descriptor_version, response_to_impediments_sended)
+                B -->> F: ack
+                F ->> C: audit(cui, response_to_impediments_sended)
+                C -->> F: ack
+                B ->> C: request_update_times(cui, times)
+                C ->> B: instanceDescriptor
+                Note right of B: Aggiorna i tempi procedimentali decrementandoli dei giorni avanzati
+                B ->> F: request_instance_document(cui, resource_id)
+                F ->> B: instanceDocument
+                par Il BO notifica le osservazioni del presentatore a ogni ET che ha inviato i motivi ostativi
+                    B ->> E: notify(cui, instance_descriptor_version, response_to_impediments_received, resource_id)
+                    E -->> B: ack
+                    B ->> C: audit(cui, response_to_impediments_sended_to_<ET>)
+                    C -->> B: ack
+                    E ->> B: request_instance_document(cui, resource_id)
+                    B ->> E: instanceDocument
+                end
+            end
+
+
             alt integrazione non richiesta, oppure richiesta e istanza integrata nei tempi dal presentatore
                 par
                     opt se non si applica silenzio assenso
