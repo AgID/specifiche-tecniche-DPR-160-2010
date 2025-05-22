@@ -32,6 +32,7 @@
     <bpmn:messageFlow id="Flow_1oliij1" sourceRef="Event_1eei2lh" targetRef="Event_0ip855d" />
     <bpmn:messageFlow id="Flow_0r9b5ep" sourceRef="Event_0d30ybh" targetRef="Event_0a416nk" />
     <bpmn:messageFlow id="Flow_1uy8qvo" name="ricezione osservazioni" sourceRef="Activity_1ibjh5q" targetRef="Participant_0l0guf4" />
+    <bpmn:messageFlow id="Flow_0hsu7qc" name="timeout osservazioni" sourceRef="Event_1slx0ry" targetRef="Participant_0l0guf4" />
     <bpmn:textAnnotation id="TextAnnotation_1d1sdbt">
       <bpmn:text>Conferenza di Servizi Sincrona invocata da SUAP dopo raccolta pareri</bpmn:text>
     </bpmn:textAnnotation>
@@ -66,6 +67,7 @@
         <bpmn:flowNodeRef>Event_0ip855d</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_06ebmc1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0d30ybh</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_15zbo82</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:callActivity id="CallActivity_1i2ll5b" name="Regolarizzazione (FO)">
@@ -191,6 +193,9 @@
       <bpmn:incoming>Flow_14zp8kc</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1x67f9x" />
     </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="Event_15zbo82" name="timeout integrazione">
+      <bpmn:messageEventDefinition id="MessageEventDefinition_01vziep" />
+    </bpmn:intermediateCatchEvent>
   </bpmn:process>
   <bpmn:process id="Process_0vxkrl1" isExecutable="false" />
   <bpmn:process id="Process_0cfu63d" isExecutable="false">
@@ -258,6 +263,7 @@
         <bpmn:flowNodeRef>Event_02t0ch2</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1e2nmty</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1ibjh5q</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1slx0ry</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:intermediateThrowEvent id="Event_0cefuad" name="CdSS">
@@ -621,6 +627,7 @@
     <bpmn:intermediateCatchEvent id="Event_02t0ch2" name="fine tempo massimo osservazioni">
       <bpmn:incoming>Flow_0phuauy</bpmn:incoming>
       <bpmn:outgoing>Flow_13n9pc3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0zhdww2</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_16jmdyx" />
     </bpmn:intermediateCatchEvent>
     <bpmn:serviceTask id="Activity_1e2nmty" name="Fermo tempi procedimento">
@@ -631,6 +638,11 @@
     <bpmn:sendTask id="Activity_1ibjh5q" name="Inoltro osservazioni">
       <bpmn:incoming>Flow_1c0avk3</bpmn:incoming>
     </bpmn:sendTask>
+    <bpmn:intermediateThrowEvent id="Event_1slx0ry" name="fine tempo massimo osservazioni">
+      <bpmn:incoming>Flow_0zhdww2</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0gqv5ea" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="Flow_0zhdww2" sourceRef="Event_02t0ch2" targetRef="Event_1slx0ry" />
     <bpmn:textAnnotation id="TextAnnotation_12lg7a0">
       <bpmn:text>Conferenza di Servizi Sincrona richiesta  da almeno un ET</bpmn:text>
     </bpmn:textAnnotation>
@@ -817,6 +829,12 @@
         <dc:Bounds x="2815" y="915" width="30" height="30" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="2839" y="897" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1tisvu9" bpmnElement="Event_15zbo82">
+        <dc:Bounds x="2722" y="1082" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2767" y="1083" width="60" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1q89bug_di" bpmnElement="SequenceFlow_1q89bug">
@@ -1149,6 +1167,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0r3xh7e_di" bpmnElement="Activity_1ibjh5q">
         <dc:Bounds x="2700" y="2170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0j1d7a7" bpmnElement="Event_1slx0ry">
+        <dc:Bounds x="2642" y="1892" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2679" y="1900" width="62" height="40" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_04z4fsu_di" bpmnElement="Activity_0d2kf8p">
         <dc:Bounds x="3440" y="1640" width="100" height="80" />
@@ -1563,6 +1587,11 @@
         <di:waypoint x="2560" y="1572" />
         <di:waypoint x="2560" y="1512" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zhdww2_di" bpmnElement="Flow_0zhdww2">
+        <di:waypoint x="2682" y="1590" />
+        <di:waypoint x="2660" y="1590" />
+        <di:waypoint x="2660" y="1892" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0l0guf4_di" bpmnElement="Participant_0l0guf4" isHorizontal="true">
         <dc:Bounds x="314" y="2508" width="3316" height="262" />
         <bpmndi:BPMNLabel />
@@ -1832,6 +1861,13 @@
         <dc:Bounds x="2610" y="1390" width="100" height="30" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0hsu7qc_di" bpmnElement="Flow_0hsu7qc" bioc:stroke="#0d4372" color:border-color="#0d4372">
+        <di:waypoint x="2660" y="1928" />
+        <di:waypoint x="2660" y="2508" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2629" y="2526" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1dyxsjx">

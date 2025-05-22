@@ -157,23 +157,31 @@ sequenceDiagram
                 F ->> B: request_instance_document(cui, resource_id)
                 B ->> F: instanceDocument
                 F -) P: notification(cui,existence_of_impediments)
-                P --) F: response_to_impediments
-                F ->> B: notify(cui, instance_descriptor_version, response_to_impediments_sended)
-                B -->> F: ack
-                F ->> C: audit(cui, response_to_impediments_sended)
-                C -->> F: ack
-                B ->> C: request_update_times(cui, times)
-                C ->> B: instanceDescriptor
-                Note right of B: Aggiorna i tempi procedimentali decrementandoli dei giorni avanzati
-                B ->> F: request_instance_document(cui, resource_id)
-                F ->> B: instanceDocument
-                par Il BO notifica le osservazioni del presentatore a ogni ET che ha inviato i motivi ostativi
-                    B ->> E: notify(cui, instance_descriptor_version, response_to_impediments_received, resource_id)
-                    E -->> B: ack
-                    B ->> C: audit(cui, response_to_impediments_sended_to_<ET>)
-                    C -->> B: ack
-                    E ->> B: request_instance_document(cui, resource_id)
-                    B ->> E: instanceDocument
+                alt osservazioni inviate nei tempi previsti (10 giorni)
+                    P --) F: response_to_impediments
+                    F ->> B: notify(cui, instance_descriptor_version, response_to_impediments_sended)
+                    B -->> F: ack
+                    F ->> C: audit(cui, response_to_impediments_sended)
+                    C -->> F: ack
+                    B ->> C: request_update_times(cui, times)
+                    C ->> B: instanceDescriptor
+                    Note right of B: Aggiorna i tempi procedimentali decrementandoli dei giorni avanzati
+                    B ->> F: request_instance_document(cui, resource_id)
+                    F ->> B: instanceDocument
+                    par Il BO notifica le osservazioni del presentatore a ogni ET che ha inviato i motivi ostativi
+                        B ->> E: notify(cui, instance_descriptor_version, response_to_impediments_received, resource_id)
+                        E -->> B: ack
+                        B ->> C: audit(cui, response_to_impediments_sended_to_<ET>)
+                        C -->> B: ack
+                        E ->> B: request_instance_document(cui, resource_id)
+                        B ->> E: instanceDocument
+                    end
+                else osservazioni non inviate entro i tempi previsti (10 giorni)
+                    par per ogni ET interessato
+                        B ->> E: notify(cui, instance_descriptor_version,end_by_observations_times_expired)
+                        E -->> B: ack
+                    end
+                    B ->> C: audit(cui, end_by_observations_request_time_expired)
                 end
             end
 
@@ -242,7 +250,7 @@ sequenceDiagram
         end
         B ->> C: audit(cui,end_by_positive_outcome)
         C -->> B: ack
-    else autorizzazione negata
+    else autorizzazione negata OR osservazioni ai motivi ostativi non inviate dal presentatore nei tempi (10 giorni)
         B ->> F: notify(cui, instance_descriptor_version,end_by_negative_outcome,resource_id)
         F -->> B: ack
         F ->> B: request_instance_document(cui, resource_id)
