@@ -141,7 +141,7 @@ sequenceDiagram
             end
             
             opt L'ente terzo invia dei motivi ostativi
-                E ->> B: notify(cui, instance_descriptor_version,existence_of_impediments)
+                E ->> B: send_impediments(Impediments)
                 B -->> E: ack
                 E ->> C: audit(cui, existence_of_impediments_from_<ET>, resource_id)
                 C ->> E: ack
@@ -149,7 +149,7 @@ sequenceDiagram
                 E ->> B: instanceDocument
                 B ->> F: notify(cui, instance_descriptor_version,existence_of_impediments)
                 F -->> B: ack
-                B ->> C: audit(cui, existence_of_impediments, resource_id)
+                B ->> C: audit(cui, impediments_received_from_<ET>, resource_id)
                 C ->> B: ack
                 B ->> C: request_update_times(cui, times)
                 C ->> B: instanceDescriptor
@@ -158,10 +158,10 @@ sequenceDiagram
                 B ->> F: instanceDocument
                 F -) P: notification(cui,existence_of_impediments)
                 alt osservazioni inviate nei tempi previsti (10 giorni)
-                    P --) F: response_to_impediments
-                    F ->> B: notify(cui, instance_descriptor_version, response_to_impediments_sended)
+                    P --) F: observations_to_impediments
+                    F ->> B: notify(cui, instance_descriptor_version, observations_to_impediments_provided)
                     B -->> F: ack
-                    F ->> C: audit(cui, response_to_impediments_sended)
+                    F ->> C: audit(cui, observations_to_impediments_provided)
                     C -->> F: ack
                     B ->> C: request_update_times(cui, times)
                     C ->> B: instanceDescriptor
@@ -169,9 +169,9 @@ sequenceDiagram
                     B ->> F: request_instance_document(cui, resource_id)
                     F ->> B: instanceDocument
                     par Il BO notifica le osservazioni del presentatore a ogni ET che ha inviato i motivi ostativi
-                        B ->> E: notify(cui, instance_descriptor_version, response_to_impediments_received, resource_id)
+                        B ->> E: notify(cui, instance_descriptor_version, observations_to_impediments_provided, resource_id)
                         E -->> B: ack
-                        B ->> C: audit(cui, response_to_impediments_sended_to_<ET>)
+                        B ->> C: audit(cui, observations_to_impediments_provided_to_<ET>)
                         C -->> B: ack
                         E ->> B: request_instance_document(cui, resource_id)
                         B ->> E: instanceDocument

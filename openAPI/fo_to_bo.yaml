@@ -209,7 +209,7 @@ paths:
                         schema:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
-                                - $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
+                                - $ref: "#/components/schemas/TransferNotifyMessage"
                 required: true
             responses:
                 "200":
@@ -460,13 +460,14 @@ components:
                         - end_by_submitter_cancel_requested
                         - cdss_convened
 
-        TransferOutcomeNotifyMessage:
+        TransferNotifyMessage:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ConformationMessage"
-
-        OutcomeMessage:
+                - $ref: "#/components/schemas/ImpedimentsMessage"
+        
+        TransferMessage:
             type: object
             required:
                 - cui
@@ -485,6 +486,7 @@ components:
                         - end_by_negative_outcome
                         - end_by_positive_conformation
                         - end_by_negative_conformation
+                        - existence_of_impediments
 
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
@@ -509,6 +511,20 @@ components:
                     - S256
                     - S384
                     - S512
+
+        OutcomeMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - end_by_suspension_requested
+                        - end_by_positive_outcome
+                        - end_by_negative_outcome
+                        - end_by_positive_conformation
+                        - end_by_negative_conformation
         
         ConformationMessage:
             type: object
@@ -523,6 +539,20 @@ components:
                     type: string
                     description: "data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione"
                     format: date      
+        
+        ImpedimentsMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - existence_of_impediments
+                expiration_date:
+                    type: string
+                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
+                    format: date   
 
     headers:
         Agid-JWT-Signature:

@@ -58,6 +58,31 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /notify:
+      post:
+        description: Notifica eventi di processo
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferNotifyMessage"
+          required: true
+        responses:
+          "200":
+            $ref: "#/components/responses/OKRequest"
+          "400":
+            $ref: "#/components/responses/BadRequest"
+          "401":
+            $ref: "#/components/responses/Unauthorized"
+          "500":
+            $ref: "#/components/responses/ServerError"
+          "503":
+            $ref: "#/components/responses/ServiceUnavaliable"
+
+        security:
+          - bearerAuth: [ ]
+            Agid-JWT-Signature: [ ]
+
     /cancel_instance:
         description: richiesta di cancellazione di una data istanza di procedimento da parte del Soggetto Presentatore
         post:
@@ -305,6 +330,62 @@ components:
                 uuid:
                     title: UUID chiave del CUI
                     type: string
+
+        TransferNotifyMessage:
+            type: object
+            oneOf:
+                - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
+        
+        TransferMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    enum:
+                        - existence_of_impediments
+
+                resource_id:
+                    title: se presente, id della risorsa documento correlata all'evento notificato
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename della risorsa documento correlata all'evento notificato 
+                    type: string
+                    minLength: 1
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+
+        ObservationsToImpedimentsMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - observations_to_impediments_provided
                     
         InstanceIndex:
                     type: array
