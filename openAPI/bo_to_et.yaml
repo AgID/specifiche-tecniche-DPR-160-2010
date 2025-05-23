@@ -430,7 +430,7 @@ components:
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
                                 type: string
-                        minLength: 1
+                                minLength: 1
                             hash:
                                 title: hash risorsa
                                 type: string
@@ -468,6 +468,14 @@ components:
                     $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di motivi ostativi", univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename della risorsa "documento di motivi ostativi"
+                    type: string
+                    minLength: 1
+                mime_type:
+                    title: "indica il formato dei dati previsto per il documento di motivi ostativi"
                     type: string
                     minLength: 1
                 hash:
