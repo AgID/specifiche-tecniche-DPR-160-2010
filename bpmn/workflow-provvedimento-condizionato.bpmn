@@ -952,6 +952,10 @@
         <dc:Bounds x="394" y="1390" width="4506" height="1060" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0ybsceu_di" bpmnElement="Flow_0ybsceu">
+        <di:waypoint x="4290" y="1888" />
+        <di:waypoint x="4335" y="1888" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0tbhc7p_di" bpmnElement="Flow_0tbhc7p">
         <di:waypoint x="4385" y="1888" />
         <di:waypoint x="4620" y="1888" />
@@ -1263,10 +1267,6 @@
       <bpmndi:BPMNEdge id="SequenceFlow_1vorrop_di" bpmnElement="SequenceFlow_1vorrop">
         <di:waypoint x="728" y="1870" />
         <di:waypoint x="1250" y="1870" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ybsceu_di" bpmnElement="Flow_0ybsceu">
-        <di:waypoint x="4290" y="1888" />
-        <di:waypoint x="4335" y="1888" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Gateway_0ric0y6_di" bpmnElement="Gateway_0ric0y6" isMarkerVisible="true">
         <dc:Bounds x="4055" y="1863" width="50" height="50" />
