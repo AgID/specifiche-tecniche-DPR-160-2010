@@ -100,7 +100,7 @@ paths:
                                 - cui
                                 - requester_administration
                             properties:
-                                cui: 
+                                cui:
                                     $ref: "#/components/schemas/cui"
                                 requester_administration:
                                     title: amministrazione richiedente
@@ -399,14 +399,14 @@ components:
                                 title: id della risorsa "documento di richiesta integrazioni", univoco per erogatore e CUI.UUID
                                 type: string
                                 minLength: 1
-                            filename:                      
+                            filename:
                                 title: filename della risorsa "documento di richiesta integrazioni"
                                 type: string
                                 minLength: 1
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
                                 type: string
-                        minLength: 1
+                                minLength: 1
                             hash:
                                 title: hash risorsa
                                 type: string
@@ -441,6 +441,7 @@ components:
                     type: string
                     enum: 
                     - negative_outcome
+                    - suspension_requested_for_impediments
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
@@ -468,14 +469,14 @@ components:
                     - S512
             example:
                 conclusions_type: "negative_outcome"
-                cui: 
+                cui:
                     context: "string"
                     data: "2024-07-10"
                     progressive: "string"
                     uuid: "string"
                 instance_descriptor_version: "string"
                 negative_outcome_motivation: "string"
-                requester_administration: 
+                requester_administration:
                     ipacode: "string"
                     officecode: "string"
                     version: "00.00.00"
@@ -483,7 +484,7 @@ components:
                 resource_id: "string"
                 hash: "string"
                 alg_hash: "S256"
-                
+
         ConformationRequired:
             type: object
             required:
@@ -575,7 +576,7 @@ components:
             properties:
                 outcome_type:
                     type: string
-                    enum: 
+                    enum:
                     - positive_conformation
                     - negative_conformation
                 cui:

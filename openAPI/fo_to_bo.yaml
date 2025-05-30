@@ -421,7 +421,7 @@ components:
                                 title: id della risorsa "documento di richiesta integrazioni", univoco per erogatore e CUI.UUID
                                 type: string
                                 minLength: 1
-                            filename:                      
+                            filename:
                                 title: filename della risorsa "documento di richiesta integrazioni"
                                 type: string
                                 minLength: 1
@@ -485,18 +485,19 @@ components:
                         - end_by_negative_outcome
                         - end_by_positive_conformation
                         - end_by_negative_conformation
+                        - existence_of_impediments
 
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
                     type: string
                     minLength: 1
-                filename:                      
+                filename:
                     title: filename della risorsa documento correlata all'evento notificato 
                     type: string
                     minLength: 1
                 mime_type:
                     type: string
-                    enum: 
+                    enum:
                         - application/pdf|application/pkcs7-mime
                 hash:
                     title: hash risorsa
@@ -509,7 +510,7 @@ components:
                     - S256
                     - S384
                     - S512
-        
+
         ConformationMessage:
             type: object
             allOf:
@@ -522,7 +523,7 @@ components:
                 expiration_date:
                     type: string
                     description: "data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione"
-                    format: date      
+                    format: date
 
     headers:
         Agid-JWT-Signature:
