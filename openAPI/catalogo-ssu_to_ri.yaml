@@ -392,6 +392,7 @@ components:
                                         type: string
                                         enum: 
                                            - application/xml
+                                           - application/pkcs7-mime
                                     activity_model: 
                                        title: porzione distinta modello attivita
                                        type: object
@@ -419,6 +420,7 @@ components:
                                             type: string
                                             enum: 
                                                - application/pdf
+                                               - application/pkcs7-mime
                             attachments:                
                                 title: allegati all'istanza relativi al procedimento
                                 type: array
