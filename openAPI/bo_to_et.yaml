@@ -326,7 +326,7 @@ components:
                     type: string
                     format: date
                 
-                progressivo:
+                progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
 
@@ -423,6 +423,14 @@ components:
                                 title: id della risorsa "documento di richiesta integrazioni", univoco per erogatore e CUI.UUID
                                 type: string
                                 minLength: 1
+                            filename:                      
+                                title: filename della risorsa "documento di richiesta integrazioni"
+                                type: string
+                                minLength: 1
+                            mime_type:
+                                title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
+                                type: string
+                        minLength: 1
                             hash:
                                 title: hash risorsa
                                 type: string
@@ -496,10 +504,15 @@ components:
                 cui: 
                     context: "string"
                     data: "2024-07-10"
-                    progressivo: "string"
+                    progressive: "string"
                     uuid: "string"
                 instance_descriptor_version: "string"
                 negative_outcome_motivation: "string"
+                requester_administration: 
+                    ipacode: "string"
+                    officecode: "string"
+                    version: "00.00.00"
+                    description: "string"
                 resource_id: "string"
                 hash: "string"
                 alg_hash: "S256"

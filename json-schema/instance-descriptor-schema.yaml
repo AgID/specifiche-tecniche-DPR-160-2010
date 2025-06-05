@@ -17,7 +17,7 @@ properties:
     type: integer
   cui:
     "$id": "#root/cui"
-    "$ref": https://raw.githubusercontent.com/AgID/specifiche-tecniche-DPR-160-2010/json-schema/cui-schema.yaml
+    "$ref": https://raw.githubusercontent.com/AgID/specifiche-tecniche-DPR-160-2010/refs/heads/approved02/json-schema/cui-schema.yaml
   municipality:
     "$id": "#root/municipality"
     title: codice istat 6 cifre del comune in cui l'istanza è stata presentata
@@ -69,7 +69,7 @@ properties:
           format: date-time
   times:
     "$id": "#root/time"
-    $ref: https://raw.githubusercontent.com/AgID/specifiche-tecniche-DPR-160-2010/json-schema/times-schema.yaml  
+    $ref: https://raw.githubusercontent.com/AgID/specifiche-tecniche-DPR-160-2010/refs/heads/approved02/json-schema/times-schema.yaml  
     
   administrative_regime:
     "$id": "#root/administrative_regime"
@@ -121,7 +121,7 @@ properties:
         competent_administration:
           "$id": "#root/usecase_proceedings/competent_administration"
           title: amministrazione competente del procedimento
-          $ref: https://raw.githubusercontent.com/AgID/specifiche-tecniche-DPR-160-2010/json-schema/administration-schema.yaml
+          $ref: https://raw.githubusercontent.com/AgID/specifiche-tecniche-DPR-160-2010/refs/heads/approved02/json-schema/administration-schema.yaml
         form:
           "$id": "#root/usecase_proceedings/form"
           title: riferimento agli oggetti per la validazione

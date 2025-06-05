@@ -185,7 +185,7 @@ components:
               type: string
               format: date
           
-          progressivo:
+          progressive:
               title: numero progressivo a rotazione annuale
               type: string
 
