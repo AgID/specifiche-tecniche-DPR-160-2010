@@ -9,7 +9,7 @@ items:
   - code
   - ref
   - resource_id
-  - decription
+  - description
   - hash
   - alg_hash
   properties:

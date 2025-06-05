@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    
+    participant F as FrontOffice SUAP  
+    participant B as BackOffice SUAP  
+    participant C as Catalogo SSU  
+   
+    Note over F,C: istanza presentata al BO, inviato audit al catalogo SSU ed errore su send instance a comunica per problemi di infrastruttura
+    Note over F,C: o di controlli lato comunica
+
+    F ->> B: delete_instance(cui)
+    B -->> F: ack
+
+    F ->> C: audit(cui, cu_fail_link|cu_fail_check)
+    C -->> F: ack
+
+    B ->> C: audit(cui, delete_requested_for_cu_fail_link|delete_requested_for_cu_fail_check)
+    C -->> B: ack
