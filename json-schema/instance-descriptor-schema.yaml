@@ -9,7 +9,7 @@ required:
 - usecase_proceedings
 - instance_status
 - times
-- administrative_regime 
+- workflow 
 properties:
   version:
     "$id": "#root/version"
@@ -71,8 +71,8 @@ properties:
     "$id": "#root/time"
     $ref: https://raw.githubusercontent.com/AgID/specifiche-tecniche-DPR-160-2010/refs/heads/approved02/json-schema/times-schema.yaml  
     
-  administrative_regime:
-    "$id": "#root/administrative_regime"
+  workflow:
+    "$id": "#root/workflow"
     title: regime amministrativo dell'istanza
     type: object
     
@@ -82,7 +82,7 @@ properties:
 
     properties:
       id:
-        "$id": "#root/administrative_regime/id"
+        "$id": "#root/workflow/id"
         title: identificativo univoco del regime amministrativo
         type: string
         enum:
@@ -91,7 +91,7 @@ properties:
              - SILENZIO-ASSENSO
              - COMUNICAZIONE
       version:
-        "$id": "#root/administrative_regime/version"
+        "$id": "#root/workflow/version"
         title: version del regime amministrativo
         type: string
         pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
