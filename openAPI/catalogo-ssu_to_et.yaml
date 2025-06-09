@@ -188,7 +188,7 @@ components:
 
         message:
           type: string
-          pattern: ^instance_retrived|integration_requested_from_[0-9]{1,10}|instance_integrated_retrived|suspension_requested_from_[0-9]{1,10}|conformation_requested_from_[0-9]{1,10}|cdss_requested_from_[0-9]{1,10}|positive_outcome_sended_from_[0-9]{1,10}|retry_requested_for_send_instance|retry_requested_for_notify|negative_outcome_sended_from_[0-9]{1,10}|instance_conformated_retrieved$
+          pattern: ^instance_retrived|integration_requested_from_[0-9]{1,10}|instance_integrated_retrived|suspension_requested_from_[0-9]{1,10}|conformation_requested_from_[0-9]{1,10}|cdss_requested_from_[0-9]{1,10}|positive_outcome_sended_from_[0-9]{1,10}|retry_requested_for_send_instance|retry_requested_for_notify|negative_outcome_sended_from_[0-9]{1,10}|instance_conformated_retrieved|conditional_provision_granted_from_[0-9]{1,10}|conditional_provision_extended_from_[0-9]{1,10}|conditional_provision_rescinded_from_[0-9]{1,10}|conditional_provision_denied_from_[0-9]{1,10}$
 
 
         event_time:
@@ -260,7 +260,16 @@ components:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
           type: integer
           format: int32
+        max_gg_inspection:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono effettuare un'ispezione e inviare il relativo esito
+          type: integer
+          format: int32
+        max_gg_prov_cond_ext_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono effettuare una richiesta di proroga per il provvedimento condizionato 
+          type: integer
+          format: int32
         date_cdss:
+          "$id": "#root/time/date_cdss"
           title: data evetuale conferenza di servizi sincrona
           type: string
           format: date
@@ -368,8 +377,8 @@ components:
               enum:
                - SCIA
                - AUTORIZZAZIONE
-               - SILENZIO-ASSENSO
-               - COMUNICAZIONE
+               - PROVVEDIMENTO-CONDIZIONATO
+               
             version:              
               title: version del regime amministrativo
               type: string

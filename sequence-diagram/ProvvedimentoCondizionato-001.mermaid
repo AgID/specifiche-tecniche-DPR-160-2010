@@ -110,18 +110,23 @@ sequenceDiagram
         alt rilascio del provvedimento condizionato
             Note left of ET: Rilascio provvedimento condizionato
             par per ogni ente terzo interessato
-                E ->> B: send_conditional_provision(cui, instance_descriptor_version, conditional_provision_document)
+                E ->> B: send_conditional_provision(ConditionalProvision)
                 B -->> E: ack
-                E ->> C: audit(cui,conditional_provision_granted_from_<ET>)
+                E ->> C: audit(cui, conditional_provision_granted_from_<ET>)
                 C -->> E: ack
             end
             Note left of B: Invio provvedimento condizionato al FO/Presentatore
-            B ->> F: send_conditional_provision(cui, instance_descriptor_version, conditional_provision_document)
+            B ->> F: send_conditional_provision(ConditionalProvision)
             F -->> B: ack
             F -) P: notification(cui,conditional_provision_outcome, conditional_provision_document)
             B ->> C: request_update_times(cui,times)
             Note right of B: Aggiorna i tempi procedimentali incrementandoli di 3 mesi
             C -->> B: instanceDescriptor
+            par per ogni ente terzo interessato       
+                B ->> E: notify(cui, instance_descriptor_version, conditional_provision_granted)
+                E -->> B: ack     
+            end
+
             Note left of E: L'Ente effettua il sopralluogo
             opt proroga del provvedimento condizionato AND impresa avviata nei tempi concessi dal provvedimento
                 par almeno un ente terzo invia la proroga
@@ -132,7 +137,11 @@ sequenceDiagram
                 end
                 B ->> C: request_update_times(cui,times)
                 Note right of B: Aggiorna i tempi procedimentali incrementandoli di altri 3 mesi
-                C -->> B: instanceDescriptor              
+                C -->> B: instanceDescriptor
+                par per ogni ente terzo interessato       
+                    B ->> E: notify(cui, instance_descriptor_version, conditional_provision_extended)
+                    E -->> B: ack     
+                end  
             end
             alt impresa avviata nei tempi concessi dal provvedimento e OK sopralluogo
                 par per ogni ente terzo interessato
@@ -144,8 +153,10 @@ sequenceDiagram
                 B ->> F: send_conclusions(DefinitiveProvisionGranted)
                 F -->> B: ack
                 F -) P: notification(cui, definitive_provision_outcome, definitive_provision_document)
-                B ->> E: notify(cui, instance_descriptor_version, end_by_definitive_provision_granted)
-                E -->> B: ack
+                par per ogni ente terzo interessato
+                    B ->> E: notify(cui, instance_descriptor_version, end_by_definitive_provision_granted)
+                    E -->> B: ack
+                end
                 B ->> C: audit(cui, end_by_definitive_provision_granted)
                 C -->> B: ack              
             else impresa avviata nei tempi concessi dal provvedimento e KO sopralluogo
@@ -165,8 +176,10 @@ sequenceDiagram
                 B ->> F: send_conclusions(ConditionalProvisionRescinded)
                 F -->> B: ack
                 F -) P: notification(cui, conditional_provision_outcome, conditional_provision_document)
-                B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_rescinded)
-                E -->> B: ack
+                par per ogni ente terzo interessato
+                    B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_rescinded)
+                    E -->> B: ack
+                end
                 B ->> C: audit(cui, end_by_conditional_provision_rescinded)
                 C -->> B: ack              
             else impressa NON avviata nei tempi concessi dal provvedimento
@@ -179,15 +192,17 @@ sequenceDiagram
                 B ->> F: send_conclusions(ConditionalProvisionRescinded)
                 F -->> B: ack
                 F -) P: notification(cui, conditional_provision_outcome, conditional_provision_document)
-                B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_rescinded)
-                E -->> B: ack
+                par per ogni ente terzo interessato
+                    B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_rescinded)
+                    E -->> B: ack
+                end
                 B ->> C: audit(cui, end_by_conditional_provision_rescinded)
                 C -->> B: ack
             end
         else diniego del provvedimento condizionato
             par per ogni ente terzo interessato AND almeno una richiesta per il diniego del provvedimento condizionato
                 alt 
-                    E ->> B: send_conditional_provision(cui, instance_descriptor_version, conditional_provision_document)
+                    E ->> B: send_conditional_provision(ConditionalProvision)
                     B -->> E: ack
                     E ->> C: audit(cui,conditional_provision_granted_from_<ET>)
                     C -->> E: ack
@@ -201,8 +216,10 @@ sequenceDiagram
             B ->> F: send_conclusions(ConditionalProvisionDenied)
             F -->> B: ack
             F -) P: notification(cui, conditional_provision_outcome, conditional_provision_document)
-            B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_denied)
-            E -->> B: ack
+            par per ogni ente terzo interessato
+                B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_denied)
+                E -->> B: ack
+            end
             B ->> C: audit(cui, end_by_conditional_provision_denied)
             C -->> B: ack
         end
@@ -210,7 +227,7 @@ sequenceDiagram
         B ->> F: notify(cui, instance_descriptor_version,end_by_proceeding_time_expired)
         F -->> B: ack            
         par per ogni ente terzo interessato
-            B ->> E: notify(cui, instance_descriptor_version,end_by_proceeding_time_expired)
+            B ->> E: notify(cui, instance_descriptor_version, end_by_proceeding_time_expired)
             E -->> B: ack
         end
         B ->> C: audit(cui,end_by_proceeding_time_expired)

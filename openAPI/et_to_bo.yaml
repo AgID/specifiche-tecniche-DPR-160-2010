@@ -185,7 +185,6 @@ paths:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
                                 - $ref: "#/components/schemas/CdssNotifyMessage"
-
                                 - $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
                             discriminator:
                                 propertyName: event
@@ -679,6 +678,10 @@ components:
                         - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
                         - integration_request_time_expired
+                        - end_by_definitive_provision_granted
+                        - end_by_conditional_provision_rescinded
+                        - end_by_conditional_provision_denied
+                        - conditional_provision_extended
                         
         TransferOutcomeNotifyMessage:
             type: object
