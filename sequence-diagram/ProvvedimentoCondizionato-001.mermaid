@@ -112,9 +112,11 @@ sequenceDiagram
             par per ogni ente terzo interessato
                 E ->> B: send_conditional_provision(ConditionalProvision)
                 B -->> E: ack
-                B ->> E: request_instance_document(cui, resource_id)
-                E -->> B: instanceDocument
-                E ->> C: audit(cui, conditional_provision_granted_from_<ET>)
+                opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                end
+                E ->> C: audit(cui,conditional_provision_granted_from_<ET>)
                 C -->> E: ack
             end
             Note left of B: Invio provvedimento condizionato al FO/Presentatore
@@ -135,7 +137,11 @@ sequenceDiagram
             opt proroga del provvedimento condizionato AND impresa avviata nei tempi concessi dal provvedimento
                 par almeno un ente terzo invia la proroga
                     E ->> B: send_extension_conditional_provision(ConditionalProvisionExtended)
-                    B -->> E: ack                    
+                    B -->> E: ack     
+                    opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                    end               
                     E ->> C: audit(cui,conditional_provision_extended_from_<ET>)
                     C -->> E: ack
                 end
@@ -150,7 +156,11 @@ sequenceDiagram
             alt impresa avviata nei tempi concessi dal provvedimento e OK sopralluogo
                 par per ogni ente terzo interessato
                     E ->> B: send_conclusions(DefinitiveProvisionGranted)
-                    B -->> E: ack                    
+                    B -->> E: ack     
+                    opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                    end               
                     E ->> C: audit(cui,conditional_provision_granted_from_<ET>)
                     C -->> E: ack
                 end
@@ -167,18 +177,28 @@ sequenceDiagram
                 par per ogni ente terzo interessato AND almeno un esito che revoca il provvedimento condizionato
                     alt 
                         E ->> B: send_conclusions(DefinitiveProvisionGranted)
-                        B -->> E: ack                    
+                        B -->> E: ack   
+                        opt 
+                            B ->> E: request_instance_document(cui, resource_id)
+                            E -->> B: instanceDocument 
+                        end                 
                         E ->> C: audit(cui,conditional_provision_granted_from_<ET>)
                         C -->> E: ack
                     else 
                         E ->> B: send_conclusions(ConditionalProvisionRescinded)
-                        B -->> E: ack                    
+                        B -->> E: ack    
+                        opt 
+                            B ->> E: request_instance_document(cui, resource_id)
+                            E -->> B: instanceDocument 
+                        end                
                         E ->> C: audit(cui,conditional_provision_rescinded_from_<ET>)
                         C -->> E: ack
                     end
                 end
                 B ->> F: send_conclusions(ConditionalProvisionRescinded)
                 F -->> B: ack
+                F ->> B: request_instance_document(cui, resource_id)
+                B -->> F: instanceDocument
                 F -) P: notification(cui, conditional_provision_outcome, conditional_provision_document)
                 par per ogni ente terzo interessato
                     B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_rescinded)
@@ -189,12 +209,18 @@ sequenceDiagram
             else impressa NON avviata nei tempi concessi dal provvedimento
                 par per ogni ente terzo interessato
                     E ->> B: send_conclusions(ConditionalProvisionRescinded)
-                    B -->> E: ack                    
+                    B -->> E: ack
+                    opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                    end                    
                     E ->> C: audit(cui,conditional_provision_rescinded_from_<ET>)
                     C -->> E: ack  
                 end
                 B ->> F: send_conclusions(ConditionalProvisionRescinded)
                 F -->> B: ack
+                F ->> B: request_instance_document(cui, resource_id)
+                B -->> F: instanceDocument
                 F -) P: notification(cui, conditional_provision_outcome, conditional_provision_document)
                 par per ogni ente terzo interessato
                     B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_rescinded)
@@ -208,17 +234,27 @@ sequenceDiagram
                 alt 
                     E ->> B: send_conditional_provision(ConditionalProvision)
                     B -->> E: ack
+                    opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                    end
                     E ->> C: audit(cui,conditional_provision_granted_from_<ET>)
                     C -->> E: ack
                 else 
                     E ->> B: send_conclusions(ConditionalProvisionDenied)
                     B -->> E: ack
+                    opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                    end
                     E ->> C: audit(cui,conditional_provision_denied_from_<ET>)
                     C -->> E: ack
                 end
             end
             B ->> F: send_conclusions(ConditionalProvisionDenied)
             F -->> B: ack
+            F ->> B: request_instance_document(cui, resource_id)
+            B -->> F: instanceDocument
             F -) P: notification(cui, conditional_provision_outcome, conditional_provision_document)
             par per ogni ente terzo interessato
                 B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_denied)
