@@ -10,7 +10,7 @@ sequenceDiagram
     participant B as BackOffice SUAP   
     participant C as Catalogo SSU 
     participant E as Enti Terzi    
-    Note over F,B: istanza procedibile
+    Note over F,E: istanza procedibile
     par per ogni ente terzo interessato        
         B ->> E: send_instance(SendInstanceRequest)
         E -->> B: ack
@@ -108,7 +108,7 @@ sequenceDiagram
     end
     alt conformazione non richiesta, oppure richiesta e istanza conformata nei tempi dal presentatore
         alt rilascio del provvedimento condizionato
-            Note left of ET: Rilascio provvedimento condizionato
+            Note left of E: Rilascio provvedimento condizionato
             par per ogni ente terzo interessato
                 E ->> B: send_conditional_provision(cui, instance_descriptor_version, conditional_provision_document)
                 B -->> E: ack
