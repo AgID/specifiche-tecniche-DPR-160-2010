@@ -19,8 +19,8 @@ properties:
     type: string
     format: date
   
-  progressivo:
-    "$id": "#root/cui/progressivo"
+  progressive:
+    "$id": "#root/cui/progressive"
     title: numero progressivo a rotazione annuale
     type: string
 

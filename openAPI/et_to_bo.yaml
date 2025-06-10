@@ -269,7 +269,7 @@ components:
                     type: string
                     format: date
                 
-                progressivo:
+                progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
 
@@ -355,6 +355,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -385,6 +386,7 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -420,6 +422,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -450,6 +453,7 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -484,6 +488,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -518,6 +523,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -552,6 +558,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -586,6 +593,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -616,6 +624,7 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -704,6 +713,14 @@ components:
                     title: se presente, id della risorsa documento correlata all'evento notificato
                     type: string
                     minLength: 1
+                filename:                      
+                    title: filename della risorsa documento correlata all'evento notificato 
+                    type: string
+                    minLength: 1
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf|application/pkcs7-mime
                 hash:
                     title: hash risorsa
                     type: string
@@ -728,6 +745,10 @@ components:
                         type: string
                         enum:
                             - cdss_convened
+                    filename:                      
+                        title: filename dell'atto amministrativo 
+                        type: string
+                        minLength: 1
                     mime_type:
                         title: "indica il formato dei dati previsto per l'atto amministrativo"
                         type: string

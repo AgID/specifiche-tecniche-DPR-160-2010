@@ -121,7 +121,7 @@ components:
                     type: string
                     format: date
                 
-                progressivo:
+                progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
 
@@ -233,6 +233,9 @@ components:
             - version
             - municipality
             - usecase_proceedings
+            - instance_status
+            - times
+            - workflow
             properties:
                 version:          
                     title: numero versione del descrittore
@@ -290,7 +293,7 @@ components:
                 times:          
                     $ref: "#/components/schemas/Times"  
                 
-                administrative_regime:          
+                workflow:          
                     type: object
                     title: regime amministrativo dell'istanza          
                     
@@ -406,6 +409,7 @@ components:
                                         type: string
                                         enum: 
                                            - application/xml
+                                           - application/pkcs7-mime
                                     activity_model: 
                                        title: porzione distinta modello attivita
                                        type: object
@@ -433,6 +437,7 @@ components:
                                             type: string
                                             enum: 
                                                - application/pdf
+                                               - application/pkcs7-mime
                             attachments:                
                                 title: allegati all'istanza relativi al procedimento
                                 type: array
