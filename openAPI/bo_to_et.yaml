@@ -169,6 +169,30 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /request_conformation:
+        post:
+            description: Richiesta di conformazione in relazione a una data instanza di procedimento
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/RequestConformationRequest"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
@@ -492,14 +516,13 @@ components:
                 
         
 
+
         SendConclusionRequests:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/NegativeOutcome"
                 - $ref: "#/components/schemas/ConformationRequired"
                 - $ref: "#/components/schemas/PositiveOutcome"
-                - $ref: "#/components/schemas/ConformationOutcome"
-
 
         NegativeOutcome:
             type: object
@@ -625,44 +648,6 @@ components:
                     $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
-        ConformationOutcome:
-            required:
-                - cui
-                - instance_descriptor_version
-                - date
-                - conformation_outcome
-                - outcome_type
-            properties:
-                outcome_type:
-                    type: string
-                    enum: 
-                    - positive_conformation
-                    - negative_conformation
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
-                conformation_outcome:
-                    type: string
-                    minLength: 1
-                requester_administration:
-                    title: amministrazione richiedente
-                    $ref: "#/components/schemas/AdministrationSchema"
-                resource_id:
-                    title: id della risorsa "documento di parere della conformazione", univoco per erogatore e CUI.UUID
                     type: string
                     minLength: 1
                 hash:

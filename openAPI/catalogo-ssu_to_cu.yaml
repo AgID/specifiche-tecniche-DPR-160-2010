@@ -171,6 +171,14 @@ components:
                 title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
                 type: integer
                 format: int32
+              max_gg_conf_req:          
+                title: numero di giorni limite a partire da start per la richiesta di conformazione degli enti terzi
+                type: integer
+                format: int32
+              max_gg_conf_resp:          
+                title: numero di giorni limite a partire da start per conformazione del soggetto presentatore
+                type: integer
+                format: int32
               max_gg_concl_send:          
                 title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
                 type: integer
@@ -216,6 +224,9 @@ components:
             - version
             - municipality
             - usecase_proceedings
+            - instance_status
+            - times
+            - workflow
             properties:
                 version:          
                     title: numero versione del descrittore
@@ -255,10 +266,11 @@ components:
                                 - integration_requested
                                 - ended_by_integration_times_expired
                                 - integrated
+                                - conformation_requested
+                                - ended_by_conformation_times_expired
+                                - conformated
                                 - cdss_convened
                                 - ended_by_suspension_requested
-                                - ended_by_positive_conformation
-                                - ended_by_negative_conformation
                                 - ended_by_positive_outcome
                                 - ended_by_negative_outcome
                                 - ended_by_submitter_cancel_requested
@@ -271,7 +283,7 @@ components:
                 times:          
                     $ref: "#/components/schemas/Times"  
                 
-                administrative_regime:          
+                workflow:          
                     type: object
                     title: regime amministrativo dell'istanza          
                     
@@ -387,6 +399,7 @@ components:
                                         type: string
                                         enum: 
                                            - application/xml
+                                           - application/pkcs7-mime
                                     activity_model: 
                                        title: porzione distinta modello attivita 
                                        type: object
@@ -414,6 +427,7 @@ components:
                                             type: string
                                             enum: 
                                                - application/pdf
+                                               - application/pkcs7-mime
                             attachments:                
                                 title: allegati all'istanza relativi al procedimento
                                 type: array
