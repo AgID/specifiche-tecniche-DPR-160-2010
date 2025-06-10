@@ -91,6 +91,34 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       <bpmn:text>workflow: AUTORIZZAZIONE</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0fy9ic3" associationDirection="None" sourceRef="Event_10lsnt2" targetRef="TextAnnotation_0l1ps24" />
+    <bpmn:textAnnotation id="TextAnnotation_1jb4cw0">
+      <bpmn:text>workflow: AUTORIZZAZIONE</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_06wuotf" associationDirection="None" sourceRef="Activity_02i5in0" targetRef="TextAnnotation_1jb4cw0" />
+    <bpmn:textAnnotation id="TextAnnotation_0bbqouu">
+      <bpmn:text>workflow: AUTORIZZAZIONE</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1yg9ewu" associationDirection="None" sourceRef="Activity_1ibjh5q" targetRef="TextAnnotation_0bbqouu" />
+    <bpmn:textAnnotation id="TextAnnotation_1fojepd">
+      <bpmn:text>workflow: SCIA</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0l5tnm4" associationDirection="None" sourceRef="Activity_04sv0lv" targetRef="TextAnnotation_1fojepd" />
+    <bpmn:association id="Association_1n4axdk" associationDirection="None" sourceRef="Event_0suwjc9" targetRef="TextAnnotation_0trvqnr" />
+    <bpmn:textAnnotation id="TextAnnotation_1r9j5c4">
+      <bpmn:text>workflow: AUTORIZZAZIONE</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0gqdnco" associationDirection="None" sourceRef="Activity_06ebmc1" targetRef="TextAnnotation_1r9j5c4" />
+    <bpmn:textAnnotation id="TextAnnotation_12iajwn">
+      <bpmn:text>SCIA -&gt; conformazione
+AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0cf7xl8" associationDirection="None" sourceRef="CallActivity_1ttpv7e" targetRef="TextAnnotation_12iajwn" />
+    <bpmn:association id="Association_1ggwill" associationDirection="None" sourceRef="IntermediateThrowEvent_0dckxxm" targetRef="TextAnnotation_0zdwztt" />
+    <bpmn:textAnnotation id="TextAnnotation_1j7r97d">
+      <bpmn:text>workflow: AUTORIZZAZIONE</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0c8dfhe" associationDirection="None" sourceRef="Task_1j7al3k" targetRef="TextAnnotation_1j7r97d" />
+    <bpmn:association id="Association_011s87o" associationDirection="None" sourceRef="Event_0ip855d" targetRef="TextAnnotation_150bdda" />
   </bpmn:collaboration>
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:laneSet id="LaneSet_1wdnd0m">
@@ -113,13 +141,13 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
         <bpmn:flowNodeRef>EndEvent_0jgdrlj</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0ip855d</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_06ebmc1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_0suwjc9</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0d30ybh</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_1hb3r83</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateCatchEvent_10tjb56</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateCatchEvent_0arqcpo</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0iiu1lh</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ReceiveTask_0dropr5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0suwjc9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1hb3r83</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:callActivity id="CallActivity_1i2ll5b" name="Regolarizzazione (FO)">
@@ -205,18 +233,10 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       <bpmn:incoming>Flow_1vdrtsy</bpmn:incoming>
       <bpmn:outgoing>Flow_14zp8kc</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:intermediateThrowEvent id="Event_0suwjc9" name="invio conformazione">
-      <bpmn:incoming>Flow_036vd46</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_08dwah7" />
-    </bpmn:intermediateThrowEvent>
     <bpmn:intermediateThrowEvent id="Event_0d30ybh" name="invio osservazioni">
       <bpmn:incoming>Flow_14zp8kc</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1x67f9x" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:serviceTask id="Activity_1hb3r83" name="Diniego per assenza conformazione">
-      <bpmn:incoming>Flow_0t4yknk</bpmn:incoming>
-      <bpmn:outgoing>Flow_04k8ghc</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_10tjb56" name="richieste ET">
       <bpmn:incoming>SequenceFlow_0rdbdgm</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0xvnyxi</bpmn:outgoing>
@@ -265,9 +285,14 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
     <bpmn:sequenceFlow id="Flow_0t4yknk" sourceRef="Event_0iiu1lh" targetRef="Activity_1hb3r83" />
     <bpmn:sequenceFlow id="SequenceFlow_0xvnyxi" name="" sourceRef="IntermediateCatchEvent_10tjb56" targetRef="IntermediateCatchEvent_0arqcpo" />
     <bpmn:sequenceFlow id="Flow_0zv5wxi" sourceRef="IntermediateCatchEvent_10tjb56" targetRef="Event_0iiu1lh" />
-    <bpmn:association id="Association_1ggwill" associationDirection="None" sourceRef="IntermediateThrowEvent_0dckxxm" targetRef="TextAnnotation_0zdwztt" />
-    <bpmn:association id="Association_011s87o" associationDirection="None" sourceRef="Event_0ip855d" targetRef="TextAnnotation_150bdda" />
-    <bpmn:association id="Association_1n4axdk" associationDirection="None" sourceRef="Event_0suwjc9" targetRef="TextAnnotation_0trvqnr" />
+    <bpmn:intermediateThrowEvent id="Event_0suwjc9" name="invio conformazione">
+      <bpmn:incoming>Flow_036vd46</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_08dwah7" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:serviceTask id="Activity_1hb3r83" name="Diniego per assenza conformazione">
+      <bpmn:incoming>Flow_0t4yknk</bpmn:incoming>
+      <bpmn:outgoing>Flow_04k8ghc</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:association id="Association_1o7rjqe" associationDirection="None" sourceRef="Event_0d30ybh" targetRef="TextAnnotation_19g65e8" />
   </bpmn:process>
   <bpmn:process id="Process_0vxkrl1" isExecutable="false" />
@@ -329,7 +354,6 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
         <bpmn:flowNodeRef>Event_1slx0ry</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateThrowEvent_095kpu7</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateThrowEvent_0psdgv9</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_1b7uh20</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_02i5in0</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_0q3u43v</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1fb8c87</bpmn:flowNodeRef>
@@ -342,6 +366,7 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
         <bpmn:flowNodeRef>IntermediateThrowEvent_1go33qg</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0d2kf8p</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>BoundaryEvent_0z8p1bp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1b7uh20</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:intermediateThrowEvent id="Event_0cefuad" name="CdSS">
@@ -703,11 +728,6 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       <bpmn:incoming>Flow_093p847</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0kazue3" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:intermediateCatchEvent id="Event_1b7uh20" name="ricezione conformazione">
-      <bpmn:outgoing>Flow_0mmxd45</bpmn:outgoing>
-      <bpmn:outgoing>Flow_093p847</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0vmzcqv" />
-    </bpmn:intermediateCatchEvent>
     <bpmn:task id="Activity_02i5in0" name="Elaborazione motivi ostativi">
       <bpmn:incoming>Flow_0y266u6</bpmn:incoming>
       <bpmn:outgoing>Flow_1xh290i</bpmn:outgoing>
@@ -753,6 +773,11 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       <bpmn:outgoing>Flow_0o0f82m</bpmn:outgoing>
       <bpmn:messageEventDefinition />
     </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="Event_1b7uh20" name="ricezione conformazione">
+      <bpmn:outgoing>Flow_0mmxd45</bpmn:outgoing>
+      <bpmn:outgoing>Flow_093p847</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0vmzcqv" />
+    </bpmn:intermediateCatchEvent>
     <bpmn:textAnnotation id="TextAnnotation_12lg7a0">
       <bpmn:text>Conferenza di Servizi Sincrona richiesta  da almeno un ET</bpmn:text>
     </bpmn:textAnnotation>
@@ -1055,12 +1080,6 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       <bpmndi:BPMNShape id="IntermediateThrowEvent_0psdgv9_di" bpmnElement="IntermediateThrowEvent_0psdgv9">
         <dc:Bounds x="2602" y="1454" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0nonq09" bpmnElement="Event_1b7uh20">
-        <dc:Bounds x="2302" y="1542" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2343" y="1516" width="73" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_02i5in0_di" bpmnElement="Activity_02i5in0">
         <dc:Bounds x="3042" y="2000" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -1111,6 +1130,12 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
         <dc:Bounds x="3567" y="1434" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="3615" y="1423" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0nonq09" bpmnElement="Event_1b7uh20">
+        <dc:Bounds x="2342" y="1542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2383" y="1516" width="73" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_04z4fsu_di" bpmnElement="Activity_0d2kf8p">
@@ -1520,12 +1545,12 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mmxd45_di" bpmnElement="Flow_0mmxd45">
-        <di:waypoint x="2320" y="1578" />
-        <di:waypoint x="2320" y="1610" />
+        <di:waypoint x="2360" y="1578" />
+        <di:waypoint x="2360" y="1610" />
         <di:waypoint x="2276" y="1610" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_093p847_di" bpmnElement="Flow_093p847">
-        <di:waypoint x="2338" y="1560" />
+        <di:waypoint x="2378" y="1560" />
         <di:waypoint x="2620" y="1560" />
         <di:waypoint x="2620" y="1490" />
       </bpmndi:BPMNEdge>
@@ -1689,7 +1714,7 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       <bpmndi:BPMNShape id="IntermediateThrowEvent_0dckxxm_di" bpmnElement="IntermediateThrowEvent_0dckxxm">
         <dc:Bounds x="2211" y="880" width="30" height="30" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2250.5" y="888" width="87" height="14" />
+          <dc:Bounds x="2237.5" y="853" width="87" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_1z000wb_di" bpmnElement="ServiceTask_1z000wb">
@@ -1738,21 +1763,11 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
         <dc:Bounds x="2842" y="716" width="176" height="89" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1gs9v9i" bpmnElement="Event_0suwjc9">
-        <dc:Bounds x="2305" y="880" width="30" height="30" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2221.5" y="881" width="73" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0mauktc" bpmnElement="Event_0d30ybh">
         <dc:Bounds x="3347" y="746" width="30" height="30" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="3266" y="721" width="87" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1wtt311" bpmnElement="Activity_1hb3r83">
-        <dc:Bounds x="2430" y="558" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_10tjb56_di" bpmnElement="IntermediateCatchEvent_10tjb56">
         <dc:Bounds x="1853" y="1000" width="36" height="36" />
@@ -1775,18 +1790,16 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       <bpmndi:BPMNShape id="ReceiveTask_0dropr5_di" bpmnElement="ReceiveTask_0dropr5">
         <dc:Bounds x="3502" y="927" width="165" height="82" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_1ggwill_di" bpmnElement="Association_1ggwill">
-        <di:waypoint x="2211" y="897" />
-        <di:waypoint x="2210" y="897" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_011s87o_di" bpmnElement="Association_011s87o">
-        <di:waypoint x="2946" y="1041" />
-        <di:waypoint x="3008" y="1070" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1n4axdk_di" bpmnElement="Association_1n4axdk">
-        <di:waypoint x="2335" y="897" />
-        <di:waypoint x="2340" y="898" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_1gs9v9i" bpmnElement="Event_0suwjc9">
+        <dc:Bounds x="2345" y="880" width="30" height="30" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2384.5" y="896" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1wtt311" bpmnElement="Activity_1hb3r83">
+        <dc:Bounds x="2470" y="558" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1o7rjqe_di" bpmnElement="Association_1o7rjqe">
         <di:waypoint x="3377" y="763" />
         <di:waypoint x="3410" y="768" />
@@ -1876,8 +1889,8 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_036vd46_di" bpmnElement="Flow_036vd46">
         <di:waypoint x="1959" y="728" />
-        <di:waypoint x="2320" y="728" />
-        <di:waypoint x="2320" y="880" />
+        <di:waypoint x="2360" y="728" />
+        <di:waypoint x="2360" y="880" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1a5494g_di" bpmnElement="SequenceFlow_1a5494g">
         <di:waypoint x="3667" y="968" />
@@ -1885,7 +1898,7 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
         <di:waypoint x="3763" y="721" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04k8ghc_di" bpmnElement="Flow_04k8ghc">
-        <di:waypoint x="2530" y="598" />
+        <di:waypoint x="2570" y="598" />
         <di:waypoint x="3750" y="598" />
         <di:waypoint x="3750" y="692" />
       </bpmndi:BPMNEdge>
@@ -1903,8 +1916,8 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0t4yknk_di" bpmnElement="Flow_0t4yknk">
         <di:waypoint x="2138" y="1068" />
-        <di:waypoint x="2480" y="1068" />
-        <di:waypoint x="2480" y="638" />
+        <di:waypoint x="2520" y="1068" />
+        <di:waypoint x="2520" y="638" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0xvnyxi_di" bpmnElement="SequenceFlow_0xvnyxi">
         <di:waypoint x="1888" y="1013" />
@@ -1942,11 +1955,11 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_01h9k3i_di" bpmnElement="Association_01h9k3i">
         <di:waypoint x="3042" y="2185" />
-        <di:waypoint x="2990" y="2160" />
+        <di:waypoint x="2985" y="2157" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0j0j50x_di" bpmnElement="Association_0j0j50x">
         <di:waypoint x="3376" y="1489" />
-        <di:waypoint x="3392" y="1475" />
+        <di:waypoint x="3410" y="1460" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0fy9ic3_di" bpmnElement="Association_0fy9ic3">
         <di:waypoint x="4038" y="1422" />
@@ -1954,7 +1967,43 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_172cnxy_di" bpmnElement="Association_172cnxy">
         <di:waypoint x="4072" y="1655" />
-        <di:waypoint x="4100" y="1640" />
+        <di:waypoint x="4101" y="1640" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_06wuotf_di" bpmnElement="Association_06wuotf">
+        <di:waypoint x="3042" y="2032" />
+        <di:waypoint x="2990" y="2023" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1yg9ewu_di" bpmnElement="Association_1yg9ewu">
+        <di:waypoint x="3332" y="2186" />
+        <di:waypoint x="3370" y="2169" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0l5tnm4_di" bpmnElement="Association_0l5tnm4">
+        <di:waypoint x="2530" y="2180" />
+        <di:waypoint x="2590" y="2157" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0c8dfhe_di" bpmnElement="Association_0c8dfhe">
+        <di:waypoint x="2276" y="2180" />
+        <di:waypoint x="2314" y="2157" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0gqdnco_di" bpmnElement="Association_0gqdnco">
+        <di:waypoint x="2989" y="716" />
+        <di:waypoint x="3022" y="691" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0cf7xl8_di" bpmnElement="Association_0cf7xl8">
+        <di:waypoint x="1810" y="700" />
+        <di:waypoint x="1840" y="665" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1ggwill_di" bpmnElement="Association_1ggwill">
+        <di:waypoint x="2214" y="886" />
+        <di:waypoint x="2172" y="853" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1n4axdk_di" bpmnElement="Association_1n4axdk">
+        <di:waypoint x="2372" y="886" />
+        <di:waypoint x="2424" y="847" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_011s87o_di" bpmnElement="Association_011s87o">
+        <di:waypoint x="2947" y="1030" />
+        <di:waypoint x="3000" y="1017" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_0xd19k7_di" bpmnElement="MessageFlow_0xd19k7" bioc:stroke="#e53935" color:border-color="#e53935">
         <di:waypoint x="409" y="895" />
@@ -1976,15 +2025,15 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       <bpmndi:BPMNEdge id="Flow_08v8nfa_di" bpmnElement="Flow_08v8nfa" bioc:stroke="#43a047" color:border-color="#43a047">
         <di:waypoint x="2620" y="1454" />
         <di:waypoint x="2620" y="1280" />
-        <di:waypoint x="3690" y="1280" />
-        <di:waypoint x="3690" y="172" />
+        <di:waypoint x="4310" y="1280" />
+        <di:waypoint x="4310" y="172" />
         <di:waypoint x="2183" y="172" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1h8arfu_di" bpmnElement="Flow_1h8arfu" bioc:stroke="#43a047" color:border-color="#43a047">
         <di:waypoint x="4093" y="1849" />
-        <di:waypoint x="4240" y="1849" />
-        <di:waypoint x="4240" y="52" />
-        <di:waypoint x="2183" y="52" />
+        <di:waypoint x="4370" y="1849" />
+        <di:waypoint x="4370" y="100" />
+        <di:waypoint x="2183" y="100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1u3jcmo_di" bpmnElement="Flow_1u3jcmo" bioc:stroke="#fb8c00" color:border-color="#fb8c00">
         <di:waypoint x="1010" y="1454" />
@@ -2127,21 +2176,13 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_0zefedj_di" bpmnElement="TextAnnotation_0zefedj">
-        <dc:Bounds x="1540" y="1730" width="99.98694034205708" height="54.858934169278996" />
+        <dc:Bounds x="1510" y="1730" width="130" height="40" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1mp1r49_di" bpmnElement="Flow_1mp1r49" bioc:stroke="#831311" color:border-color="#831311">
-        <di:waypoint x="2320" y="910" />
-        <di:waypoint x="2320" y="1542" />
+        <di:waypoint x="2360" y="910" />
+        <di:waypoint x="2360" y="1542" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="TextAnnotation_0zdwztt_di" bpmnElement="TextAnnotation_0zdwztt">
-        <dc:Bounds x="2110" y="890" width="99.98694034205708" height="54.858934169278996" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0trvqnr_di" bpmnElement="TextAnnotation_0trvqnr">
-        <dc:Bounds x="2340" y="890" width="99.98694034205708" height="26.645768025078368" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0rgtiew_di" bpmnElement="Flow_0rgtiew" bioc:stroke="#0d4372" color:border-color="#0d4372">
         <di:waypoint x="2480" y="2240" />
         <di:waypoint x="2480" y="2508" />
@@ -2150,7 +2191,7 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1s2u1uu_di" bpmnElement="TextAnnotation_1s2u1uu">
-        <dc:Bounds x="2300" y="1850" width="100" height="55" />
+        <dc:Bounds x="2300" y="1850" width="120" height="50" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1546yq8" bpmnElement="TextAnnotation_1qqlbzd">
@@ -2169,31 +2210,63 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
         <di:waypoint x="2120" y="1086" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_0152pcp_di" bpmnElement="TextAnnotation_0152pcp">
-        <dc:Bounds x="1620" y="1490" width="240" height="50" />
+        <dc:Bounds x="1620" y="1490" width="239.99152587125295" height="49.99347017102854" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_15v4lct_di" bpmnElement="TextAnnotation_15v4lct">
-        <dc:Bounds x="2890" y="2120" width="99.98694034205708" height="54.858934169278996" />
+        <dc:Bounds x="2850" y="2120" width="140" height="37" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0wns6k8_di" bpmnElement="TextAnnotation_0wns6k8">
-        <dc:Bounds x="3390" y="1420" width="99.98694034205708" height="54.858934169278996" />
+        <dc:Bounds x="3390" y="1420" width="121" height="40" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_19g65e8_di" bpmnElement="TextAnnotation_19g65e8">
-        <dc:Bounds x="3410" y="760" width="99.98694034205708" height="54.858934169278996" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_150bdda_di" bpmnElement="TextAnnotation_150bdda">
-        <dc:Bounds x="2990" y="1070" width="99.98694034205708" height="54.858934169278996" />
+        <dc:Bounds x="3410" y="760" width="140" height="40" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0l1ps24_di" bpmnElement="TextAnnotation_0l1ps24">
-        <dc:Bounds x="4070" y="1366" width="99.98694034205708" height="54.858934169278996" />
+        <dc:Bounds x="4070" y="1366" width="130" height="44" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1041b35_di" bpmnElement="TextAnnotation_1041b35">
-        <dc:Bounds x="4100" y="1600" width="99.98694034205708" height="54.858934169278996" />
+        <dc:Bounds x="4100" y="1600" width="130" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1jb4cw0_di" bpmnElement="TextAnnotation_1jb4cw0">
+        <dc:Bounds x="2870" y="2000" width="120" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0bbqouu_di" bpmnElement="TextAnnotation_0bbqouu">
+        <dc:Bounds x="3370" y="2130" width="130" height="45" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1fojepd_di" bpmnElement="TextAnnotation_1fojepd">
+        <dc:Bounds x="2570" y="2130" width="99.98694034205708" height="26.645768025078368" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1j7r97d_di" bpmnElement="TextAnnotation_1j7r97d">
+        <dc:Bounds x="2300" y="2120" width="130" height="37" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1r9j5c4_di" bpmnElement="TextAnnotation_1r9j5c4">
+        <dc:Bounds x="3020" y="650" width="160" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_12iajwn_di" bpmnElement="TextAnnotation_12iajwn">
+        <dc:Bounds x="1840" y="640" width="240" height="50" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0zdwztt_di" bpmnElement="TextAnnotation_0zdwztt">
+        <dc:Bounds x="2090" y="813" width="121" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0trvqnr_di" bpmnElement="TextAnnotation_0trvqnr">
+        <dc:Bounds x="2390" y="820" width="99.98694034205708" height="26.645768025078368" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_150bdda_di" bpmnElement="TextAnnotation_150bdda">
+        <dc:Bounds x="3000" y="990" width="152" height="40" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
