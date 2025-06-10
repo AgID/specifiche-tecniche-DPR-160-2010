@@ -208,6 +208,7 @@ properties:
               type: string
               enum: 
                  - application/xml
+                 - application/pkcs7-mime
             activity_model: 
                title: porzione distinta modello attivita
                type: object
@@ -235,6 +236,7 @@ properties:
                     type: string
                     enum: 
                        - application/pdf
+                       - application/pkcs7-mime
         attachments:
           "$id": "#root/usecase_proceedings/attachments"
           title: allegati all'istanza relativi al procedimento
