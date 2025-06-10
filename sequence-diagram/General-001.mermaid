@@ -70,6 +70,9 @@ sequenceDiagram
         alt formal control KO
             B ->> F: request_correction(cui,instance_descriptor_version,correction_list)
             F -->> B: ack
+            B ->> C: request_update_times(cui, times)
+            C ->> B: instanceDescriptor
+            Note right of C: Aggiorna i tempi procedimentali incrementantoli di 10 giorni
             F -) P: request_correction(cui,correction_list)
             B ->> C: audit(cui,correction_requested)
             C -->> B: ack
@@ -79,6 +82,9 @@ sequenceDiagram
             F ->> C: audit(cui,corrected_instance_to_<BO>_sended)
             note right of F: <BO> codice BackOffice
             C -->> F: ack
+            B ->> C: request_update_times(cui, times)
+            C ->> B: instanceDescriptor
+            Note right of C: Aggiorna i tempi procedimentali decrementandoli dei giorni avanzati
             loop per ogni procedimento parte dell'istanza 
             B ->> F: request_instance_document(cui, resource_id)
             F -->> B: instanceDocument

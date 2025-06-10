@@ -64,6 +64,30 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /send_impediments:
+        description: Inoltro dei motivi ostativi relativi alle proprie istruttorie in relazione a una data instanza di procedimento
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Impediments"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
     /send_conclusions:
         description: Inoltro delle conclusioni delle proprie istruttorie in relazione a una data instanza di procedimento
         post:
@@ -430,7 +454,7 @@ components:
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
                                 type: string
-                        minLength: 1
+                                minLength: 1
                             hash:
                                 title: hash risorsa
                                 type: string
@@ -443,25 +467,64 @@ components:
                                 - S384
                                 - S512
 
-        RequestConformationRequest:
-            allOf:
-                - $ref: "#/components/schemas/RequestIntegrationRequest"
-                - type: object
-                  required:
-                  - expirationDate
-                  properties:
-                    expirationDate:
-                        title: data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione
-                        type: string
-                        format: date
+        Impediments:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - expiration_date
+                - impediments
+                - requester_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                expiration_date:
+                    type: string
+                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
+                    format: date
+                impediments:
+                    type: string
+                    minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                resource_id:
+                    title: id della risorsa "documento di motivi ostativi", univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename della risorsa "documento di motivi ostativi"
+                    type: string
+                    minLength: 1
+                mime_type:
+                    title: "indica il formato dei dati previsto per il documento di motivi ostativi"
+                    type: string
+                    minLength: 1
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+                
+        
+
 
         SendConclusionRequests:
             type: object
             oneOf:
-                - $ref: "#/components/schemas/NegativeOutcomeRequired"
+                - $ref: "#/components/schemas/NegativeOutcome"
+                - $ref: "#/components/schemas/ConformationRequired"
                 - $ref: "#/components/schemas/PositiveOutcome"
 
-        NegativeOutcomeRequired:
+        NegativeOutcome:
             type: object
             required:
                 - cui
@@ -516,6 +579,50 @@ components:
                 resource_id: "string"
                 hash: "string"
                 alg_hash: "S256"
+                
+        ConformationRequired:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - expiration_date
+                - conformation_requested
+                - conclusions_type
+                - requester_administration
+            properties:
+                conclusions_type:
+                    type: string
+                    enum: 
+                    - conformation_requested
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                expiration_date:
+                    type: string
+                    description: "data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione"
+                    format: date
+                conformation_requested:
+                    type: string
+                    minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                resource_id:
+                    title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
 
         PositiveOutcome:
             required:
