@@ -7,7 +7,7 @@ sequenceDiagram
     participant C as Catalogo SSU 
     participant E as Enti Terzi    
     Note over F,B: istanza procedibile
-    alt Workflow=AUTORIZZAZIONE | CdSS da SUAP
+    alt Regime Amministrativo=AUTORIZZAZIONE | CdSS da SUAP
         opt 
             B ->> C: request_update_times(cui,times)
             C -->> B: instanceDescriptor
@@ -22,7 +22,7 @@ sequenceDiagram
         B ->> C: audit(cui,cdss_convened)
         C -->> B: ack
        
-    else Workflow=AUTORIZZAZIONE,SCIA | No CdSS da SUAP
+    else Regime Amministrativo=AUTORIZZAZIONE,SCIA | No CdSS da SUAP
         par per ogni ente terzo interessato        
             B ->> E: send_instance(SendInstanceRequest)
             E -->> B: ack
@@ -39,7 +39,7 @@ sequenceDiagram
             E ->> C: audit(cui,instance_retrived)
             C -->> E: ack
         end
-        alt Workflow=AUTORIZZAZIONE | almeno un ET richiede CdSS entro i tempi
+        alt Regime Amministrativo=AUTORIZZAZIONE | almeno un ET richiede CdSS entro i tempi
             par almeno un ente terzo
                 E ->> B: request_cdss(cui, requester_administration)
                 B -->> E: ack 
@@ -59,8 +59,8 @@ sequenceDiagram
             
             B ->> C: audit(cui,cdss_convened)
             C -->> B: ack
-        else Workflow=AUTORIZZAZIONE,SCIA | CdSS no richiesta da ET
-            opt Workflow=AUTORIZZAZIONE | almeno una richiesta integrazione
+        else Regime Amministrativo=AUTORIZZAZIONE,SCIA | CdSS no richiesta da ET
+            opt Regime Amministrativo=AUTORIZZAZIONE | almeno una richiesta integrazione
                 par almeno un ente terzo
                     E ->> B: request_integration(cui, instance_descriptor_version,integration_list,resource_id)
                     B -->> E: ack 
@@ -140,7 +140,7 @@ sequenceDiagram
                 end
             end
             
-            opt Workflow=AUTORIZZAZIONE | L'ente terzo invia dei motivi ostativi
+            opt Regime Amministrativo=AUTORIZZAZIONE | L'ente terzo invia dei motivi ostativi
                 E ->> B: send_impediments(Impediments)
                 B -->> E: ack
                 E ->> C: audit(cui, existence_of_impediments_from_<ET>, resource_id)
@@ -185,7 +185,7 @@ sequenceDiagram
                 end
             end
 
-            opt Workflow=SCIA | almeno una richiesta conformazione
+            opt Regime Amministrativo=SCIA | almeno una richiesta conformazione
                 par almeno un ente terzo
                     E ->> B: request_conformation(cui, instance_descriptor_version,conformation_list, conformation_document_list)
                     B -->> E: ack 
@@ -273,7 +273,7 @@ sequenceDiagram
 
             end
 
-            alt Workflow=AUTORIZZAZIONE | integrazione non richiesta, oppure richiesta e istanza integrata nei tempi dal presentatore
+            alt Regime Amministrativo=AUTORIZZAZIONE | integrazione non richiesta, oppure richiesta e istanza integrata nei tempi dal presentatore
                 par
                     opt se non si applica silenzio assenso
                         alt parere esplicito positivo
@@ -301,7 +301,7 @@ sequenceDiagram
                 end
  
                 Note over B,E: concluso tempo ricezione pareri o tutti gli ET hanno inviato parere (compreso silenzio assenso)
-                opt Workflow=AUTORIZZAZIONE | CdSS da SUAP
+                opt Regime Amministrativo=AUTORIZZAZIONE | CdSS da SUAP
                     opt 
                         B ->> C: request_update_times(cui,times)
                         C -->> B: instanceDescriptor
@@ -318,7 +318,7 @@ sequenceDiagram
                 end            
             end
 
-            alt Workflow=SCIA | conformazione non richiesta, oppure richiesta e istanza conformata nei tempi dal presentatore
+            alt Regime Amministrativo=SCIA | conformazione non richiesta, oppure richiesta e istanza conformata nei tempi dal presentatore
                 par
                     alt ET esprime parere negativo
                         E ->> B: send_conclusions(NegativeOutcomeRequired)
@@ -359,8 +359,8 @@ sequenceDiagram
 
 
     end
-    Note over F, E: Workflow=AUTORIZZAZIONE | azione realizzata in ogni circostanza, anche in caso di CdSS
-    alt Workflow=AUTORIZZAZIONE | (concluso tempo istanza (eventuale silenzio assenso) o autorizzazione concessa) e integrazione del presentatore nei tempi 
+    Note over F, E: Regime Amministrativo=AUTORIZZAZIONE | azione realizzata in ogni circostanza, anche in caso di CdSS
+    alt Regime Amministrativo=AUTORIZZAZIONE | (concluso tempo istanza (eventuale silenzio assenso) o autorizzazione concessa) e integrazione del presentatore nei tempi 
         B ->> F: notify(cui, instance_descriptor_version,end_by_positive_outcome,resource_id)
         F -->> B: ack
         F ->> B: request_instance_document(cui, resource_id)
@@ -378,7 +378,7 @@ sequenceDiagram
         end
         B ->> C: audit(cui,end_by_positive_outcome)
         C -->> B: ack
-    else Workflow=AUTORIZZAZIONE | autorizzazione negata OR osservazioni ai motivi ostativi non inviate dal presentatore nei tempi (10 giorni)
+    else Regime Amministrativo=AUTORIZZAZIONE | autorizzazione negata OR osservazioni ai motivi ostativi non inviate dal presentatore nei tempi (10 giorni)
         B ->> F: notify(cui, instance_descriptor_version,end_by_negative_outcome,resource_id)
         F -->> B: ack
         F ->> B: request_instance_document(cui, resource_id)
