@@ -108,6 +108,30 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /request_conformation:
+        post:
+            description: Richiesta di conformazione in relazione a una data instanza di procedimento
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/RequestConformationRequest"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
@@ -440,6 +464,18 @@ components:
                                 - S384
                                 - S512
 
+        RequestConformationRequest:
+            allOf:
+                - $ref: "#/components/schemas/RequestIntegrationRequest"
+                - type: object
+                  required:
+                  - expirationDate
+                  properties:
+                    expirationDate:
+                        title: data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione
+                        type: string
+                        format: date
+
         NotifyMessage:
             type: object
             required:
@@ -456,6 +492,7 @@ components:
                     enum:
                         - end_by_proceeding_time_expired
                         - end_by_integration_times_expired
+                        - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
                         - cdss_convened
 
@@ -463,7 +500,6 @@ components:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
-                - $ref: "#/components/schemas/ConformationMessage"
 
         OutcomeMessage:
             type: object
@@ -483,8 +519,6 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
-                        - end_by_positive_conformation
-                        - end_by_negative_conformation
 
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
@@ -509,20 +543,6 @@ components:
                     - S256
                     - S384
                     - S512
-        
-        ConformationMessage:
-            type: object
-            allOf:
-                - $ref: "#/components/schemas/OutcomeMessage"
-            properties:
-                event:
-                    type: string
-                    enum:
-                        - end_by_conformation_requested
-                expiration_date:
-                    type: string
-                    description: "data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione"
-                    format: date      
 
     headers:
         Agid-JWT-Signature:
