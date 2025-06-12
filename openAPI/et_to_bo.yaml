@@ -329,7 +329,6 @@ components:
                           - $ref: '#/components/schemas/suap_pdf'
                           - $ref: '#/components/schemas/suap_rea_start_xml'
                           - $ref: '#/components/schemas/suap_rea_update_xml'
-                          - $ref: '#/components/schemas/suap_rea_end_xml'
                           - $ref: '#/components/schemas/comunica_cui_xml'
                           - $ref: '#/components/schemas/comunica_cui_pdf'
         ricevuta_xml:
@@ -535,41 +534,7 @@ components:
                             - S256
                             - S384
                             - S512
-        suap_rea_end_xml:
-                      type: object
-                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
-                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
-                        del portale impresainungiorno
-                        (https://www.impresainungiorno.gov.it/documents/155997/157488/suap-rea-1.1.1.xsd/2094658b-c981-4795-8d18-ffa91fa97069)
-                      additionalProperties: false
-                      required:
-                        - name
-                        - mime_type
-                        - resource_id
-                        - hash
-                        - alg_hash
-                      properties:
-                        name:
-                          type: string
-                          enum:
-                            - SUAP_REA_END_XML
-                        mime_type:
-                          type: string
-                          enum:
-                            - application/xml
-                            - application/pkcs7-mime
-                        resource_id:
-                          type: string
-                          minLength: 1
-                        hash:
-                          type: string
-                          minLength: 1
-                        alg_hash:
-                          type: string
-                          enum:
-                            - S256
-                            - S384
-                            - S512
+
         comunica_cui_xml:
                       type: object
                       description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
@@ -817,7 +782,8 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
         bearerAuth:
@@ -830,6 +796,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header

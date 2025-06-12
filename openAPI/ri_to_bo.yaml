@@ -207,7 +207,6 @@ components:
                           - $ref: '#/components/schemas/suap_pdf'
                           - $ref: '#/components/schemas/suap_rea_start_xml'
                           - $ref: '#/components/schemas/suap_rea_update_xml'
-                          - $ref: '#/components/schemas/suap_rea_end_xml'
                           - $ref: '#/components/schemas/comunica_cui_xml'
                           - $ref: '#/components/schemas/comunica_cui_pdf'
         ricevuta_xml:
@@ -550,6 +549,7 @@ components:
                 - cui
                 - instance_descriptor_version
                 - event
+                - suap_rea_end
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -562,7 +562,12 @@ components:
                         - end_by_proceeding_time_expired
                         - end_by_integration_times_expired
                         - end_by_conformation_times_expired
-                        - end_by_submitter_cancel_requested                
+                        - end_by_submitter_cancel_requested
+                suap_rea_end:
+                        $ref: '#/components/schemas/suap_rea_end_xml'
+
+
+
 
         TransferOutcomeNotifyMessage:
             type: object
@@ -570,6 +575,7 @@ components:
                 - cui
                 - instance_descriptor_version
                 - event
+                - suap_rea_end
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -581,7 +587,8 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
-
+                suap_rea_end:
+                        $ref: '#/components/schemas/suap_rea_end_xml'
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
                     type: string
@@ -616,7 +623,8 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
         bearerAuth:
@@ -629,6 +637,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header

@@ -278,7 +278,8 @@ components:
         message:
           type: string
           pattern: >-
-            ^instance_retrived|correction_request|corrected_instance_retrived|end_by_instance_refused|instance_to_[0-9]{1,10}_sended|integration_request_time_expired|end_by_integration_request_time_expired|integration_requested|instance_integrated_retrived|instance_integrated_to_[0-9]{1,10}_sended|end_by_proceeding_time_expired|end_by_suspension_requested|end_by_conformation_requested|cdss_convened|end_by_positive_outcome|end_by_negative_outcome|end_by_submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_send_conclusions|retry_requested_for_request_cdss|retry_requested_for_request_integration|instance_conformated_retrieved|instance_conformated_to_[0-9]{1,10}_sended|conformation_outcome_times_expired_from_[0-9]{1,10}|end_by_positive_conformation|end_by_negative_conformation|conformation_requested|impediments_received_from_[0-9]{1,10}|observations_to_impediments_provided_to_[0-9]{1,10}|end_by_observations_request_time_expired$
+            ^instance_retrived|correction_request|corrected_instance_retrived|end_by_instance_refused|instance_to_[0-9]{1,10}_sended|integration_request_time_expired|end_by_integration_request_time_expired|integration_requested|instance_integrated_retrived|instance_integrated_to_[0-9]{1,10}_sended|end_by_proceeding_time_expired|end_by_suspension_requested|end_by_conformation_requested|cdss_convened|end_by_positive_outcome|end_by_negative_outcome|end_by_conformation_times_expired|end_by_submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_send_conclusions|retry_requested_for_request_cdss|retry_requested_for_request_integration|retry_requested_for_request_conformation|instance_conformated_retrieved|instance_conformated_to_[0-9]{1,10}_sended|conformation_request_time_expired|end_by_conformation_request_time_expired|conformation_outcome_times_expired_from_[0-9]{1,10}|end_by_positive_conformation|end_by_negative_conformation|conformation_requested|impediments_received_from_[0-9]{1,10}|observations_to_impediments_provided_to_[0-9]{1,10}|end_by_observations_request_time_expired$
+
 
         event_time:
           title: timestamp del momento in cui si è verificato l'evento
@@ -632,7 +633,8 @@ components:
         example: eyJzd.fafa.fafafa
       description: |-
         Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-        Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
+        Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+        In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
   securitySchemes:
     bearerAuth:
@@ -645,6 +647,7 @@ components:
       type: apiKey
       description: |-
         Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-        Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
+        Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+        In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
       name: Agid-JWT-Signature
       in: header
