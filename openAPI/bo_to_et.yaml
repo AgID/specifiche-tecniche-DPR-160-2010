@@ -145,6 +145,30 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /request_conformation:
+        post:
+            description: Richiesta di conformazione in relazione a una data instanza di procedimento
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/RequestConformationRequest"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
@@ -302,7 +326,7 @@ components:
                     type: string
                     format: date
                 
-                progressivo:
+                progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
 
@@ -399,6 +423,14 @@ components:
                                 title: id della risorsa "documento di richiesta integrazioni", univoco per erogatore e CUI.UUID
                                 type: string
                                 minLength: 1
+                            filename:                      
+                                title: filename della risorsa "documento di richiesta integrazioni"
+                                type: string
+                                minLength: 1
+                            mime_type:
+                                title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
+                                type: string
+                        minLength: 1
                             hash:
                                 title: hash risorsa
                                 type: string
@@ -411,14 +443,23 @@ components:
                                 - S384
                                 - S512
 
+        RequestConformationRequest:
+            allOf:
+                - $ref: "#/components/schemas/RequestIntegrationRequest"
+                - type: object
+                  required:
+                  - expirationDate
+                  properties:
+                    expirationDate:
+                        title: data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione
+                        type: string
+                        format: date
+
         SendConclusionRequests:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/NegativeOutcomeRequired"
-                - $ref: "#/components/schemas/ConformationRequired"
                 - $ref: "#/components/schemas/PositiveOutcome"
-                - $ref: "#/components/schemas/ConformationOutcome"
-
 
         NegativeOutcomeRequired:
             type: object
@@ -463,57 +504,18 @@ components:
                 cui: 
                     context: "string"
                     data: "2024-07-10"
-                    progressivo: "string"
+                    progressive: "string"
                     uuid: "string"
                 instance_descriptor_version: "string"
                 negative_outcome_motivation: "string"
+                requester_administration: 
+                    ipacode: "string"
+                    officecode: "string"
+                    version: "00.00.00"
+                    description: "string"
                 resource_id: "string"
                 hash: "string"
                 alg_hash: "S256"
-                
-        ConformationRequired:
-            type: object
-            required:
-                - cui
-                - instance_descriptor_version
-                - date
-                - conformation_requested
-                - conclusions_type
-                - requester_administration
-            properties:
-                conclusions_type:
-                    type: string
-                    enum: 
-                    - conformation_requested
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
-                expiration_date:
-                    type: string
-                    description: "data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione"
-                    format: date
-                conformation_requested:
-                    type: string
-                    minLength: 1
-                requester_administration:
-                    title: amministrazione richiedente
-                    $ref: "#/components/schemas/AdministrationSchema"
-                resource_id:
-                    title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
 
         PositiveOutcome:
             required:
@@ -552,41 +554,6 @@ components:
                     - S256
                     - S384
                     - S512
-        ConformationOutcome:
-            required:
-                - cui
-                - instance_descriptor_version
-                - date
-                - conformation_outcome
-                - outcome_type
-            properties:
-                outcome_type:
-                    type: string
-                    enum: 
-                    - positive_conformation
-                    - negative_conformation
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
-                conformation_outcome:
-                    type: string
-                    minLength: 1
-                resource_id:
-                    title: id della risorsa "documento di parere della conformazione", univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
 
     headers:
         Agid-JWT-Signature:
@@ -597,7 +564,8 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
         bearerAuth:
@@ -610,6 +578,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header

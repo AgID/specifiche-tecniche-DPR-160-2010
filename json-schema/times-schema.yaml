@@ -32,6 +32,14 @@ properties:
     title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
     type: integer
     format: int32
+  max_gg_conf_req:          
+    title: numero di giorni limite a partire da start per la richiesta di conformazione degli enti terzi
+    type: integer
+    format: int32
+  max_gg_conf_resp:          
+    title: numero di giorni limite a partire da start per conformazione del soggetto presentatore
+    type: integer
+    format: int32
   max_gg_concl_send:          
     title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
     type: integer
