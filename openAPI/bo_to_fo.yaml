@@ -99,6 +99,7 @@ paths:
                                     enum:
                                         - request_correction
                                         - request_integration
+                                        - request_conformation
                                         - notify
                                 error:
                                     $ref: "#/components/schemas/Error"
@@ -127,6 +128,30 @@ paths:
                     application/json:
                         schema:
                             $ref: "#/components/schemas/SendInstanceRequest"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+      /delete_instance:
+        description: Eliminazione di sistema di una istanza
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DeleteInstanceRequest"
                 required: true
             responses:
                 "200":
@@ -298,7 +323,7 @@ components:
                     type: string
                     format: date
                 
-                progressivo:
+                progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
 
@@ -384,6 +409,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            
                         resource_id:
                           type: string
                           minLength: 1
@@ -414,6 +440,7 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -449,6 +476,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -479,6 +507,7 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -513,6 +542,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -547,6 +577,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -581,6 +612,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -615,6 +647,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -644,7 +677,8 @@ components:
                         mime_type:
                           type: string
                           enum:
-                            - application/pdf|application/pkcs7-mime
+                            - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -670,6 +704,7 @@ components:
             required:
                 - code
                 - message
+
         SendInstanceRequest:
             type: object
             required:
@@ -687,6 +722,13 @@ components:
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
 
+        DeleteInstanceRequest:
+            type: object
+            required:
+                - cui
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
      
     headers:
         Agid-JWT-Signature:
