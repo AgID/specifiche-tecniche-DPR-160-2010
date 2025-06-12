@@ -430,7 +430,7 @@ components:
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
                                 type: string
-                        minLength: 1
+                                minLength: 1
                             hash:
                                 title: hash risorsa
                                 type: string

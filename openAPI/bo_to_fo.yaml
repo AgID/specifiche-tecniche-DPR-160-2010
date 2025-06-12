@@ -144,7 +144,7 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
-      /delete_instance:
+    /delete_instance:
         description: Eliminazione di sistema di una istanza
         post:
             requestBody:
