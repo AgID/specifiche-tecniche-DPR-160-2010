@@ -552,6 +552,7 @@ components:
                         - end_by_instance_refused
                         - end_by_proceeding_time_expired
                         - end_by_integration_times_expired
+                        - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
                 suap_rea_end:
                         $ref: '#/components/schemas/suap_rea_end_xml'
