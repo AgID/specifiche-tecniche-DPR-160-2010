@@ -185,7 +185,6 @@ paths:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
                                 - $ref: "#/components/schemas/CdssNotifyMessage"
-
                                 - $ref: "#/components/schemas/TransferNotifyMessage"
                 required: true
             responses:
