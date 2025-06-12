@@ -145,7 +145,7 @@ components:
                     type: string
                     format: date
                 
-                progressivo:
+                progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
 
@@ -230,6 +230,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -260,6 +261,7 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -295,6 +297,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -325,6 +328,7 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -359,6 +363,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -393,6 +398,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -405,6 +411,7 @@ components:
                             - S256
                             - S384
                             - S512
+
         comunica_cui_xml:
                       type: object
                       description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
@@ -427,6 +434,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -457,6 +465,7 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -509,7 +518,8 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
         bearerAuth:
@@ -522,6 +532,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header

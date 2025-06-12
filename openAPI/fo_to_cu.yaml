@@ -321,7 +321,7 @@ components:
                     type: string
                     format: date
                 
-                progressivo:
+                progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
 
@@ -350,6 +350,7 @@ components:
                     type: string
                     enum:
                       - application/xml
+                      - application/pkcs7-mime
         comunica-cui-signed:             
             type: object
             description: Distinta Comunica firmata
@@ -369,7 +370,8 @@ components:
                     title: mime type della distinta comunica firmata
                     type: string
                     enum:
-                      - application/pdf|application/pkcs7-mime
+                      - application/pdf
+                      - application/pkcs7-mime
         FOPortal:
             type: object
             description: Url portale Frontoffice SUAP
@@ -404,7 +406,8 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
         bearerAuth:
@@ -417,6 +420,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header
