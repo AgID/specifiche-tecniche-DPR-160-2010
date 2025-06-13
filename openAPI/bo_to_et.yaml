@@ -501,6 +501,7 @@ components:
                 - conformation_requested
                 - conclusions_type
                 - requester_administration
+                - code
             properties:
                 conclusions_type:
                     type: string
@@ -535,6 +536,10 @@ components:
                     - S256
                     - S384
                     - S512
+                code:
+                    title: codice della fattispecie presente nel Catalogo
+                    type: string
+                    minLength: 1
 
         PositiveOutcome:
             required:
@@ -588,6 +593,7 @@ components:
                 - date
                 - conformation_outcome
                 - outcome_type
+                - code
             properties:
                 outcome_type:
                     type: string
@@ -619,6 +625,10 @@ components:
                     - S256
                     - S384
                     - S512
+                code:
+                    title: codice della fattispecie presente nel Catalogo
+                    type: string
+                    minLength: 1
 
     headers:
         Agid-JWT-Signature:
