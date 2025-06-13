@@ -172,6 +172,14 @@ components:
                 title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
                 type: integer
                 format: int32
+              max_gg_conf_req:          
+                title: numero di giorni limite a partire da start per la richiesta di conformazione degli enti terzi
+                type: integer
+                format: int32
+              max_gg_conf_resp:          
+                title: numero di giorni limite a partire da start per conformazione del soggetto presentatore
+                type: integer
+                format: int32
               max_gg_concl_send:          
                 title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
                 type: integer
@@ -259,10 +267,11 @@ components:
                                 - integration_requested
                                 - ended_by_integration_times_expired
                                 - integrated
+                                - conformation_requested
+                                - ended_by_conformation_times_expired
+                                - conformated
                                 - cdss_convened
                                 - ended_by_suspension_requested
-                                - ended_by_positive_conformation
-                                - ended_by_negative_conformation
                                 - ended_by_proceeding_time_expired
                                 - ended_by_positive_outcome
                                 - ended_by_negative_outcome
@@ -513,7 +522,8 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
         bearerAuth:
@@ -526,6 +536,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header
