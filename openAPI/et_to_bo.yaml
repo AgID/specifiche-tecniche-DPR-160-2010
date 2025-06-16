@@ -650,7 +650,7 @@ components:
                         - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
                         - integration_request_time_expired
-                        - conformation_outcome_times_expired
+                        - conformation_request_times_expired
                         - end_by_observations_times_expired
         
         TransferNotifyMessage:
@@ -711,8 +711,6 @@ components:
                     type: string
                     enum:
                         - end_by_suspension_requested
-                        - end_by_positive_conformation
-                        - end_by_negative_conformation
                         - end_by_positive_outcome
                         - end_by_negative_outcome
         

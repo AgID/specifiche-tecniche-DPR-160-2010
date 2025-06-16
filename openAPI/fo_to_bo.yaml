@@ -502,7 +502,6 @@ components:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
-                - $ref: "#/components/schemas/ConformationMessage"
                 - $ref: "#/components/schemas/ImpedimentsMessage"
         TransferMessage:
 
@@ -523,10 +522,7 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
-                        - end_by_positive_conformation
-                        - end_by_negative_conformation
                         - existence_of_impediments
-
 
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
@@ -563,22 +559,6 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
-                        - end_by_positive_conformation
-                        - end_by_negative_conformation
-        
-        ConformationMessage:
-            type: object
-            allOf:
-                - $ref: "#/components/schemas/OutcomeMessage"
-            properties:
-                event:
-                    type: string
-                    enum:
-                        - end_by_conformation_requested
-                expiration_date:
-                    type: string
-                    description: "data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione"
-                    format: date      
         
         ImpedimentsMessage:
             type: object

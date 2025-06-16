@@ -521,7 +521,6 @@ components:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/NegativeOutcome"
-                - $ref: "#/components/schemas/ConformationRequired"
                 - $ref: "#/components/schemas/PositiveOutcome"
 
         NegativeOutcome:
@@ -580,49 +579,6 @@ components:
                 hash: "string"
                 alg_hash: "S256"
                 
-        ConformationRequired:
-            type: object
-            required:
-                - cui
-                - instance_descriptor_version
-                - expiration_date
-                - conformation_requested
-                - conclusions_type
-                - requester_administration
-            properties:
-                conclusions_type:
-                    type: string
-                    enum: 
-                    - conformation_requested
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
-                expiration_date:
-                    type: string
-                    description: "data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione"
-                    format: date
-                conformation_requested:
-                    type: string
-                    minLength: 1
-                requester_administration:
-                    title: amministrazione richiedente
-                    $ref: "#/components/schemas/AdministrationSchema"
-                resource_id:
-                    title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
 
         PositiveOutcome:
             required:
