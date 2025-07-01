@@ -91,6 +91,13 @@ paths:
 
             parameters:
                 - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
+                - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
                   required: true
@@ -307,6 +314,16 @@ components:
                         title: id della risorsa, univoco per erogatore e CUI.UUID
                         type: string
                         minLength: 1
+                    filename:                      
+                        title: filename della risorsa 
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
+                    mime_type:
+                        title: "indica il formato dei dati previsto per la risorsa"
+                        type: string
                     hash:                            
                         title: hash dell'elemento dell'istanza relativo al procedimento
                         type: string
@@ -359,6 +376,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -390,6 +410,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -426,6 +449,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -457,6 +483,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -492,6 +521,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -527,6 +559,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -563,6 +598,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -594,6 +632,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -682,7 +723,11 @@ components:
                 mime_type:
                     type: string
                     enum: 
-                        - application/pdf|application/pkcs7-mime
+                        - application/pdf
+                        - application/pkcs7-mime
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 hash:
                     title: hash risorsa
                     type: string
@@ -719,6 +764,9 @@ components:
                         title: se presente, id della risorsa documento correlata all'evento notificato
                         type: string
                         minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
                     hash:
                         title: hash risorsa
                         type: string

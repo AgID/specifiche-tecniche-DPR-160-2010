@@ -177,6 +177,13 @@ paths:
             
             parameters:
                 - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
+                - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
                   required: true
@@ -427,14 +434,17 @@ components:
                                 title: filename della risorsa "documento di richiesta integrazioni"
                                 type: string
                                 minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
                                 type: string
-                        minLength: 1
-                            hash:
-                                title: hash risorsa
-                                type: string
-                                minLength: 1
+                            minLength: 1
+                                hash:
+                                    title: hash risorsa
+                                    type: string
+                                    minLength: 1
                             alg_hash:
                                 title: algoritmo hash applicato
                                 type: string
@@ -488,6 +498,16 @@ components:
                     title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
                     type: string
                     minLength: 1
+                filename:                      
+                    title: filename della risorsa "documento di parere negativo"
+                    type: string
+                    minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
+                mime_type:
+                    title: "indica il formato dei dati previsto per il documento di parere negativo"
+                    type: string
                 hash:
                     title: hash risorsa
                     type: string
@@ -514,6 +534,9 @@ components:
                     version: "00.00.00"
                     description: "string"
                 resource_id: "string"
+                filename: "string"
+                file_size: 1234
+                mime_type: "string"
                 hash: "string"
                 alg_hash: "S256"
 
@@ -543,6 +566,16 @@ components:
                     title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
                     type: string
                     minLength: 1
+                filename:                      
+                    title: filename della risorsa "documento di parere positivo"
+                    type: string
+                    minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
+                mime_type:
+                    title: "indica il formato dei dati previsto per il documento di parere positivo"
+                    type: string
                 hash:
                     title: hash risorsa
                     type: string
