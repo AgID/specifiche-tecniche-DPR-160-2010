@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: BackOffice SUAP to FrontOffice SUAP
+    title: BackOffice to FrontOffice
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili da BackOffice SUAP a FrontOffice SUAP
+        API rese disponibili da BackOffice a FrontOffice
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: BackOffice SUAP to FrontOffice SUAP endpoint
+      description: BackOffice to FrontOffice endpoint
 
 paths:
 
@@ -39,8 +39,39 @@ paths:
                                 date:
                                     type: string
                                     format: date
-                                general_index: 
-                                    $ref: "#/components/schemas/GeneralIndex"
+                                resources:
+                                    type: array
+                                    description: array delle risorse
+                                    items:
+                                        type: object
+                                        required: 
+                                        - resource_id
+                                        - hash
+                                        - alg_hash
+                                        - mime_type
+                                        - description
+                                        properties:
+                                            resource_id:                            
+                                                title: id della risorsa, univoco per erogatore e CUI.UUID
+                                                type: string
+                                                minLength: 1
+                                            hash:                            
+                                                title: hash dell'elemento dell'istanza relativo al procedimento
+                                                type: string
+                                                minLength: 1
+                                            alg_hash:                                
+                                                title: algoritmo hash applicato
+                                                type: string
+                                                enum:
+                                                - S256
+                                                - S384
+                                                - S512
+                                            mime_type:
+                                                type: string
+                                            description:                            
+                                                title: descrizione della risorsa
+                                                type: string
+                                                minLength: 1
                                
                 required: true
             responses:
@@ -99,7 +130,6 @@ paths:
                                     enum:
                                         - request_correction
                                         - request_integration
-                                        - request_conformation
                                         - notify
                                 error:
                                     $ref: "#/components/schemas/Error"
@@ -128,30 +158,6 @@ paths:
                     application/json:
                         schema:
                             $ref: "#/components/schemas/SendInstanceRequest"
-                required: true
-            responses:
-                "200":
-                    $ref: "#/components/responses/OKRequest"
-                "400":
-                    $ref: "#/components/responses/BadRequest"
-                "401":
-                    $ref: "#/components/responses/Unauthorized"
-                "500":
-                    $ref: "#/components/responses/ServerError"
-                "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
-            security:
-                - bearerAuth: []
-                  Agid-JWT-Signature: []
-
-      /delete_instance:
-        description: Eliminazione di sistema di una istanza
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/DeleteInstanceRequest"
                 required: true
             responses:
                 "200":
@@ -311,6 +317,7 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
                 - progressive
                 - uuid
@@ -318,15 +325,16 @@ components:
                 context:
                     title: contesto dell'istanza
                     type: string
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+                    type: string
                 data:
                     title: data emissione cui
                     type: string
                     format: date
-                
                 progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
-
                 uuid:
                     title: UUID chiave del CUI
                     type: string
@@ -371,292 +379,6 @@ components:
                                 - S256
                                 - S384
                                 - S512
-        GeneralIndex:
-                      type: array
-                      description: indice allegati trasversali
-                      minItems: 0
-                      uniqueItems: true
-                      items:
-                        anyOf:
-                          - $ref: '#/components/schemas/ricevuta_xml'
-                          - $ref: '#/components/schemas/ricevuta_pdf'
-                          - $ref: '#/components/schemas/suap_xml'
-                          - $ref: '#/components/schemas/suap_pdf'
-                          - $ref: '#/components/schemas/suap_rea_start_xml'
-                          - $ref: '#/components/schemas/suap_rea_update_xml'
-                          - $ref: '#/components/schemas/comunica_cui_xml'
-                          - $ref: '#/components/schemas/comunica_cui_pdf'
-        ricevuta_xml:
-                      type: object
-                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
-                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
-                        del portale impresainungiorno
-                        (https://www.impresainungiorno.gov.it/documents/155997/157492/SUAP-ricevuta-1.1.4.xsd/58b9d8e8-2b76-4b8b-adee-0cf9c2bbe04a)
-                      additionalProperties: false
-                      required:
-                        - name
-                        - mime_type
-                        - resource_id
-                        - hash
-                        - alg_hash
-                      properties:
-                        name:
-                          type: string
-                          enum:
-                            - RICEVUTA_XML
-                        mime_type:
-                          type: string
-                          enum:
-                            - application/xml
-                            
-                        resource_id:
-                          type: string
-                          minLength: 1
-                        hash:
-                          type: string
-                          minLength: 1
-                        alg_hash:
-                          type: string
-                          enum:
-                            - S256
-                            - S384
-                            - S512
-        ricevuta_pdf:
-                      type: object
-                      additionalProperties: false
-                      required:
-                        - name
-                        - mime_type
-                        - resource_id
-                        - hash
-                        - alg_hash
-                      properties:
-                        name:
-                          type: string
-                          enum:
-                            - RICEVUTA_PDF
-                        mime_type:
-                          type: string
-                          enum:
-                            - application/pdf
-                            - application/pkcs7-mime
-                        resource_id:
-                          type: string
-                          minLength: 1
-                        hash:
-                          type: string
-                          minLength: 1
-                        alg_hash:
-                          type: string
-                          enum:
-                            - S256
-                            - S384
-                            - S512
-        suap_xml:
-                      type: object
-                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
-                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
-                        del portale impresainungiorno
-                        (https://www.impresainungiorno.gov.it/documents/155997/157492/pratica_suap-2.0.0.xsd/74b7ffb2-fe01-41c6-b210-be36139923e4 , 
-                        https://www.impresainungiorno.gov.it/documents/155997/157492/Definizione+delle+strutture+dati+elementari+di+impresainungiorno.xsd/43929369-48f0-4b7b-883e-f57dc5cdd41e)
-                      additionalProperties: false
-                      required:
-                        - name
-                        - mime_type
-                        - resource_id
-                        - hash
-                        - alg_hash
-                      properties:
-                        name:
-                          type: string
-                          enum:
-                            - SUAP_XML
-                        mime_type:
-                          type: string
-                          enum:
-                            - application/xml
-                            - application/pkcs7-mime
-                        resource_id:
-                          type: string
-                          minLength: 1
-                        hash:
-                          type: string
-                          minLength: 1
-                        alg_hash:
-                          type: string
-                          enum:
-                            - S256
-                            - S384
-                            - S512
-        suap_pdf:
-                      type: object
-                      additionalProperties: false
-                      required:
-                        - name
-                        - mime_type
-                        - resource_id
-                        - hash
-                        - alg_hash
-                      properties:
-                        name:
-                          type: string
-                          enum:
-                            - SUAP_PDF
-                        mime_type:
-                          type: string
-                          enum:
-                            - application/pdf
-                            - application/pkcs7-mime
-                        resource_id:
-                          type: string
-                          minLength: 1
-                        hash:
-                          type: string
-                          minLength: 1
-                        alg_hash:
-                          type: string
-                          enum:
-                            - S256
-                            - S384
-                            - S512
-        suap_rea_start_xml:
-                      type: object
-                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
-                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
-                        del portale impresainungiorno
-                        (https://www.impresainungiorno.gov.it/documents/155997/157488/suap-rea-1.1.1.xsd/2094658b-c981-4795-8d18-ffa91fa97069)
-                      additionalProperties: false
-                      required:
-                        - name
-                        - mime_type
-                        - resource_id
-                        - hash
-                        - alg_hash
-                      properties:
-                        name:
-                          type: string
-                          enum:
-                            - SUAP_REA_START_XML
-                        mime_type:
-                          type: string
-                          enum:
-                            - application/xml
-                            - application/pkcs7-mime
-                        resource_id:
-                          type: string
-                          minLength: 1
-                        hash:
-                          type: string
-                          minLength: 1
-                        alg_hash:
-                          type: string
-                          enum:
-                            - S256
-                            - S384
-                            - S512
-        suap_rea_update_xml:
-                      type: object
-                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
-                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
-                        del portale impresainungiorno
-                        (https://www.impresainungiorno.gov.it/documents/155997/157488/suap-rea-1.1.1.xsd/2094658b-c981-4795-8d18-ffa91fa97069)
-                      additionalProperties: false
-                      required:
-                        - name
-                        - mime_type
-                        - resource_id
-                        - hash
-                        - alg_hash
-                      properties:
-                        name:
-                          type: string
-                          enum:
-                            - SUAP_REA_UPDATE_XML
-                        mime_type:
-                          type: string
-                          enum:
-                            - application/xml
-                            - application/pkcs7-mime
-                        resource_id:
-                          type: string
-                          minLength: 1
-                        hash:
-                          type: string
-                          minLength: 1
-                        alg_hash:
-                          type: string
-                          enum:
-                            - S256
-                            - S384
-                            - S512
-
-        comunica_cui_xml:
-                      type: object
-                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
-                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
-                        del portale impresainungiorno
-                        (https://www.registroimprese.it/documents/20195/0/specifichecomunicazioneunica.zip)
-                      additionalProperties: false
-                      required:
-                        - name
-                        - mime_type
-                        - resource_id
-                        - hash
-                        - alg_hash
-                      properties:
-                        name:
-                          type: string
-                          enum:
-                            - COMUNICA_CUI_XML
-                        mime_type:
-                          type: string
-                          enum:
-                            - application/xml
-                            - application/pkcs7-mime
-                        resource_id:
-                          type: string
-                          minLength: 1
-                        hash:
-                          type: string
-                          minLength: 1
-                        alg_hash:
-                          type: string
-                          enum:
-                            - S256
-                            - S384
-                            - S512
-        comunica_cui_pdf:
-                      type: object
-                      additionalProperties: false
-                      required:
-                        - name
-                        - mime_type
-                        - resource_id
-                        - hash
-                        - alg_hash
-                      properties:
-                        name:
-                          type: string
-                          enum:
-                            - COMUNICA_CUI_PDF
-                        mime_type:
-                          type: string
-                          enum:
-                            - application/pdf
-                            - application/pkcs7-mime
-                        resource_id:
-                          type: string
-                          minLength: 1
-                        hash:
-                          type: string
-                          minLength: 1
-                        alg_hash:
-                          type: string
-                          enum:
-                            - S256
-                            - S384
-                            - S512
-
 
         Error:
             type: object
@@ -669,14 +391,12 @@ components:
             required:
                 - code
                 - message
-
         SendInstanceRequest:
             type: object
             required:
                 - cui
                 - instance_descriptor_version
                 - instance_index
-                - general_index
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -684,16 +404,40 @@ components:
                     type: string
                 instance_index:
                     $ref: "#/components/schemas/InstanceIndex"
-                general_index:
-                    $ref: "#/components/schemas/GeneralIndex"
+                resources:
+                    type: array
+                    description: array delle risorse
+                    items:
+                        type: object
+                        required: 
+                        - resource_id
+                        - hash
+                        - alg_hash
+                        - mime_type
+                        - description
+                        properties:
+                            resource_id:                            
+                                title: id della risorsa, univoco per erogatore e CUI.UUID
+                                type: string
+                                minLength: 1
+                            hash:                            
+                                title: hash dell'elemento dell'istanza relativo al procedimento
+                                type: string
+                                minLength: 1
+                            alg_hash:                                
+                                title: algoritmo hash applicato
+                                type: string
+                                enum:
+                                - S256
+                                - S384
+                                - S512
+                            mime_type:
+                                type: string
+                            description:                            
+                                title: descrizione della risorsa
+                                type: string
+                                minLength: 1
 
-        DeleteInstanceRequest:
-            type: object
-            required:
-                - cui
-            properties:
-                cui:
-                    $ref: "#/components/schemas/cui"
      
     headers:
         Agid-JWT-Signature:
@@ -704,8 +448,7 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
-                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
+                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
 
     securitySchemes:
         bearerAuth:
@@ -718,7 +461,6 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
-                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
+                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
             name: Agid-JWT-Signature
             in: header

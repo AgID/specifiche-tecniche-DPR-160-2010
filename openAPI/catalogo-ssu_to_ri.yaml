@@ -109,6 +109,7 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
                 - progressive
                 - uuid
@@ -116,15 +117,16 @@ components:
                 context:
                     title: contesto dell'istanza
                     type: string
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+                    type: string
                 data:
                     title: data emissione cui
                     type: string
                     format: date
-                
                 progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
-
                 uuid:
                     title: UUID chiave del CUI
                     type: string
@@ -170,14 +172,6 @@ components:
                 format: int32
               max_gg_int_resp:          
                 title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
-                type: integer
-                format: int32
-              max_gg_conf_req:          
-                title: numero di giorni limite a partire da start per la richiesta di conformazione degli enti terzi
-                type: integer
-                format: int32
-              max_gg_conf_resp:          
-                title: numero di giorni limite a partire da start per conformazione del soggetto presentatore
                 type: integer
                 format: int32
               max_gg_concl_send:          
@@ -227,7 +221,7 @@ components:
             - usecase_proceedings
             - instance_status
             - times
-            - workflow
+            - administrative_regime 
             properties:
                 version:          
                     title: numero versione del descrittore
@@ -267,16 +261,15 @@ components:
                                 - integration_requested
                                 - ended_by_integration_times_expired
                                 - integrated
-                                - conformation_requested
-                                - ended_by_conformation_times_expired
-                                - conformated
                                 - cdss_convened
+                                - instance_transferred
                                 - ended_by_suspension_requested
+                                - ended_by_conformation_requested
                                 - ended_by_proceeding_time_expired
                                 - ended_by_positive_outcome
                                 - ended_by_negative_outcome
                                 - ended_by_submitter_cancel_requested
-                                
+                                                                
                             timestamp:                
                                 title: timestamp del cambiamento di stato
                                 type: string
@@ -285,7 +278,7 @@ components:
                 times:          
                     $ref: "#/components/schemas/Times"  
                 
-                workflow:          
+                administrative_regime:          
                     type: object
                     title: regime amministrativo dell'istanza          
                     
@@ -294,13 +287,8 @@ components:
                         - version
                     properties:
                         id:              
-                            title: identificativo univo del regime amministrativo
+                            title: identificativo unico del regime amministrativo recuperato da apposito servizio di catalogo-ssu_meta
                             type: string
-                            enum:
-                                 - SCIA
-                                 - AUTORIZZAZIONE
-                                 - SILENZIO-ASSENSO
-                                 - COMUNICAZIONE
                         version:              
                             title: version del regime amministrativo
                             type: string
@@ -401,7 +389,6 @@ components:
                                         type: string
                                         enum: 
                                            - application/xml
-                                           - application/pkcs7-mime
                                     activity_model: 
                                        title: porzione distinta modello attivita
                                        type: object
@@ -429,7 +416,6 @@ components:
                                             type: string
                                             enum: 
                                                - application/pdf
-                                               - application/pkcs7-mime
                             attachments:                
                                 title: allegati all'istanza relativi al procedimento
                                 type: array
@@ -522,8 +508,7 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
-                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
 
     securitySchemes:
         bearerAuth:
@@ -536,7 +521,6 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
-                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
+                Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
             name: Agid-JWT-Signature
             in: header

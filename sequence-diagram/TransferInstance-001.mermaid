@@ -1,0 +1,30 @@
+sequenceDiagram
+    autonumber
+    
+    actor O as Operatore BackOffice ZES    
+    participant F as FrontOffice  
+    participant B1 as BackOffice ZES  
+    participant B2 as BackOffice AdSP
+    participant C as Catalogo SSU
+
+   
+   
+    Note over O,C: istanza presentata al back office ZES (dopo step 28 del General-001)
+          
+    O ->> B1: request_transfer_instance(cui)
+    B1 ->> B2: transfer_istance(cui, instance_descriptor_version, instance_index, resources)
+    B2 -->> B1: ack
+
+    B1 ->> C: audit(cui,transferred_instance)
+    C  -->> B1: ack
+
+    B1 ->> F: notify(cui, istance_descriptor_version, transferred_instance)
+    F  -->> B1: ack
+
+    Note over O,C: ... al termine dell'iter della pratica sul BackOffice dell'AdSP
+
+    B2 ->> B1: notify(cui, instance_descriptor_version, end_by_*)
+    B1 -->> B2: ack
+	
+	B1 ->> B2: request_instance_document(cui, resource_id)
+	B2 -->> B1: instanceDocument

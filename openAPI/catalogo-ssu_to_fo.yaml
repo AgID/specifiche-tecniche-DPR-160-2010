@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-  title: SUAP_CatalogoSSU to FrontOffice SUAP
+  title: CatalogoSSU to FrontOffice
 
   version: 1.0.0
 
   description: |-
-    API rese disponibili da Catalogo SSU alle componenti FrontOffice SUAP'
+    API rese disponibili da Catalogo SSU alle componenti FrontOffice
 
   contact:
     name: AgID - Agenzia per l'Italia Digitale
@@ -18,13 +18,27 @@ info:
 
 servers:
   - url: https://<system host+subdomains>.it
-    description: Catalogo SSU to FrontOffice SUAP endpoint
+    description: Catalogo SSU to FrontOffice endpoint
 
 paths:
-  /request_cui:
+  /request_cui/{context}/{sub_context}:
     description: Richiesta del CUI
-
     post:
+      parameters:
+        - in: path
+          name: context
+          description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context dell'OpenAPI catalogo-ssu_meta
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
+        - in: path
+          name: sub_context
+          description: specificità del contesto (es. SUE Produttivo, SUE Residenziale). I valori ammissibili sono reperibili invocando il path /context dell'OpenAPI catalogo-ssu_meta
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
       requestBody:
         content:
           application/json:
@@ -48,7 +62,7 @@ paths:
           Agid-JWT-Signature: []
 
   /audit:
-    description: Audit azioni realizzate dalla componenti
+    description: Audit azioni realizzate dalle componenti
     post:
       requestBody:
         content:
@@ -74,8 +88,7 @@ paths:
           Agid-JWT-Signature: []
 
   /instance_descriptor/{cui_uuid}:
-    description: |
-        Recupero InstanceDescriptor 
+    description: Recupero descrittore istanza 
     get:
       parameters:
         - name: cui_uuid
@@ -175,6 +188,7 @@ components:
       description: codice unico dell'istanza
       required:
           - context
+          - sub_context
           - data
           - progressive
           - uuid
@@ -186,7 +200,9 @@ components:
               title: data emissione cui
               type: string
               format: date
-          
+          sub_context:
+              title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+              type: string
           progressive:
               title: numero progressivo a rotazione annuale
               type: string
@@ -220,9 +236,8 @@ components:
         message:
           type: string
           pattern: >-
-            ^receipt_sended|instance_to_[0-9]{1,10}_sended|corrected_instance_to_[0-9]{1,10}_sended|instance_integrated_to_[0-9]{1,10}_sended|submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_request_correction|retry_requested_for_request_integration|retry_requested_for_request_conformation|retry_requested_for_notify|instance_conformated_to_[0-9]{1,10}_sended$
+            ^receipt_sended|instance_to_[0-9]{1,10}_sended|corrected_instance_to_[0-9]{1,10}_sended|instance_integrated_to_[0-9]{1,10}_sended|submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_request_correction|retry_requested_for_request_integration|retry_requested_for_notify$
 
-    
         event_time:
           title: timestamp del momento in cui si è verificato l'evento
           type: string
@@ -276,14 +291,6 @@ components:
           title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
           type: integer
           format: int32
-        max_gg_conf_req:          
-          title: numero di giorni limite a partire da start per la richiesta di conformazione degli enti terzi
-          type: integer
-          format: int32
-        max_gg_conf_resp:          
-          title: numero di giorni limite a partire da start per conformazione del soggetto presentatore
-          type: integer
-          format: int32
         max_gg_concl_send:          
           title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
           type: integer
@@ -331,7 +338,7 @@ components:
       - usecase_proceedings
       - instance_status
       - times
-      - workflow      
+      - administrative_regime 
       properties:
         version:          
           title: numero versione del descrittore
@@ -360,7 +367,7 @@ components:
             - timestamp
             properties:
               state:                
-                title: stato dell'istanza
+                title: stato dell'istanza, stato iniziale da impostare in started
                 type: string
                 enum:
                 - started
@@ -371,11 +378,10 @@ components:
                 - integration_requested
                 - ended_by_integration_times_expired
                 - integrated
-                - conformation_requested
-                - ended_by_conformation_times_expired
-                - conformated
                 - cdss_convened
+                - instance_transferred
                 - ended_by_suspension_requested
+                - ended_by_conformation_requested
                 - ended_by_proceeding_time_expired
                 - ended_by_positive_outcome
                 - ended_by_negative_outcome
@@ -389,7 +395,7 @@ components:
         times:          
           $ref: "#/components/schemas/Times"  
         
-        workflow:          
+        administrative_regime:          
           type: object
           title: regime amministrativo dell'istanza          
           
@@ -398,13 +404,8 @@ components:
             - version
           properties:
             id:              
-              title: identificativo univoco del regime amministrativo
+              title: identificativo unico del regime amministrativo recuperato da apposito servizio di catalogo-ssu_meta
               type: string
-              enum:
-               - SCIA
-               - AUTORIZZAZIONE
-               - SILENZIO-ASSENSO
-               - COMUNICAZIONE
             version:              
               title: version del regime amministrativo
               type: string
@@ -505,7 +506,6 @@ components:
                     type: string
                     enum: 
                        - application/xml
-                       - application/pkcs7-mime
                   activity_model: 
                      title: porzione distinta modello attivita
                      type: object
@@ -533,7 +533,6 @@ components:
                           type: string
                           enum: 
                              - application/pdf
-                             - application/pkcs7-mime
               attachments:                
                 title: allegati all'istanza relativi al procedimento
                 type: array
@@ -545,7 +544,6 @@ components:
                   - alg_hash
                   - mime_type
                   properties:
-
                     ref:                      
                       title: riferimento all'allegato dell'istanza relativo al procedimento
                       type: string
@@ -565,6 +563,14 @@ components:
                       - S256
                       - S384
                       - S512
+                    code:
+                      title: identificativo dell'allegato presente nel Catalogo
+                      type: string
+                      minLength: 1
+                    version:
+                      title: versione dell'allegato presente nel Catalogo
+                      type: string
+                      minLength: 1
                     form:                      
                       title: riferimento agli oggetti per la validazione
                       type: object
@@ -619,9 +625,7 @@ components:
         example: eyJzd.fafa.fafafa
       description: |-
         Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-        Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
-        In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
-
+        Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
 
   securitySchemes:
     bearerAuth:
@@ -634,8 +638,6 @@ components:
       type: apiKey
       description: |-
         Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-        Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
-        In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
-
+        Vedi Modi [integrity_rest_01] Integrità del payload del messaggio REST.
       name: Agid-JWT-Signature
       in: header

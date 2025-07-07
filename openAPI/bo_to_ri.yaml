@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: BackOffice SUAP to Registro Imprese
+    title: BackOffice to Registro Imprese
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili da BackOffice SUAP al Registro Imprese
+        API rese disponibili da BackOffice al Registro Imprese per le pratiche di edilizia produttiva
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: BackOffice SUAP to Registro Imprese endpoint
+      description: BackOffice to Registro Imprese endpoint
 
 paths:
 
@@ -201,6 +201,7 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
                 - progressive
                 - uuid
@@ -208,15 +209,16 @@ components:
                 context:
                     title: contesto dell'istanza
                     type: string
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+                    type: string
                 data:
                     title: data emissione cui
                     type: string
                     format: date
-                
                 progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
-
                 uuid:
                     title: UUID chiave del CUI
                     type: string
@@ -241,8 +243,7 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
-                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
+                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
 
     securitySchemes:
         bearerAuth:
@@ -255,7 +256,6 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
-                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
+                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
             name: Agid-JWT-Signature
             in: header
