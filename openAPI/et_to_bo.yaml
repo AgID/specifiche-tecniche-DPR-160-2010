@@ -716,9 +716,14 @@ components:
                     type: string
                     enum:
                         - end_by_proceeding_time_expired
+                        - end_by_integration_times_expired
                         - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
                         - integration_request_time_expired
+                        - end_by_definitive_provision_granted
+                        - end_by_conditional_provision_rescinded
+                        - end_by_conditional_provision_denied
+                        - conditional_provision_extended
                         - conformation_request_times_expired
                         - end_by_observations_times_expired
         
@@ -727,7 +732,6 @@ components:
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
-
                         
         TransferMessage:
             type: object

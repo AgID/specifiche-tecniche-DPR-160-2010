@@ -136,6 +136,30 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /send_conditional_provision:
+        description: Inoltro del Provvedimento Condizionato
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ConditionalProvisionGranted"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
     /request_cdss:
         post:
             description: Richiesta convocazione Conferenza dei Servizi Sincrona (CdSS) in relazione a una data instanza di procedimento
@@ -631,6 +655,9 @@ components:
             oneOf:
                 - $ref: "#/components/schemas/NegativeOutcome"
                 - $ref: "#/components/schemas/PositiveOutcome"
+                - $ref: "#/components/schemas/DefinitiveProvisionGranted"
+                - $ref: "#/components/schemas/ConditionalProvisionRescinded"
+                - $ref: "#/components/schemas/ConditionalProvisionDenied"
 
         NegativeOutcome:
             type: object

@@ -1,0 +1,275 @@
+---
+config:
+  theme: redux
+  look: handDrawn
+---
+sequenceDiagram
+    autonumber
+    actor P as Presentatore    
+    participant F as FrontOffice SUAP
+    participant B as BackOffice SUAP   
+    participant C as Catalogo SSU 
+    participant E as Enti Terzi    
+    Note over F,E: istanza procedibile
+    par per ogni ente terzo interessato        
+        B ->> E: send_instance(SendInstanceRequest)
+        E -->> B: ack
+        B ->> C: audit(cui,instance_to_<ET>_sended)
+        note right of B: <ET> codice ente terzo 
+        C -->> B: ack
+        E ->> C: request_instance_descriptor(cui)
+        C -->> E: instanceDescriptor
+        loop per ogni procedimento di interesse parte dell'istanza 
+        E ->> B: request_instance_document(cui, resource_id)
+        note left of E: resource_id da instance_index
+        B -->> E: instanceDocument
+        end
+        E ->> C: audit(cui,instance_retrived)
+        C -->> E: ack
+    end
+    opt almeno una richiesta conformazione
+        par almeno un ente terzo
+            E ->> B: request_conformation(cui, instance_descriptor_version,conformation_list, conformation_document_list)
+            B -->> E: ack 
+            opt
+                B ->> E: request_instance_document(cui, resource_id)
+                note right of B: recupero documento di richiesta di conformazione
+                E -->> B: instanceDocument    
+            end
+            E ->> C: audit(cui,conformation_requested_from_<ET>)
+            C -->> E: ack           
+        end
+        alt concluso il tempo di richiesta di conformazione 
+            par per ogni ente terzo
+                B ->> E: notify(cui, instance_descriptor_version, conformation_request_time_expired)
+                E -->> B: ack
+            end
+            B ->> C: audit(cui, conformation_request_time_expired)
+            C -->> B: ack
+        end 
+        Note over B: concluso il tempo di richiesta conformazione AND almeno un ente terzo ha richiesto la conformazione
+        B ->> F: request_conformation(cui, instance_descriptor_version,conformation_list, conformation_document_list)
+        F -->> B: ack
+        B ->> C: audit(cui,conformation_requested)
+        C -->> B: ack
+        B ->> C: request_update_times(cui,times)
+        Note right of B: Aggiorna i tempi procedimentali incrementandoli di X giorni, dove X è max_gg_conf_resp dell'oggetto Times
+        C -->> B: instanceDescriptor
+        opt
+            loop recupero documenti di richiesta di conformazione degli ET
+            F ->> B: request_instance_document(cui, resource_id)
+            note right of F: resource_id in conformation_document_list
+            B -->> F: instanceDocument    
+            end
+        end
+        F -) P: notification(cui,conformation_requested)    
+        alt oltre il tempo di conformazione del presentatore
+            B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
+            F -->> B: ack
+            par per ogni ente terzo interessato
+                B ->> E: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
+                E -->> B: ack
+            end
+            B ->> C: audit(cui,end_by_conformation_request_time_expired)
+            C -->> B: ack
+            F -) P: notification(cui,end_by_conformation_times_expired)
+        else entro il tempo di conformazione del presentatore 
+            P --) F: instanceConformated
+            F ->> B: send_instance(SendInstanceRequest)
+            B -->> F: ack
+            F ->> C: audit(cui,instance_conformated_to_<BO>_sended)
+            note right of F: <BO> codice BackOffice
+            C -->> F: ack
+            loop per ogni procedimento parte dell'istanza 
+                B ->> F: request_instance_document(cui, resource_id)
+                note left of B: resource_id da instance_index
+                F -->> B: instanceDocument
+            end
+            B ->> C: audit(cui,instance_conformated_retrived)
+            C -->> B: ack
+            B ->> C: request_update_times(cui,times)
+            Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per la conformazione e i giorni passati dall'invio della richiesta
+            C -->> B: instanceDescriptor
+            par per ogni ente terzo interessato                
+                B ->> E: send_instance(SendInstanceRequest)
+                E -->> B: ack
+                B ->> C: audit(cui,instance_conformated_to_<ET>_sended)
+                note right of B: <ET> codice ente terzo
+                C -->> B: ack
+                loop per ogni procedimento di interesse parte dell'istanza 
+                    E ->> B: request_instance_document(cui, resource_id)
+                    note left of E: resource_id da instance_index
+                    B -->> E: instanceDocument
+                end
+                E ->> C: audit(cui,instance_conformated_retrived)
+                C -->> E: ack
+            end
+        end
+    end
+    alt conformazione non richiesta, oppure richiesta e istanza conformata nei tempi dal presentatore
+        alt rilascio del provvedimento condizionato
+            Note left of E: Rilascio provvedimento condizionato
+            par per ogni ente terzo interessato
+                E ->> B: send_conditional_provision(ConditionalProvision)
+                B -->> E: ack
+                opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                end
+                E ->> C: audit(cui,conditional_provision_granted_from_<ET>)
+                C -->> E: ack
+            end
+            Note left of B: Invio provvedimento condizionato al FO/Presentatore
+            B ->> F: send_conditional_provision(ConditionalProvision)
+            F -->> B: ack
+            F ->> B: request_instance_document(cui, resource_id)
+            B -->> F: instanceDocument
+            F -) P: notification(cui,conditional_provision_outcome, conditional_provision_document)
+            B ->> C: request_update_times(cui,times)
+            Note right of B: Aggiorna i tempi procedimentali incrementandoli di 3 mesi
+            C -->> B: instanceDescriptor
+            par per ogni ente terzo interessato       
+                B ->> E: notify(cui, instance_descriptor_version, conditional_provision_granted)
+                E -->> B: ack     
+            end
+
+            Note left of E: L'Ente effettua il sopralluogo
+            opt proroga del provvedimento condizionato AND impresa avviata nei tempi concessi dal provvedimento
+                par almeno un ente terzo invia la proroga
+                    E ->> B: send_extension_conditional_provision(ConditionalProvisionExtended)
+                    B -->> E: ack     
+                    opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                    end               
+                    E ->> C: audit(cui,conditional_provision_extended_from_<ET>)
+                    C -->> E: ack
+                end
+                B ->> C: request_update_times(cui,times)
+                Note right of B: Aggiorna i tempi procedimentali incrementandoli di altri 3 mesi
+                C -->> B: instanceDescriptor
+                par per ogni ente terzo interessato       
+                    B ->> E: notify(cui, instance_descriptor_version, conditional_provision_extended)
+                    E -->> B: ack     
+                end  
+            end
+            alt impresa avviata nei tempi concessi dal provvedimento e OK sopralluogo
+                par per ogni ente terzo interessato
+                    E ->> B: send_conclusions(DefinitiveProvisionGranted)
+                    B -->> E: ack     
+                    opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                    end               
+                    E ->> C: audit(cui,conditional_provision_granted_from_<ET>)
+                    C -->> E: ack
+                end
+                B ->> F: send_conclusions(DefinitiveProvisionGranted)
+                F -->> B: ack
+                F -) P: notification(cui, definitive_provision_outcome, definitive_provision_document)
+                par per ogni ente terzo interessato
+                    B ->> E: notify(cui, instance_descriptor_version, end_by_definitive_provision_granted)
+                    E -->> B: ack
+                end
+                B ->> C: audit(cui, end_by_definitive_provision_granted)
+                C -->> B: ack              
+            else impresa avviata nei tempi concessi dal provvedimento e KO sopralluogo
+                par per ogni ente terzo interessato AND almeno un esito che revoca il provvedimento condizionato
+                    alt 
+                        E ->> B: send_conclusions(DefinitiveProvisionGranted)
+                        B -->> E: ack   
+                        opt 
+                            B ->> E: request_instance_document(cui, resource_id)
+                            E -->> B: instanceDocument 
+                        end                 
+                        E ->> C: audit(cui,conditional_provision_granted_from_<ET>)
+                        C -->> E: ack
+                    else 
+                        E ->> B: send_conclusions(ConditionalProvisionRescinded)
+                        B -->> E: ack    
+                        opt 
+                            B ->> E: request_instance_document(cui, resource_id)
+                            E -->> B: instanceDocument 
+                        end                
+                        E ->> C: audit(cui,conditional_provision_rescinded_from_<ET>)
+                        C -->> E: ack
+                    end
+                end
+                B ->> F: send_conclusions(ConditionalProvisionRescinded)
+                F -->> B: ack
+                F ->> B: request_instance_document(cui, resource_id)
+                B -->> F: instanceDocument
+                F -) P: notification(cui, conditional_provision_outcome, conditional_provision_document)
+                par per ogni ente terzo interessato
+                    B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_rescinded)
+                    E -->> B: ack
+                end
+                B ->> C: audit(cui, end_by_conditional_provision_rescinded)
+                C -->> B: ack              
+            else impressa NON avviata nei tempi concessi dal provvedimento
+                par per ogni ente terzo interessato
+                    E ->> B: send_conclusions(ConditionalProvisionRescinded)
+                    B -->> E: ack
+                    opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                    end                    
+                    E ->> C: audit(cui,conditional_provision_rescinded_from_<ET>)
+                    C -->> E: ack  
+                end
+                B ->> F: send_conclusions(ConditionalProvisionRescinded)
+                F -->> B: ack
+                F ->> B: request_instance_document(cui, resource_id)
+                B -->> F: instanceDocument
+                F -) P: notification(cui, conditional_provision_outcome, conditional_provision_document)
+                par per ogni ente terzo interessato
+                    B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_rescinded)
+                    E -->> B: ack
+                end
+                B ->> C: audit(cui, end_by_conditional_provision_rescinded)
+                C -->> B: ack
+            end
+        else diniego del provvedimento condizionato
+            par per ogni ente terzo interessato AND almeno una richiesta per il diniego del provvedimento condizionato
+                alt 
+                    E ->> B: send_conditional_provision(ConditionalProvision)
+                    B -->> E: ack
+                    opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                    end
+                    E ->> C: audit(cui,conditional_provision_granted_from_<ET>)
+                    C -->> E: ack
+                else 
+                    E ->> B: send_conclusions(ConditionalProvisionDenied)
+                    B -->> E: ack
+                    opt 
+                        B ->> E: request_instance_document(cui, resource_id)
+                        E -->> B: instanceDocument 
+                    end
+                    E ->> C: audit(cui,conditional_provision_denied_from_<ET>)
+                    C -->> E: ack
+                end
+            end
+            B ->> F: send_conclusions(ConditionalProvisionDenied)
+            F -->> B: ack
+            F ->> B: request_instance_document(cui, resource_id)
+            B -->> F: instanceDocument
+            F -) P: notification(cui, conditional_provision_outcome, conditional_provision_document)
+            par per ogni ente terzo interessato
+                B ->> E: notify(cui, instance_descriptor_version, end_by_conditional_provision_denied)
+                E -->> B: ack
+            end
+            B ->> C: audit(cui, end_by_conditional_provision_denied)
+            C -->> B: ack
+        end
+    else scaduti i tempi procedimentali
+        B ->> F: notify(cui, instance_descriptor_version,end_by_proceeding_time_expired)
+        F -->> B: ack            
+        par per ogni ente terzo interessato
+            B ->> E: notify(cui, instance_descriptor_version, end_by_proceeding_time_expired)
+            E -->> B: ack
+        end
+        B ->> C: audit(cui,end_by_proceeding_time_expired)
+        C -->> B: ack
+    end
