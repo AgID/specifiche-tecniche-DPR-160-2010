@@ -23,7 +23,7 @@ servers:
 paths:
 
     /notify_receipt:
-        description: notifica invio ricevuta al presentatore
+        description: notifica dell'avvenuto rilascio della ricevuta al Soggetto Presentatore
         post:
             requestBody:
                 content:
@@ -84,7 +84,7 @@ paths:
             Agid-JWT-Signature: [ ]
 
     /cancel_instance:
-        description: richiesta annullamento istanza da parte del presentatore
+        description: richiesta di cancellazione di una data istanza di procedimento da parte del Soggetto Presentatore
         post:
             requestBody:
                 content:
@@ -124,6 +124,7 @@ paths:
                                     enum:
                                         - request_correction
                                         - request_integration
+                                        - request_conformation
                                         - notify
                                 error:
                                     $ref: "#/components/schemas/Error"
@@ -145,7 +146,7 @@ paths:
                   Agid-JWT-Signature: []
 
     /send_instance:
-        description: Invio riferimenti istanza
+        description: Inoltro dei riferimenti a un' istanza di procedimento
         post:
             requestBody:
                 content:
@@ -168,10 +169,34 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+      /delete_instance:
+        description: Eliminazione di sistema di una istanza
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DeleteInstanceRequest"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
-                Recupero risorsa documento per un dato CUI.
+                Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
                 Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
             parameters:
                 - in: header
@@ -323,7 +348,7 @@ components:
                     type: string
                     format: date
                 
-                progressivo:
+                progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
 
@@ -339,6 +364,7 @@ components:
                         required:
                         - code
                         - ref
+                        - description
                         - resource_id
                         - hash
                         - alg_hash
@@ -349,6 +375,10 @@ components:
                                 minLength: 1
                             ref:                            
                                 title: riferimento all'elemento dell'istanza relativo al procedimento
+                                type: string
+                                minLength: 1
+                            description:                            
+                                title: dscrizione della risorsa
                                 type: string
                                 minLength: 1
                             resource_id:                            
@@ -379,7 +409,6 @@ components:
                           - $ref: '#/components/schemas/suap_pdf'
                           - $ref: '#/components/schemas/suap_rea_start_xml'
                           - $ref: '#/components/schemas/suap_rea_update_xml'
-                          - $ref: '#/components/schemas/suap_rea_end_xml'
                           - $ref: '#/components/schemas/comunica_cui_xml'
                           - $ref: '#/components/schemas/comunica_cui_pdf'
         ricevuta_xml:
@@ -404,6 +433,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            
                         resource_id:
                           type: string
                           minLength: 1
@@ -434,6 +464,7 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -469,6 +500,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -499,6 +531,7 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -533,6 +566,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -567,6 +601,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -579,40 +614,7 @@ components:
                             - S256
                             - S384
                             - S512
-        suap_rea_end_xml:
-                      type: object
-                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
-                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
-                        del portale impresainungiorno
-                        (https://www.impresainungiorno.gov.it/documents/155997/157488/suap-rea-1.1.1.xsd/2094658b-c981-4795-8d18-ffa91fa97069)
-                      additionalProperties: false
-                      required:
-                        - name
-                        - mime_type
-                        - resource_id
-                        - hash
-                        - alg_hash
-                      properties:
-                        name:
-                          type: string
-                          enum:
-                            - SUAP_REA_END_XML
-                        mime_type:
-                          type: string
-                          enum:
-                            - application/xml
-                        resource_id:
-                          type: string
-                          minLength: 1
-                        hash:
-                          type: string
-                          minLength: 1
-                        alg_hash:
-                          type: string
-                          enum:
-                            - S256
-                            - S384
-                            - S512
+
         comunica_cui_xml:
                       type: object
                       description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
@@ -635,6 +637,7 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -665,6 +668,7 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
@@ -722,6 +726,7 @@ components:
             required:
                 - code
                 - message
+
         SendInstanceRequest:
             type: object
             required:
@@ -739,6 +744,13 @@ components:
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
 
+        DeleteInstanceRequest:
+            type: object
+            required:
+                - cui
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
      
     headers:
         Agid-JWT-Signature:
@@ -749,7 +761,8 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
         bearerAuth:
@@ -762,6 +775,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header

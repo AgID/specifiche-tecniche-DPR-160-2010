@@ -27,60 +27,63 @@ sequenceDiagram
         C -->> E: ack
     end
 
-    opt almeno una richiesta integrazione
+    opt almeno una richiesta conformazione
         par almeno un ente terzo
-            E ->> B: request_integration(cui, instance_descriptor_version,integration_list,resource_id)
+            E ->> B: request_conformation(cui, instance_descriptor_version,conformation_list, conformation_document_list)
             B -->> E: ack 
             opt
                 B ->> E: request_instance_document(cui, resource_id)
-                note right of B: recupero documento di richiesta integrazione
+                note right of B: recupero documento di richiesta di conformazione
                 E -->> B: instanceDocument    
             end
-            E ->> C: audit(cui,integration_requested_from_<ET>)
+            E ->> C: audit(cui,conformation_requested_from_<ET>)
             C -->> E: ack           
         end
 
       
-		alt concluso il tempo di richiesta integrazione 
+		alt concluso il tempo di richiesta di conformazione 
 			par per ogni ente terzo
-				B ->> E: notify(cui, instance_descriptor_version, integration_request_time_expired)
+				B ->> E: notify(cui, instance_descriptor_version, conformation_request_time_expired)
 				E -->> B: ack
 			end
-			B ->> C: audit(cui, integration_request_time_expired)
+			B ->> C: audit(cui, conformation_request_time_expired)
 			C -->> B: ack
 		end 
 		
-		Note over B: concluso il tempo di richiesta integrazione OR tutti gli enti terzi hanno richiesto integrazione
-        B ->> F: request_integration(cui, instance_descriptor_version,list_of_integration_list,integration_document_list)
+		Note over B: concluso il tempo di richiesta conformazione AND almeno un ente terzo ha richiesto la conformazione
+        B ->> F: request_conformation(cui, instance_descriptor_version,conformation_list, conformation_document_list)
         F -->> B: ack
-        B ->> C: audit(cui,integration_requested)
+        B ->> C: audit(cui,conformation_requested)
         C -->> B: ack
+        B ->> C: request_update_times(cui,times)
+        Note right of B: Aggiorna i tempi procedimentali incrementandoli di X giorni, dove X è max_gg_conf_resp dell'oggetto Times
+        C -->> B: instanceDescriptor
         opt
-            loop recupero documenti di richiesta integrazione degli ET
+            loop recupero documenti di richiesta di conformazione degli ET
             F ->> B: request_instance_document(cui, resource_id)
-            note right of F: resource_id in integration_document_list
+            note right of F: resource_id in conformation_document_list
             B -->> F: instanceDocument    
             end
         end
-        F -) P: notification(cui,integration_requested)    
+        F -) P: notification(cui,conformation_requested)    
 
 
-        alt oltre il tempo di integrazione del presentatore
-            B ->> F: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
+        alt oltre il tempo di conformazione del presentatore
+            B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
             F -->> B: ack
             par per ogni ente terzo interessato
-                B ->> E: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
+                B ->> E: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
                 E -->> B: ack
             end
-            B ->> C: audit(cui,end_by_integration_request_time_expired)
+            B ->> C: audit(cui,end_by_conformation_request_time_expired)
             C -->> B: ack
 
-            F -) P: notification(cui,end_by_integration_times_expired)
-        else entro il tempo di integrazione del presentatore 
-            P --) F: instanceIntegrated
+            F -) P: notification(cui,end_by_conformation_times_expired)
+        else entro il tempo di conformazione del presentatore 
+            P --) F: instanceConformated
             F ->> B: send_instance(SendInstanceRequest)
             B -->> F: ack
-            F ->> C: audit(cui,instance_integrated_to_<BO>_sended)
+            F ->> C: audit(cui,instance_conformated_to_<BO>_sended)
             note right of F: <BO> codice BackOffice
             C -->> F: ack
             loop per ogni procedimento parte dell'istanza 
@@ -88,12 +91,15 @@ sequenceDiagram
                 note left of B: resource_id da instance_index
                 F -->> B: instanceDocument
             end
-            B ->> C: audit(cui,instance_integrated_retrived)
+            B ->> C: audit(cui,instance_conformated_retrived)
             C -->> B: ack
+            B ->> C: request_update_times(cui,times)
+            Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per la conformazione e i giorni passati dall'invio della richiesta
+            C -->> B: instanceDescriptor
             par per ogni ente terzo interessato                
                 B ->> E: send_instance(SendInstanceRequest)
                 E -->> B: ack
-                B ->> C: audit(cui,instance_integrated_to_<ET>_sended)
+                B ->> C: audit(cui,instance_conformated_to_<ET>_sended)
                 note right of B: <ET> codice ente terzo
                 C -->> B: ack
                 loop per ogni procedimento di interesse parte dell'istanza 
@@ -101,7 +107,7 @@ sequenceDiagram
                     note left of E: resource_id da instance_index
                     B -->> E: instanceDocument
                 end
-                E ->> C: audit(cui,instance_integrated_retrived)
+                E ->> C: audit(cui,instance_conformated_retrived)
                 C -->> E: ack
             end
 
@@ -109,7 +115,7 @@ sequenceDiagram
 
     end
     
-    alt integrazione non richiesta, oppure richiesta e istanza integrata nei tempi dal presentatore
+    alt conformazione non richiesta, oppure richiesta e istanza conformata nei tempi dal presentatore
 
         par
             alt 
@@ -121,22 +127,11 @@ sequenceDiagram
                     B ->> E: request_instance_document(cui, resource_id)
                     note right of B: recupero documento di richiesta sospensione
                     E -->> B: instanceDocument    
-                end  
-                
-            else
-                E ->> B: send_conclusions(ConformationRequired)
-                B -->> E: ack 
-                E ->> C: audit(cui,conformation_requested_from_<ET>)
-                C -->> E: ack 
-                opt
-                    B ->> E: request_instance_document(cui, resource_id)
-                    note right of B: recupero documento di richiesta conformazione
-                    E -->> B: instanceDocument    
-                end  
+                end   
             end       
         end
 
-        alt concluso tempo istanza, senza richieste sospensione/conformazione
+        alt concluso tempo istanza, senza richieste sospensione
             B ->> F: notify(cui, instance_descriptor_version,end_by_proceeding_time_expired)
             F -->> B: ack            
             par per ogni ente terzo interessato
@@ -154,16 +149,6 @@ sequenceDiagram
                 E -->> B: ack
             end
             B ->> C: audit(cui,end_by_suspension_requested)
-            C -->> B: ack
-        else concluso tempo istanza o tutti gli enti terzi hanno inoltrato conclusione, nessuna richiesta sospesione,almeno una richiesta conformazione
-            B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_requested)
-            F -->> B: ack
-            F -) P: notification(cui,end_by_conformation_requested)               
-            par per ogni ente terzo interessato
-                B ->> E: notify(cui, instance_descriptor_version,end_by_conformation_requested)
-                E -->> B: ack
-            end
-            B ->> C: audit(cui,end_by_conformation_requested)
             C -->> B: ack
         end
 

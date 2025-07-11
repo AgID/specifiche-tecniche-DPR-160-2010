@@ -65,7 +65,7 @@ paths:
                   Agid-JWT-Signature: []
 
     /send_conclusions:
-        description: Invio conclusioni
+        description: Inoltro delle conclusioni delle proprie istruttorie in relazione a una data instanza di procedimento
         post:
             requestBody:
                 content:
@@ -90,7 +90,7 @@ paths:
 
     /request_cdss:
         post:
-            description: Richiesta convocazione Conferenza dei Servizi Sincrona (CdSS)
+            description: Richiesta convocazione Conferenza dei Servizi Sincrona (CdSS) in relazione a una data instanza di procedimento
             requestBody:
                 content:
                     application/json:
@@ -123,7 +123,7 @@ paths:
 
     /request_integration:
         post:
-            description: Richiesta integrazioni
+            description: Richiesta integrazioni in relazione a una data instanza di procedimento
             requestBody:
                 content:
                     application/json:
@@ -145,10 +145,34 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /request_conformation:
+        post:
+            description: Richiesta di conformazione in relazione a una data instanza di procedimento
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/RequestConformationRequest"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
-                Recupero risorsa documento per un dato CUI.
+                Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
                 Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
             
             parameters:
@@ -302,7 +326,7 @@ components:
                     type: string
                     format: date
                 
-                progressivo:
+                progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
 
@@ -399,6 +423,14 @@ components:
                                 title: id della risorsa "documento di richiesta integrazioni", univoco per erogatore e CUI.UUID
                                 type: string
                                 minLength: 1
+                            filename:                      
+                                title: filename della risorsa "documento di richiesta integrazioni"
+                                type: string
+                                minLength: 1
+                            mime_type:
+                                title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
+                                type: string
+                        minLength: 1
                             hash:
                                 title: hash risorsa
                                 type: string
@@ -411,18 +443,23 @@ components:
                                 - S384
                                 - S512
 
+        RequestConformationRequest:
+            allOf:
+                - $ref: "#/components/schemas/RequestIntegrationRequest"
+                - type: object
+                  required:
+                  - expirationDate
+                  properties:
+                    expirationDate:
+                        title: data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione
+                        type: string
+                        format: date
+
         SendConclusionRequests:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/NegativeOutcomeRequired"
-                - $ref: "#/components/schemas/ConformationRequired"
                 - $ref: "#/components/schemas/PositiveOutcome"
-            discriminator:
-                propertyName: conclusions_type
-                mapping:
-                    suspension_requested: "#/components/schemas/NegativeOutcomeRequired"
-                    conformation_requested: "#/components/schemas/ConformationRequired"
-                    positive_outcome: "#/components/schemas/PositiveOutcome"
 
         NegativeOutcomeRequired:
             type: object
@@ -438,6 +475,7 @@ components:
                     enum: 
                     - suspension_requested
                     - suspension_requested_for_impediments
+                    - negative_outcome
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
@@ -449,7 +487,7 @@ components:
                     title: amministrazione richiedente
                     $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
-                    title: id della risorsa "documento di richiesta sospensione", univoco per erogatore e CUI.UUID
+                    title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
                     type: string
                     minLength: 1
                 hash:
@@ -463,49 +501,23 @@ components:
                     - S256
                     - S384
                     - S512
-
-        ConformationRequired:
-            type: object
-            required:
-                - cui
-                - instance_descriptor_version
-                - date
-                - conformation_requested
-                - conclusions_type
-                - requester_administration
-            properties:
-                conclusions_type:
-                    type: string
-                    enum: 
-                    - conformation_requested
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
-                date:
-                    type: string
-                    format: date
-                conformation_requested:
-                    type: string
-                    minLength: 1
-                requester_administration:
-                    title: amministrazione richiedente
-                    $ref: "#/components/schemas/AdministrationSchema"
-                resource_id:
-                    title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
+            example:
+                conclusions_type: "negative_outcome"
+                cui: 
+                    context: "string"
+                    data: "2024-07-10"
+                    progressive: "string"
+                    uuid: "string"
+                instance_descriptor_version: "string"
+                negative_outcome_motivation: "string"
+                requester_administration: 
+                    ipacode: "string"
+                    officecode: "string"
+                    version: "00.00.00"
+                    description: "string"
+                resource_id: "string"
+                hash: "string"
+                alg_hash: "S256"
 
         PositiveOutcome:
             required:
@@ -554,7 +566,8 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
         bearerAuth:
@@ -567,6 +580,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header

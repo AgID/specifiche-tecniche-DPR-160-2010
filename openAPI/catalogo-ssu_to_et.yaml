@@ -48,7 +48,7 @@ paths:
           Agid-JWT-Signature: []
 
   /audit:
-    description: Audit azioni realizzate dalla componenti
+    description: Audit azioni realizzate dalle componenti
     post:
       requestBody:
         content:
@@ -156,7 +156,7 @@ components:
               type: string
               format: date
           
-          progressivo:
+          progressive:
               title: numero progressivo a rotazione annuale
               type: string
 
@@ -188,7 +188,7 @@ components:
 
         message:
           type: string
-          pattern: ^instance_retrived|integration_requested_from_[0-9]{1,10}|instance_integrated_retrived|suspension_requested_from_[0-9]{1,10}|conformation_requested_from_[0-9]{1,10}|cdss_requested_from_[0-9]{1,10}|positive_outcome_sended_from_[0-9]{1,10}|retry_requested_for_send_instance|retry_requested_for_notify|negative_outcome_sended|suspension_requested_for_impediments_by_[0-9]{1,10}|reponse_to impediments_retrived$
+          pattern: ^instance_retrived|integration_requested_from_[0-9]{1,10}|instance_integrated_retrived|suspension_requested_from_[0-9]{1,10}|conformation_requested_from_[0-9]{1,10}|cdss_requested_from_[0-9]{1,10}|positive_outcome_sended_from_[0-9]{1,10}|retry_requested_for_send_instance|retry_requested_for_notify|negative_outcome_sended_from_[0-9]{1,10}|instance_conformated_retrieved|suspension_requested_for_impediments_by_[0-9]{1,10}|reponse_to impediments_retrived$
 
         event_time:
           title: timestamp del momento in cui si è verificato l'evento
@@ -243,6 +243,14 @@ components:
           title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
           type: integer
           format: int32
+        max_gg_conf_req:          
+          title: numero di giorni limite a partire da start per la richiesta di conformazione degli enti terzi
+          type: integer
+          format: int32
+        max_gg_conf_resp:          
+          title: numero di giorni limite a partire da start per conformazione del soggetto presentatore
+          type: integer
+          format: int32
         max_gg_concl_send:          
           title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
           type: integer
@@ -288,6 +296,9 @@ components:
       - version
       - municipality
       - usecase_proceedings
+      - instance_status
+      - times
+      - workflow
       properties:
         version:          
           title: numero versione del descrittore
@@ -327,9 +338,11 @@ components:
                 - integration_requested
                 - ended_by_integration_times_expired
                 - integrated
+                - conformation_requested
+                - ended_by_conformation_times_expired
+                - conformated
                 - cdss_convened
                 - ended_by_suspension_requested
-                - ended_by_conformation_requested
                 - ended_by_proceeding_time_expired
                 - ended_by_positive_outcome
                 - ended_by_negative_outcome
@@ -343,7 +356,7 @@ components:
         times:          
           $ref: "#/components/schemas/Times"  
         
-        administrative_regime:          
+        workflow:          
           type: object
           title: regime amministrativo dell'istanza          
           
@@ -459,6 +472,7 @@ components:
                     type: string
                     enum: 
                        - application/xml
+                       - application/pkcs7-mime
                   activity_model: 
                      title: porzione distinta modello attivita
                      type: object
@@ -486,6 +500,7 @@ components:
                           type: string
                           enum: 
                              - application/pdf
+                             - application/pkcs7-mime
               attachments:                
                 title: allegati all'istanza relativi al procedimento
                 type: array
@@ -517,6 +532,14 @@ components:
                       - S256
                       - S384
                       - S512
+                    code:
+                      title: identificativo dell'allegato presente nel Catalogo
+                      type: string
+                      minLength: 1
+                    version:
+                      title: versione dell'allegato presente nel Catalogo
+                      type: string
+                      minLength: 1                      
                     form:                      
                       title: riferimento agli oggetti per la validazione
                       type: object
@@ -571,7 +594,8 @@ components:
         example: eyJzd.fafa.fafafa
       description: |-
         Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-        Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+        Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+        In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
   securitySchemes:
     bearerAuth:
@@ -584,6 +608,7 @@ components:
       type: apiKey
       description: |-
         Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-        Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+        Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+        In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
       name: Agid-JWT-Signature
       in: header
