@@ -182,6 +182,16 @@ components:
                         title: id della risorsa, univoco per erogatore e CUI.UUID
                         type: string
                         minLength: 1
+                    filename:                      
+                        title: filename della risorsa "documento di parere negativo"
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
+                    mime_type:
+                        title: "indica il formato dei dati previsto per il documento di parere negativo"
+                        type: string
                     hash:                            
                         title: hash dell'elemento dell'istanza relativo al procedimento
                         type: string
@@ -234,6 +244,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -265,6 +278,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -301,6 +317,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -332,6 +351,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -367,6 +389,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -402,6 +427,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -438,6 +466,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -469,6 +500,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1

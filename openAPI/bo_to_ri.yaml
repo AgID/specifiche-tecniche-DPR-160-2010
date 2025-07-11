@@ -66,6 +66,13 @@ paths:
 
             parameters:
                 - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
+                - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
                   required: true

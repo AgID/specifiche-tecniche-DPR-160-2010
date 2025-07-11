@@ -100,6 +100,13 @@ paths:
 
             parameters:
                 - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
+                - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
                   required: true
@@ -344,7 +351,9 @@ components:
                 filename: 
                     title: nome del file distinta comunica
                     type: string
-                    
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type: 
                     title: mime type della distinta comunica
                     type: string
@@ -366,6 +375,9 @@ components:
                 filename: 
                     title: nome del file distinta comunica firmata
                     type: string
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type: 
                     title: mime type della distinta comunica firmata
                     type: string

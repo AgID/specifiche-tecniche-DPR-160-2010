@@ -140,6 +140,13 @@ paths:
             
             parameters:
                 - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
+                - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
                   required: true
@@ -449,6 +456,9 @@ components:
                                 title: filename della risorsa "documento di richiesta integrazioni"
                                 type: string
                                 minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
                                 type: string
@@ -531,10 +541,14 @@ components:
                     title: filename della risorsa documento correlata all'evento notificato 
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     type: string
                     enum: 
-                        - application/pdf|application/pkcs7-mime
+                        - application/pdf
+                        - application/pkcs7-mime
                 hash:
                     title: hash risorsa
                     type: string
