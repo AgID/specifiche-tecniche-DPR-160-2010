@@ -17,13 +17,11 @@ sequenceDiagram
     note right of C: instanceDescriptor senza cui
     C -->> F: instanceDescriptor
     note right of C: InstanceDescriptor con cui
-
     F ->> B: send_instance(SendInstanceRequest)
     B -->> F: ack
     F ->> C: audit(cui,instance_to_<BO>_sended)
     note right of F: <BO> codice BackOffice
     C -->> F: ack
-
     alt via ComUnica
 	    F ->> CU: send_instance(SendInstanceRequest)
 		CU -->> F: ack
@@ -42,17 +40,14 @@ sequenceDiagram
     else no via ComUnica
         F -) P: receipt
     end
-
     F ->> C: audit(cui,receipt_sended)
     C -->> F: ack
-
     F ->> B: notify_receipt(cui, date)
     B -->> F: ack
     
     note over  B,C: BO imposta tempi procedimento<br/>a partire dalla data della ricevuta
     B ->> C: request_update_times(cui,times)
     C -->> B: instanceDescriptor
-
     loop per ogni procedimento parte dell'istanza 
     B ->> F: request_instance_document(cui, resource_id)
     note left of B: resource_id da instance_index
@@ -61,7 +56,6 @@ sequenceDiagram
     B ->> C: audit(cui,instance_retrived)
     C -->> B: ack
     
-
     O -) B: lookup_instance(cui)
     B -->> O: instance
         
@@ -93,7 +87,6 @@ sequenceDiagram
             C -->> B: ack           
         end
     end
-
     O -) B: lookup_instance(cui)
     B -->> O: instance
     O -) B: admissibilityOK OR admissibilityKO

@@ -106,7 +106,7 @@ paths:
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
-    
+
     /retry:
         post:
             description: Richiesta di ritrasmissione dati relativi ad una specifica operation a causa di incoerenze riscontrate sui dati ricevuti.
@@ -367,7 +367,7 @@ components:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
-        
+
         TransferMessage:
             type: object
             required:
@@ -468,21 +468,23 @@ components:
                                 - S256
                                 - S384
                                 - S512
+
         GeneralIndex:
-                      type: array
-                      description: indice allegati trasversali
-                      minItems: 0
-                      uniqueItems: true
-                      items:
-                        anyOf:
-                          - $ref: '#/components/schemas/ricevuta_xml'
-                          - $ref: '#/components/schemas/ricevuta_pdf'
-                          - $ref: '#/components/schemas/suap_xml'
-                          - $ref: '#/components/schemas/suap_pdf'
-                          - $ref: '#/components/schemas/suap_rea_start_xml'
-                          - $ref: '#/components/schemas/suap_rea_update_xml'
-                          - $ref: '#/components/schemas/comunica_cui_xml'
-                          - $ref: '#/components/schemas/comunica_cui_pdf'
+            type: array
+            description: indice allegati trasversali
+            minItems: 0
+            uniqueItems: true
+            items:
+            anyOf:
+                - $ref: '#/components/schemas/ricevuta_xml'
+                - $ref: '#/components/schemas/ricevuta_pdf'
+                - $ref: '#/components/schemas/suap_xml'
+                - $ref: '#/components/schemas/suap_pdf'
+                - $ref: '#/components/schemas/suap_rea_start_xml'
+                - $ref: '#/components/schemas/suap_rea_update_xml'
+                - $ref: '#/components/schemas/comunica_cui_xml'
+                - $ref: '#/components/schemas/comunica_cui_pdf'
+
         ricevuta_xml:
                       type: object
                       description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010

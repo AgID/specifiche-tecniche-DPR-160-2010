@@ -115,7 +115,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/RequestConformationRequest"
+                            $ref: "#/components/schemas/ConformationRequest"
                 required: true
             responses:
                 "200":
@@ -474,18 +474,83 @@ components:
                                 - S384
                                 - S512
 
-        RequestConformationRequest:
-            allOf:
-                - $ref: "#/components/schemas/RequestIntegrationRequest"
-                - type: object
-                  required:
-                  - expirationDate
-                  properties:
-                    expirationDate:
+        ConformationRequest:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - expirationDate
+                - conformation_list
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                expirationDate:
                         title: data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione
                         type: string
                         format: date
-
+                conformation_list:
+                    type: array
+                    items:
+                        type: object
+                        required:
+                            - code
+                            - ref
+                            - conformation_request
+                        properties:
+                            code:
+                                title: codice della fattispecie presente nel Catalogo
+                                type: string
+                                minLength: 1
+                            ref:
+                                title: riferimento all'elemento dell'istanza relativo al procedimento (procedimento o allegato)
+                                type: string
+                                minLength: 1
+                            conformation_request:
+                                title: elenco conformazioni richieste da uno o più enti terzi
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        request:
+                                            title: testo conformazione richiesta
+                                            type: string
+                                        requester_administration:
+                                            title: amministrazione richiedente
+                                            $ref: "#/components/schemas/AdministrationSchema"
+                conformation_document_list:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            requester_administration:
+                                title: amministrazione richiedente
+                                $ref: "#/components/schemas/AdministrationSchema"
+                            resource_id:
+                                title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
+                                type: string
+                                minLength: 1
+                            filename:                      
+                                title: filename della risorsa "documento di richiesta conformazione"
+                                type: string
+                                minLength: 1
+                            mime_type:
+                                title: "indica il formato dei dati previsto per il documento di richiesta conformazione"
+                                type: string
+                                minLength: 1
+                            hash:
+                                title: hash risorsa
+                                type: string
+                                minLength: 1
+                            alg_hash:
+                                title: algoritmo hash applicato
+                                type: string
+                                enum:
+                                - S256
+                                - S384
+                                - S512
+        
         NotifyMessage:
             type: object
             required:
@@ -512,8 +577,9 @@ components:
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ImpedimentsMessage"
-        TransferMessage:
 
+
+        TransferMessage:
             type: object
             required:
                 - cui
@@ -558,7 +624,21 @@ components:
                     enum:
                     - S256
                     - S384
-                    - S512
+                    - S512 
+
+        ImpedimentsMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - existence_of_impediments
+                expiration_date:
+                    type: string
+                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
+                    format: date   
 
         OutcomeMessage:
             type: object

@@ -1,4 +1,3 @@
-
 sequenceDiagram
     autonumber
     actor P as Presentatore    
@@ -200,7 +199,7 @@ sequenceDiagram
                                 E -->> B: instanceDocument    
                             end
                         else parere esplicito negativo
-                            E ->> B: send_conclusions(NegativeOutcomeRequired)
+                            E ->> B: send_conclusions(NegativeOutcome)
                             B -->> E: ack 
                             E ->> C: audit(cui,negative_outcome_sended_from_<ET>)
                             C -->> E: ack

@@ -34,7 +34,7 @@ paths:
         - name: lifeevent
           in: query
           description: paramentro di filtering su gli eventi della vita, non valorizzato per richiedere l'intero set
-          required: true
+          required: false
           schema:
             type: string
         - name: municipality
