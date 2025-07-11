@@ -649,7 +649,6 @@ components:
                     type: string
                     enum:
                         - end_by_proceeding_time_expired
-                        - end_by_integration_times_expired
                         - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
                         - integration_request_time_expired
