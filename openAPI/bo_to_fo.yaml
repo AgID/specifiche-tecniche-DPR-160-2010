@@ -200,6 +200,13 @@ paths:
                 Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
             parameters:
                 - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
+                - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
                   required: true
@@ -440,6 +447,16 @@ components:
                                 title: id della risorsa, univoco per erogatore e CUI.UUID
                                 type: string
                                 minLength: 1
+                            filename:                      
+                                title: filename della risorsa 
+                                type: string
+                                minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
+                            mime_type:
+                                title: "indica il formato dei dati previsto per la risorsa"
+                                type: string
                             hash:                            
                                 title: hash dell'elemento dell'istanza relativo al procedimento
                                 type: string
@@ -492,6 +509,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -523,6 +543,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -559,6 +582,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -590,6 +616,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -625,6 +654,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -660,6 +692,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -696,6 +731,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -727,6 +765,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -736,6 +777,38 @@ components:
                             - S256
                             - S384
                             - S512
+
+        TransferOutcomeNotifyMessage:
+          type: object
+          required:
+            - cui
+            - instance_descriptor_version
+            - event
+          properties:
+            cui:
+              $ref: "#/components/schemas/cui"
+            instance_descriptor_version:
+              type: string
+            event:
+              type: string
+              enum:
+                - response_to_impediments_sended
+
+            resource_id:
+              title: se presente, id della risorsa documento correlata all'evento notificato
+              type: string
+              minLength: 1
+            hash:
+              title: hash risorsa
+              type: string
+              minLength: 1
+            alg_hash:
+              title: algoritmo hash applicato
+              type: string
+              enum:
+                - S256
+                - S384
+                - S512
 
 
         Error:
@@ -757,6 +830,7 @@ components:
                 - instance_descriptor_version
                 - instance_index
                 - general_index
+                - receiver_administration
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -766,6 +840,34 @@ components:
                     $ref: "#/components/schemas/InstanceIndex"
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
+                receiver_administration:
+                    title: amministrazione destinataria delle istanze
+                    $ref: "#/components/schemas/AdministrationSchema"
+        
+        AdministrationSchema:
+            description: Amministrazione compentente censita nel Catalogo SSU
+            type: object
+            required:
+                - ipacode
+                - officecode
+                - version
+                - description
+            properties:
+                ipacode:
+                    title: codice IPA dell'amministrazione
+                    type: string
+                    minLength: 1
+                officecode:
+                    title: codice dell'ufficio dell'amministrazione 
+                    type: string
+                    minLength: 1
+                version:
+                    title: versione dell'ufficio dell'amministrazione 
+                    type: string
+                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+                description:
+                    title: descrizione dell'amministrazione
+                    type: string
 
         DeleteInstanceRequest:
             type: object
