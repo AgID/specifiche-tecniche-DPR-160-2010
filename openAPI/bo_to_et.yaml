@@ -473,6 +473,8 @@ components:
                 conclusions_type:
                     type: string
                     enum: 
+                    - suspension_requested
+                    - suspension_requested_for_impediments
                     - negative_outcome
                 cui:
                     $ref: "#/components/schemas/cui"

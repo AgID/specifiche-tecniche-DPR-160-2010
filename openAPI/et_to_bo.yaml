@@ -671,6 +671,8 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
+                        - response_to_impediments_provided
+                        - end_by_integration_times_expired
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
                     type: string
