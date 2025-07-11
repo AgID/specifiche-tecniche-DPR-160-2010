@@ -183,6 +183,16 @@ components:
                         title: id della risorsa, univoco per erogatore e CUI.UUID
                         type: string
                         minLength: 1
+                    filename:                      
+                        title: filename della risorsa 
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
+                    mime_type:
+                        title: "indica il formato dei dati previsto per la risorsa"
+                        type: string
                     hash:                            
                         title: hash dell'elemento dell'istanza relativo al procedimento
                         type: string
@@ -235,6 +245,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -266,6 +279,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -302,6 +318,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -333,6 +352,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -368,6 +390,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -403,6 +428,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -438,6 +466,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -473,6 +504,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -504,6 +538,9 @@ components:
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -525,6 +562,7 @@ components:
             required:
                 - code
                 - message
+                
         SendInstanceRequest:
             required:
                 - cui
@@ -532,6 +570,7 @@ components:
                 - instance_status
                 - instance_index
                 - general_index
+                - receiver_administration
             type: object
             properties:
                 cui:
@@ -542,6 +581,34 @@ components:
                     $ref: "#/components/schemas/InstanceIndex"
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
+                receiver_administration:
+                    title: amministrazione destinataria delle istanze
+                    $ref: "#/components/schemas/AdministrationSchema"
+        
+        AdministrationSchema:
+            description: Amministrazione compentente censita nel Catalogo SSU
+            type: object
+            required:
+                - ipacode
+                - officecode
+                - version
+                - description
+            properties:
+                ipacode:
+                    title: codice IPA dell'amministrazione
+                    type: string
+                    minLength: 1
+                officecode:
+                    title: codice dell'ufficio dell'amministrazione 
+                    type: string
+                    minLength: 1
+                version:
+                    title: versione dell'ufficio dell'amministrazione 
+                    type: string
+                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+                description:
+                    title: descrizione dell'amministrazione
+                    type: string
 
         NotifyMessage:
             type: object
@@ -594,13 +661,17 @@ components:
                     type: string
                     minLength: 1
                 filename:                      
-                    title: filename della risorsa documento correlata all'evento notificato 
+                    title: filename della risorsa documento correlata all'evento notificato
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     type: string
                     enum: 
-                        - application/pdf|application/pkcs7-mime
+                        - application/pdf
+                        - application/pkcs7-mime
                 hash:
                     title: hash risorsa
                     type: string

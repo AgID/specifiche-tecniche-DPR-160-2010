@@ -32,6 +32,16 @@ items:
         title: id della risorsa, univoco per erogatore e CUI.UUID
         type: string
         minLength: 1
+      filename:                      
+          title: filename della risorsa 
+          type: string
+          minLength: 1
+      file_size:
+          description: dimensione del file.
+          type: integer
+      mime_type:
+          title: "indica il formato dei dati previsto per la risorsa"
+          type: string
       hash:
         "$id": "#root/hash"
         title: hash dell'elemento dell'istanza relativo al procedimento

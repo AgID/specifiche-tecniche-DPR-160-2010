@@ -1584,6 +1584,7 @@
         <di:waypoint x="2660" y="1590" />
         <di:waypoint x="2660" y="1892" />
       </bpmndi:BPMNEdge>
+
       <bpmndi:BPMNEdge id="Association_089mzkj_di" bpmnElement="Association_089mzkj">
         <di:waypoint x="1712" y="1714" />
         <di:waypoint x="1701" y="1689" />

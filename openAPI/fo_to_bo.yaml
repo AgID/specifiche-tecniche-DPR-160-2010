@@ -140,6 +140,13 @@ paths:
             
             parameters:
                 - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
+                - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
                   required: true
@@ -378,7 +385,7 @@ components:
                         required:
                             - code
                             - ref
-                            - correction_requested
+                            - correction_request
                         properties:
                             code:
                                 title: codice della fattispecie presente nel Catalogo
@@ -449,6 +456,9 @@ components:
                                 title: filename della risorsa "documento di richiesta integrazioni"
                                 type: string
                                 minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
                                 type: string
@@ -556,7 +566,6 @@ components:
                     type: string
                     enum:
                         - end_by_proceeding_time_expired
-                        - end_by_integration_times_expired
                         - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
                         - cdss_convened
@@ -568,6 +577,7 @@ components:
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ImpedimentsMessage"
+
 
         TransferMessage:
             type: object
@@ -583,12 +593,11 @@ components:
                 event:
                     type: string
                     enum:
-                        - end_by_instance_refused
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
                         - existence_of_impediments
-
+                        - end_by_integration_times_expired
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
                     type: string
@@ -597,10 +606,14 @@ components:
                     title: filename della risorsa documento correlata all'evento notificato
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     type: string
                     enum: 
-                        - application/pdf|application/pkcs7-mime
+                        - application/pdf
+                        - application/pkcs7-mime
                 hash:
                     title: hash risorsa
                     type: string
@@ -626,6 +639,34 @@ components:
                     type: string
                     description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
                     format: date   
+
+        OutcomeMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - end_by_instance_refused
+                        - end_by_suspension_requested
+                        - end_by_positive_outcome
+                        - end_by_negative_outcome
+        
+        ImpedimentsMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - existence_of_impediments
+                expiration_date:
+                    type: string
+                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
+                    format: date   
+
 
     headers:
         Agid-JWT-Signature:
