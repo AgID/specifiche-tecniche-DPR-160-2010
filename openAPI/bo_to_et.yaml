@@ -440,11 +440,11 @@ components:
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
                                 type: string
-                            minLength: 1
-                                hash:
-                                    title: hash risorsa
-                                    type: string
-                                    minLength: 1
+                                minLength: 1
+                            hash:
+                                title: hash risorsa
+                                type: string
+                                minLength: 1
                             alg_hash:
                                 title: algoritmo hash applicato
                                 type: string
@@ -479,10 +479,13 @@ components:
                 - negative_outcome_motivation
                 - conclusions_type
                 - requester_administration
+                - usecase_proceeding_list
             properties:
                 conclusions_type:
                     type: string
                     enum: 
+                    - suspension_requested
+                    - suspension_requested_for_impediments
                     - negative_outcome
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -519,6 +522,13 @@ components:
                     - S256
                     - S384
                     - S512
+                usecase_proceeding_list:
+                    type: array
+                    items:
+                        type: string
+                        title: codice della fattispecie presente nel Catalogo
+                        minLength: 1
+
             example:
                 conclusions_type: "negative_outcome"
                 cui: 
@@ -547,6 +557,7 @@ components:
                 - positive_outcome
                 - conclusions_type
                 - requester_administration
+                - usecase_proceeding_list
             properties:
                 conclusions_type:
                     type: string
@@ -587,6 +598,12 @@ components:
                     - S256
                     - S384
                     - S512
+                usecase_proceeding_list:
+                    type: array
+                    items:
+                        type: string
+                        title: codice della fattispecie presente nel Catalogo
+                        minLength: 1
 
     headers:
         Agid-JWT-Signature:

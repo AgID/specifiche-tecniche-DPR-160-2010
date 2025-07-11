@@ -58,6 +58,31 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /notify:
+      post:
+        description: Notifica eventi di processo
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
+          required: true
+        responses:
+          "200":
+            $ref: "#/components/responses/OKRequest"
+          "400":
+            $ref: "#/components/responses/BadRequest"
+          "401":
+            $ref: "#/components/responses/Unauthorized"
+          "500":
+            $ref: "#/components/responses/ServerError"
+          "503":
+            $ref: "#/components/responses/ServiceUnavaliable"
+
+        security:
+          - bearerAuth: [ ]
+            Agid-JWT-Signature: [ ]
+
     /cancel_instance:
         description: richiesta di cancellazione di una data istanza di procedimento da parte del Soggetto Presentatore
         post:
@@ -144,7 +169,7 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
-      /delete_instance:
+    /delete_instance:
         description: Eliminazione di sistema di una istanza
         post:
             requestBody:
@@ -698,6 +723,38 @@ components:
                             - S384
                             - S512
 
+        TransferOutcomeNotifyMessage:
+          type: object
+          required:
+            - cui
+            - instance_descriptor_version
+            - event
+          properties:
+            cui:
+              $ref: "#/components/schemas/cui"
+            instance_descriptor_version:
+              type: string
+            event:
+              type: string
+              enum:
+                - response_to_impediments_sended
+
+            resource_id:
+              title: se presente, id della risorsa documento correlata all'evento notificato
+              type: string
+              minLength: 1
+            hash:
+              title: hash risorsa
+              type: string
+              minLength: 1
+            alg_hash:
+              title: algoritmo hash applicato
+              type: string
+              enum:
+                - S256
+                - S384
+                - S512
+
 
         Error:
             type: object
@@ -718,6 +775,7 @@ components:
                 - instance_descriptor_version
                 - instance_index
                 - general_index
+                - receiver_administration
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -727,6 +785,34 @@ components:
                     $ref: "#/components/schemas/InstanceIndex"
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
+                receiver_administration:
+                    title: amministrazione destinataria delle istanze
+                    $ref: "#/components/schemas/AdministrationSchema"
+        
+        AdministrationSchema:
+            description: Amministrazione compentente censita nel Catalogo SSU
+            type: object
+            required:
+                - ipacode
+                - officecode
+                - version
+                - description
+            properties:
+                ipacode:
+                    title: codice IPA dell'amministrazione
+                    type: string
+                    minLength: 1
+                officecode:
+                    title: codice dell'ufficio dell'amministrazione 
+                    type: string
+                    minLength: 1
+                version:
+                    title: versione dell'ufficio dell'amministrazione 
+                    type: string
+                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+                description:
+                    title: descrizione dell'amministrazione
+                    type: string
 
         DeleteInstanceRequest:
             type: object
