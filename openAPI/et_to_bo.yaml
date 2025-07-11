@@ -192,10 +192,7 @@ paths:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
                                 - $ref: "#/components/schemas/CdssNotifyMessage"
-
-                                - $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
-                            discriminator:
-                                propertyName: event
+                                - $ref: "#/components/schemas/TransferNotifyMessage"
                 required: true
             responses:
                 "200":
@@ -722,8 +719,17 @@ components:
                         - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
                         - integration_request_time_expired
+                        - conformation_request_times_expired
+                        - end_by_observations_times_expired
+        
+        TransferNotifyMessage:
+            type: object
+            oneOf:
+                - $ref: "#/components/schemas/OutcomeMessage"
+                - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
+
                         
-        TransferOutcomeNotifyMessage:
+        TransferMessage:
             type: object
             required:
                 - cui
@@ -769,6 +775,28 @@ components:
                     - S256
                     - S384
                     - S512
+        
+        OutcomeMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - end_by_suspension_requested
+                        - end_by_positive_outcome
+                        - end_by_negative_outcome
+        
+        ObservationsToImpedimentsMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - observations_to_impediments_provided
 
         CdssNotifyMessage:
             allOf:
