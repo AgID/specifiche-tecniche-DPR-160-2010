@@ -520,6 +520,7 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
+                        - existence_of_impediments
                         - end_by_integration_times_expired
 
                 resource_id:

@@ -220,7 +220,7 @@ components:
         message:
           type: string
           pattern: >-
-            ^receipt_sended|instance_to_[0-9]{1,10}_sended|corrected_instance_to_[0-9]{1,10}_sended|instance_integrated_to_[0-9]{1,10}_sended|submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_request_correction|retry_requested_for_request_integration|retry_requested_for_request_conformation|retry_requested_for_notify|instance_conformated_to_[0-9]{1,10}_sended$
+            ^receipt_sended|instance_to_[0-9]{1,10}_sended|corrected_instance_to_[0-9]{1,10}_sended|instance_integrated_to_[0-9]{1,10}_sended|submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_request_correction|retry_requested_for_request_integration|retry_requested_for_request_conformation|retry_requested_for_notify|instance_conformated_to_[0-9]{1,10}_sended|retry_requested_for_notify|response_to_impediments_provided$
 
     
         event_time:
