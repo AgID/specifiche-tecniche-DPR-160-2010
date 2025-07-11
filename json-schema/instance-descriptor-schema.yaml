@@ -88,8 +88,7 @@ properties:
         enum:
              - SCIA
              - AUTORIZZAZIONE
-             - SILENZIO-ASSENSO
-             - COMUNICAZIONE
+             - PROVVEDIMENTO-CONDIZIONATO
       version:
         "$id": "#root/workflow/version"
         title: version del regime amministrativo
