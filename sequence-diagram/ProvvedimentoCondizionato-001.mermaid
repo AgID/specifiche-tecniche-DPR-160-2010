@@ -110,7 +110,7 @@ sequenceDiagram
         alt rilascio del provvedimento condizionato
             Note left of E: Rilascio provvedimento condizionato
             par per ogni ente terzo interessato
-                E ->> B: send_conditional_provision(ConditionalProvision)
+                E ->> B: send_conditional_provision(ConditionalProvisionGranted)
                 B -->> E: ack
                 opt 
                         B ->> E: request_instance_document(cui, resource_id)
@@ -120,7 +120,7 @@ sequenceDiagram
                 C -->> E: ack
             end
             Note left of B: Invio provvedimento condizionato al FO/Presentatore
-            B ->> F: send_conditional_provision(ConditionalProvision)
+            B ->> F: notify(ConditionalProvisionGranted)
             F -->> B: ack
             F ->> B: request_instance_document(cui, resource_id)
             B -->> F: instanceDocument
@@ -164,7 +164,7 @@ sequenceDiagram
                     E ->> C: audit(cui,conditional_provision_granted_from_<ET>)
                     C -->> E: ack
                 end
-                B ->> F: send_conclusions(DefinitiveProvisionGranted)
+                B ->> F: notify(DefinitiveProvisionGranted)
                 F -->> B: ack
                 F -) P: notification(cui, definitive_provision_outcome, definitive_provision_document)
                 par per ogni ente terzo interessato
@@ -195,7 +195,7 @@ sequenceDiagram
                         C -->> E: ack
                     end
                 end
-                B ->> F: send_conclusions(ConditionalProvisionRescinded)
+                B ->> F: notify(ConditionalProvisionRescinded)
                 F -->> B: ack
                 F ->> B: request_instance_document(cui, resource_id)
                 B -->> F: instanceDocument
@@ -217,7 +217,7 @@ sequenceDiagram
                     E ->> C: audit(cui,conditional_provision_rescinded_from_<ET>)
                     C -->> E: ack  
                 end
-                B ->> F: send_conclusions(ConditionalProvisionRescinded)
+                B ->> F: notify(ConditionalProvisionRescinded)
                 F -->> B: ack
                 F ->> B: request_instance_document(cui, resource_id)
                 B -->> F: instanceDocument
@@ -232,7 +232,7 @@ sequenceDiagram
         else diniego del provvedimento condizionato
             par per ogni ente terzo interessato AND almeno una richiesta per il diniego del provvedimento condizionato
                 alt 
-                    E ->> B: send_conditional_provision(ConditionalProvision)
+                    E ->> B: send_conditional_provision(ConditionalProvisionGranted)
                     B -->> E: ack
                     opt 
                         B ->> E: request_instance_document(cui, resource_id)
@@ -251,7 +251,7 @@ sequenceDiagram
                     C -->> E: ack
                 end
             end
-            B ->> F: send_conclusions(ConditionalProvisionDenied)
+            B ->> F: notify(ConditionalProvisionDenied)
             F -->> B: ack
             F ->> B: request_instance_document(cui, resource_id)
             B -->> F: instanceDocument

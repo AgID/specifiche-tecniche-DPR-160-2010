@@ -577,6 +577,10 @@ components:
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ImpedimentsMessage"
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/ConditionalProvisionGranted"
+                - $ref: "#/components/schemas/ConditionalProvisionRescinded"
+                - $ref: "#/components/schemas/ConditionalProvisionDenied"
 
 
         TransferMessage:
@@ -652,22 +656,86 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
-        
-        ImpedimentsMessage:
-            type: object
+                        
+        ConditionalProvisionGranted:
             allOf:
-                - $ref: "#/components/schemas/TransferMessage"
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_granted
+        
+        ConditionalProvisionDenied:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_denied
+        
+        ConditionalProvisionRescinded:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_rescinded
+        
+        DefinitiveProvision:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - date
+                - outcome
+                - competent_administration
             properties:
-                event:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                outcome:
+                    type: string
+                    enum: 
+                        - definitive_provision_granted
+                competent_administration:
+
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                resource_id:
+                    title: id della risorsa associata all'esito del Provvedimento Definitivo, univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename dell'esito del Provvedimento Definitivo"
+                    type: string
+                    minLength: 1
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
                     type: string
                     enum:
-                        - existence_of_impediments
-                expiration_date:
-                    type: string
-                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
-                    format: date   
-
-
+                    - S256
+                    - S384
+                    - S512
+                    
     headers:
         Agid-JWT-Signature:
             schema:
