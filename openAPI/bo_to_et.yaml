@@ -660,7 +660,7 @@ components:
             oneOf:
                 - $ref: "#/components/schemas/NegativeOutcome"
                 - $ref: "#/components/schemas/PositiveOutcome"
-                - $ref: "#/components/schemas/DefinitiveProvisionGranted"
+                - $ref: "#/components/schemas/DefinitiveProvision"
                 - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                 - $ref: "#/components/schemas/ConditionalProvisionDenied"
 
@@ -798,6 +798,135 @@ components:
                         type: string
                         title: codice della fattispecie presente nel Catalogo
                         minLength: 1
+        
+        ConditionalProvision:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - date
+                - outcome
+                - competent_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                outcome:
+                    type: string
+                    enum: 
+                        - conditional_provision_granted
+                        - conditional_provision_denied
+                        - conditional_provision_rescinded
+                competent_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                resource_id:
+                    title: id della risorsa associata all'esito del Provvedimento Condizionato, univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename dell'esito del Provvedimento Condizionato"
+                    type: string
+                    minLength: 1
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+        
+        DefinitiveProvision:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - date
+                - outcome
+                - competent_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                outcome:
+                    type: string
+                    enum: 
+                        - definitive_provision_granted
+                competent_administration:
+
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                resource_id:
+                    title: id della risorsa associata all'esito del Provvedimento Definitivo, univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename dell'esito del Provvedimento Definitivo"
+                    type: string
+                    minLength: 1
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+        
+        ConditionalProvisionGranted:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_granted
+        
+        ConditionalProvisionDenied:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_denied
+        
+        ConditionalProvisionRescinded:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_rescinded
 
     headers:
         Agid-JWT-Signature:
