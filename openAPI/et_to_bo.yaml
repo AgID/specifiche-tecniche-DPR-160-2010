@@ -802,28 +802,6 @@ components:
                     enum:
                         - observations_to_impediments_provided
 
-        OutcomeMessage:
-            type: object
-            allOf:
-                - $ref: "#/components/schemas/TransferMessage"
-            properties:
-                event:
-                    type: string
-                    enum:
-                        - end_by_suspension_requested
-                        - end_by_positive_outcome
-                        - end_by_negative_outcome
-
-        ObservationsToImpedimentsMessage:
-            type: object
-            allOf:
-                - $ref: "#/components/schemas/TransferMessage"
-            properties:
-                event:
-                    type: string
-                    enum:
-                        - observations_to_impediments_provided
-
         CdssNotifyMessage:
             allOf:
               - $ref: "#/components/schemas/NotifyMessage"
