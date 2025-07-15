@@ -21,7 +21,6 @@ servers:
       description: RegistroImprese to BackOffice SUAP endpoint
 
 paths:
-    
 
     /send_instance:
         description: Inoltro dei riferimenti a un' istanza di procedimento.
@@ -47,9 +46,7 @@ paths:
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
-
-
-    
+  
     /notify:
         post:
             description: Notifica eventi di processo di una data istanza di procedimento.
@@ -60,7 +57,6 @@ paths:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
                                 - $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
-
                 required: true
             responses:
                 "200":
@@ -77,9 +73,6 @@ paths:
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
-
-        
-
 
 components:
     responses:
@@ -107,6 +100,7 @@ components:
               application/json:
                 schema:
                   $ref: "#/components/schemas/Error"
+
         ServiceUnavaliable:
             description: Servizio non disponibile
             content:
@@ -116,7 +110,7 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
-
+        
         Unauthorized:
             description: Richiesta non autorizzata
             headers:
@@ -126,6 +120,7 @@ components:
                 application/json:
                     schema:
                         $ref: "#/components/schemas/Error"
+        
         ServerError:
             description: Errore processamento richiesta
             content:
@@ -154,13 +149,14 @@ components:
                     type: string
                     format: date
                 
-                progressive:
+                progressivo:
                     title: numero progressivo a rotazione annuale
                     type: string
 
                 uuid:
                     title: UUID chiave del CUI
                     type: string
+        
         Tag:
             description: struttura oggetto Tag
             type: object
@@ -207,6 +203,9 @@ components:
                         title: filename della risorsa documento correlata all'evento notificato
                         type: string
                         minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
                     mime_type:
                         type: string
                         enum: 
@@ -242,22 +241,22 @@ components:
                         - S256
                         - S384
                         - S512
-
+        
         GeneralIndexFII:
-                      type: array
-                      description: indice allegati trasversali
-                      minItems: 0
-                      uniqueItems: true
-                      items:
-                        anyOf:
-                          - $ref: '#/components/schemas/ricevuta_xml_fii'
-                          - $ref: '#/components/schemas/ricevuta_pdf_fii'
-                          - $ref: '#/components/schemas/suap_xml_fii'
-                          - $ref: '#/components/schemas/suap_pdf_fii'
-                          - $ref: '#/components/schemas/suap_rea_start_xml_fii'
-                          - $ref: '#/components/schemas/suap_rea_update_xml_fii'
-                          - $ref: '#/components/schemas/comunica_cui_xml_fii'
-                          - $ref: '#/components/schemas/comunica_cui_pdf_fii'
+            type: array
+            description: indice allegati trasversali
+            minItems: 0
+            uniqueItems: true
+            items:
+              anyOf:
+                - $ref: '#/components/schemas/ricevuta_xml_fii'
+                - $ref: '#/components/schemas/ricevuta_pdf_fii'
+                - $ref: '#/components/schemas/suap_xml_fii'
+                - $ref: '#/components/schemas/suap_pdf_fii'
+                - $ref: '#/components/schemas/suap_rea_start_xml_fii'
+                - $ref: '#/components/schemas/suap_rea_update_xml_fii'
+                - $ref: '#/components/schemas/comunica_cui_xml_fii'
+                - $ref: '#/components/schemas/comunica_cui_pdf_fii'
 
         ricevuta_xml_fii:
             type: object
@@ -282,6 +281,7 @@ components:
                 type: string
                 enum:
                   - application/xml
+                  - application/pkcs7-mime
               resource_id:
                 type: string
                 minLength: 1
@@ -304,7 +304,6 @@ components:
                   - S256
                   - S384
                   - S512
-
         ricevuta_pdf_fii:
             type: object
             additionalProperties: false
@@ -324,6 +323,7 @@ components:
                 type: string
                 enum:
                   - application/pdf
+                  - application/pkcs7-mime
               resource_id:
                 type: string
                 minLength: 1
@@ -346,7 +346,6 @@ components:
                   - S256
                   - S384
                   - S512
-
         suap_xml_fii:
             type: object
             description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
@@ -371,6 +370,7 @@ components:
                 type: string
                 enum:
                   - application/xml
+                  - application/pkcs7-mime
               resource_id:
                 type: string
                 minLength: 1
@@ -393,7 +393,6 @@ components:
                   - S256
                   - S384
                   - S512
-
         suap_pdf_fii:
             type: object
             additionalProperties: false
@@ -413,6 +412,7 @@ components:
                 type: string
                 enum:
                   - application/pdf
+                  - application/pkcs7-mime
               resource_id:
                 type: string
                 minLength: 1
@@ -435,7 +435,6 @@ components:
                   - S256
                   - S384
                   - S512
-
         suap_rea_start_xml_fii:
             type: object
             description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
@@ -459,6 +458,7 @@ components:
                 type: string
                 enum:
                   - application/xml
+                  - application/pkcs7-mime
               resource_id:
                 type: string
                 minLength: 1
@@ -481,7 +481,6 @@ components:
                   - S256
                   - S384
                   - S512
-
         suap_rea_update_xml_fii:
             type: object
             description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
@@ -505,6 +504,7 @@ components:
                 type: string
                 enum:
                   - application/xml
+                  - application/pkcs7-mime
               resource_id:
                 type: string
                 minLength: 1
@@ -526,8 +526,7 @@ components:
                 enum:
                   - S256
                   - S384
-                  - S512   
-
+                  - S512        
         suap_rea_end_fii:
             type: object
             additionalProperties: false
@@ -547,6 +546,7 @@ components:
                 type: string
                 enum:
                   - application/xml
+                  - application/pkcs7-mime
               resource_id:
                 title: id della risorsa documento correlata all'xml del rea_end
                 type: string
@@ -572,7 +572,6 @@ components:
                   - S256
                   - S384
                   - S512
-
         comunica_cui_xml_fii:
             type: object
             description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
@@ -596,6 +595,7 @@ components:
                 type: string
                 enum:
                   - application/xml
+                  - application/pkcs7-mime
               resource_id:
                 type: string
                 minLength: 1
@@ -636,6 +636,7 @@ components:
                 type: string
                 enum:
                   - application/pdf
+                  - application/pkcs7-mime
               resource_id:
                 type: string
                 minLength: 1
@@ -678,6 +679,9 @@ components:
                   title: filename della risorsa del documento di esito finale
                   type: string
                   minLength: 1
+              file_size:
+                    description: Dimensione del file.
+                    type: integer
               mime_type:
                   type: string
                   enum: 
@@ -705,7 +709,6 @@ components:
                   - S384
                   - S512
 
-
         Error:
             type: object
             description: codice e descrizione condizione di errore
@@ -717,6 +720,7 @@ components:
             required:
                 - code
                 - message
+        
         SendInstanceRequest:
             required:
                 - cui
@@ -737,6 +741,34 @@ components:
                     $ref: "#/components/schemas/InstanceIndexFII"
                 general_index_fii:
                     $ref: "#/components/schemas/GeneralIndexFII"
+                receiver_administration:
+                    title: amministrazione destinataria delle istanze
+                    $ref: "#/components/schemas/AdministrationSchema"
+        
+        AdministrationSchema:
+            description: Amministrazione compentente censita nel Catalogo SSU
+            type: object
+            required:
+                - ipacode
+                - officecode
+                - version
+                - description
+            properties:
+                ipacode:
+                    title: codice IPA dell'amministrazione
+                    type: string
+                    minLength: 1
+                officecode:
+                    title: codice dell'ufficio dell'amministrazione 
+                    type: string
+                    minLength: 1
+                version:
+                    title: versione dell'ufficio dell'amministrazione 
+                    type: string
+                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+                description:
+                    title: descrizione dell'amministrazione
+                    type: string
 
         NotifyMessage:
             type: object
@@ -757,9 +789,9 @@ components:
                         - end_by_integration_times_expired
                         - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
-                suap_rea_end:
-                        $ref: '#/components/schemas/suap_rea_end_fii'
-
+                resource_rea_end:
+                    $ref: "#/components/schemas/suap_rea_end_fii"      
+                        
         TransferOutcomeNotifyMessage:
             type: object
             required:
@@ -786,7 +818,6 @@ components:
                 resource_rea_end:
                     $ref: "#/components/schemas/suap_rea_end_fii"
 
-
     headers:
         Agid-JWT-Signature:
             schema:
@@ -796,7 +827,7 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
                 In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
@@ -810,7 +841,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
                 In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header
