@@ -135,7 +135,7 @@ paths:
                 required: false
                 schema:
                   type: string
-                  pattern: "C[0-9]{1,2}_[a-z]|Altro"
+                  pattern: "C[0-9]{1,2}_[a-z]"
               - name: tag_key
                 in: query  
                 description: Chiave del Tag di classificazione associato ad un documento
@@ -390,12 +390,12 @@ components:
               coding:
                 title: Codifica della classificazione associata ad un documento
                 type: string
-                pattern: "C[0-9]{1,2}_[a-z]|Altro"
+                pattern: "C[0-9]{1,2}_[a-z]"
                 example: "C2_b"
               class_code:
                 title: Codice della Classe di un documento
                 type: string
-                pattern: "C[0-9]{1,2}|Altro"
+                pattern: "C[0-9]{1,2}"
                 example: "C2"
               class_description:
                 title: Descrizione della Classe di un documento
@@ -404,7 +404,7 @@ components:
               typology_code:
                 title: Codice della Tipologia di un documento
                 type: string
-                pattern: "[a-z]|Altro"
+                pattern: "[a-z]"
                 example: "b"
               typology_description:
                 title: Descrizione della Tipologia di un documento
@@ -463,7 +463,7 @@ components:
                 title: Codifica della classificazione associata ad un documento
                 description: La classificazione viene recuperata dal Catalogo SSU, tuttavia, resta in capo al Back-Office la responsabilità di tale associazione e, qualora venga ritenuto opportuno, può ad ogni modo apportare una correzione. I valori ammissibili sono recuperabili al path catalogo-ssu_meta/document_classifications.
                 type: string
-                pattern: "C[0-9]{1,2}_[a-z]|Altro"
+                pattern: "C[0-9]{1,2}_[a-z]"
               tag:
                 $ref: "#/components/schemas/Tag"
         
