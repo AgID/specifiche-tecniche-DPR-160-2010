@@ -89,8 +89,7 @@ paths:
           Agid-JWT-Signature: []
 
   /instance_descriptor/{cui_uuid}:
-    description: |
-        Recupero InstanceDescriptor 
+    description: Recupero InstanceDescriptor 
     get:
       parameters:
         - name: cui_uuid
