@@ -294,14 +294,14 @@ components:
                 
                 workflow:          
                     type: object
-                    title: regime amministrativo dell'istanza          
+                    title: workflow del regime amministrativo dell'istanza          
                     
                     required:
                         - id
                         - version
                     properties:
                         id:              
-                            title: identificativo univo del regime amministrativo
+                            title: identificativo univo del workflow del regime amministrativo
                             type: string
                             enum:
                                  - SCIA
