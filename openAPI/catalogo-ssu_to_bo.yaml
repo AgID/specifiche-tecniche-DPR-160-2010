@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-  title: SUAP_CatalogoSSU to BackOffice SUAP
+  title: CatalogoSSU to BackOffice
 
   version: 1.0.0
 
   description: |-
-    API rese disponibili da Catalogo SSU alle componenti BackOffice SUAP
+    API rese disponibili da Catalogo SSU alle componenti BackOffice
 
   contact:
     name: AgID - Agenzia per l'Italia Digitale
