@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-    title: BackOffice SUAP to FrontOffice SUAP
+    title: BackOffice to FrontOffice
 
     version: 1.0.0
 
