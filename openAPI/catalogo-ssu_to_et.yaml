@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-  title: SUAP_CatalogoSSU to EnteTerzo SUAP
+  title: SUAP_CatalogoSSU to EnteTerzo
 
   version: 1.0.0
 
   description: |-
-    API rese disponibili da Catalogo SSU alle componenti EnteTerzo SUAP
+    API rese disponibili da Catalogo SSU alle componenti EnteTerzo
 
   contact:
     name: AgID - Agenzia per l'Italia Digitale
@@ -375,22 +375,23 @@ components:
         
         workflow:          
           type: object
-          title: regime amministrativo dell'istanza          
+          title: workflow del regime amministrativo dell'istanza          
           
           required:
             - id
             - version
           properties:
             id:              
-              title: identificativo univo del regime amministrativo
+              title: identificativo univoco del workflow del regime amministrativo
               type: string
               enum:
                - SCIA
                - AUTORIZZAZIONE
                - PROVVEDIMENTO-CONDIZIONATO
+               - SCIA-CONDIZIONATA
                
             version:              
-              title: version del regime amministrativo
+              title: version del workflow del regime amministrativo
               type: string
               pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
         
