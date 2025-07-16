@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-  title: SUAP_CatalogoSSU to FrontOffice SUAP
+  title: SUAP_CatalogoSSU to FrontOffice
 
   version: 1.0.0
 
   description: |-
-    API rese disponibili da Catalogo SSU alle componenti FrontOffice SUAP'
+    API rese disponibili da Catalogo SSU alle componenti FrontOffice'
 
   contact:
     name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
   - url: https://<system host+subdomains>.it
-    description: Catalogo SSU to FrontOffice SUAP endpoint
+    description: Catalogo SSU to FrontOffice endpoint
 
 paths:
   /request_cui/{context}/{sub_context}:
@@ -421,22 +421,23 @@ components:
         
         workflow:          
           type: object
-          title: regime amministrativo dell'istanza          
+          title: workflow del regime amministrativo dell'istanza          
           
           required:
             - id
             - version
           properties:
             id:              
-              title: identificativo univoco del regime amministrativo
+              title: identificativo univoco del workflow del regime amministrativo
               type: string
               enum:
                - SCIA
                - AUTORIZZAZIONE
                - PROVVEDIMENTO-CONDIZIONATO
+               - SCIA-CONDIZIONATA
                
             version:              
-              title: version del regime amministrativo
+              title: version del workflow del regime amministrativo
               type: string
               pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
         
