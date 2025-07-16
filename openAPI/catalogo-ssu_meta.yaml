@@ -71,7 +71,7 @@ paths:
       tags:
         - Context
 
-  /typologies-lifeevents:
+  /typologies-lifeevents/{context}:
     get:
       description: Recupero elenco tipologie ed eventi della vita dei procedimenti
       parameters:
@@ -233,13 +233,13 @@ paths:
       tags:
         - Lookup
 
-  /proceedings:
+  /proceedings/{context}:
     get:
       description: Recupero elenco procedimenti per tipologia,evento della vita e comune (mapping su ambito territoriale)
       parameters:
         - in: query
           name: typology
-          description: tipologia del procedimento (es. esercizio di vicinato, grande/media struttura di vendita)
+          description: Recupero elenco procedimenti per tipologia, evento della vita, comune (mapping su ambito territoriale) e contesto di riferimento
           schema:
             type: string
         - name: lifeevent
