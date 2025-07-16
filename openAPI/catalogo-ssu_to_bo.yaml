@@ -380,7 +380,7 @@ components:
             - timestamp
             properties:
               state:                
-                title: stato dell'istanza
+                title: stato dell'istanza, stato iniziale da impostare in started
                 type: string
                 enum:
                 - started
@@ -425,6 +425,7 @@ components:
                - SCIA
                - AUTORIZZAZIONE
                - PROVVEDIMENTO-CONDIZIONATO
+               - SCIA-CONDIZIONATA
                
             version:              
               title: version del regime amministrativo
