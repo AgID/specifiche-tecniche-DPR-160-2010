@@ -301,7 +301,7 @@ components:
                         - version
                     properties:
                         id:              
-                            title: identificativo univo del workflow del regime amministrativo
+                            title: identificativo univoco del workflow del regime amministrativo
                             type: string
                             enum:
                                  - SCIA
