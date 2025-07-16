@@ -90,6 +90,7 @@ properties:
              - SCIA
              - AUTORIZZAZIONE
              - PROVVEDIMENTO-CONDIZIONATO
+             - SCIA-CONDIZIONATA
       version:
         "$id": "#root/workflow/version"
         title: version del regime amministrativo
