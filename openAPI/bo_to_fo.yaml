@@ -481,15 +481,15 @@ components:
             minItems: 0
             uniqueItems: true
             items:
-            anyOf:
-                - $ref: '#/components/schemas/ricevuta_xml'
-                - $ref: '#/components/schemas/ricevuta_pdf'
-                - $ref: '#/components/schemas/suap_xml'
-                - $ref: '#/components/schemas/suap_pdf'
-                - $ref: '#/components/schemas/suap_rea_start_xml'
-                - $ref: '#/components/schemas/suap_rea_update_xml'
-                - $ref: '#/components/schemas/comunica_cui_xml'
-                - $ref: '#/components/schemas/comunica_cui_pdf'
+                anyOf:
+                    - $ref: '#/components/schemas/ricevuta_xml'
+                    - $ref: '#/components/schemas/ricevuta_pdf'
+                    - $ref: '#/components/schemas/suap_xml'
+                    - $ref: '#/components/schemas/suap_pdf'
+                    - $ref: '#/components/schemas/suap_rea_start_xml'
+                    - $ref: '#/components/schemas/suap_rea_update_xml'
+                    - $ref: '#/components/schemas/comunica_cui_xml'
+                    - $ref: '#/components/schemas/comunica_cui_pdf'
 
         ricevuta_xml:
                       type: object
