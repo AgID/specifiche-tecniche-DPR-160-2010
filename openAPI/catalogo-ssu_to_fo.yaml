@@ -6,7 +6,7 @@ info:
   version: 1.0.0
 
   description: |-
-    API rese disponibili da Catalogo SSU alle componenti FrontOffice'
+    API rese disponibili da Catalogo SSU alle componenti FrontOffice
 
   contact:
     name: AgID - Agenzia per l'Italia Digitale
@@ -389,7 +389,7 @@ components:
             - timestamp
             properties:
               state:                
-                title: stato dell'istanza
+                title: stato dell'istanza, stato iniziale da impostare in started
                 type: string
                 enum:
                 - started
