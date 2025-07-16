@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-  title: SUAP_CatalogoSSU to FrontOffice
+  title: CatalogoSSU to FrontOffice
 
   version: 1.0.0
 
