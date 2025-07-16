@@ -310,6 +310,7 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
                 - progressive
                 - uuid
@@ -317,6 +318,11 @@ components:
                 context:
                     title: contesto dell'istanza
                     type: string
+
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+                    type: string
+
                 data:
                     title: data emissione cui
                     type: string
@@ -569,6 +575,7 @@ components:
                         - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
                         - cdss_convened
+                        - transferred_instance
                         - end_by_instance_deleted_for_cu_fail_link
                         - end_by_instance_deleted_for_cu_fail_check
 

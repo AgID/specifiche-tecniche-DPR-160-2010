@@ -41,7 +41,7 @@ properties:
       properties:
         state:
           "$id": "#root/instance_status/state"
-          title: stato dell'istanza, stato inziiale da impostare in started
+          title: stato dell'istanza, stato iniziale da impostare in started
           type: string
           enum:
           - started
@@ -61,6 +61,7 @@ properties:
           - ended_by_positive_outcome
           - ended_by_negative_outcome
           - ended_by_submitter_cancel_requested
+          - instance_transferred
           
         timestamp:
           "$id": "#root/instance_status/timestamp"
