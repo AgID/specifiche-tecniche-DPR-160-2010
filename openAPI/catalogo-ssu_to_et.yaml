@@ -343,7 +343,7 @@ components:
             - timestamp
             properties:
               state:                
-                title: stato dell'istanza
+                title: stato dell'istanza, stato iniziale da impostare in started
                 type: string
                 enum:
                 - started
