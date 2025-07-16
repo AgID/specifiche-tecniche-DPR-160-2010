@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-    title: SUAP_CatalogoSSU to Registro Imprese
+    title: CatalogoSSU to Registro Imprese
 
     version: 1.0.0
 
