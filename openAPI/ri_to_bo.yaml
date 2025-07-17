@@ -56,7 +56,7 @@ paths:
                         schema:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
-                                - $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
+                                - $ref: "#/components/schemas/TransferNotifyMessage"
                 required: true
             responses:
                 "200":
@@ -659,8 +659,22 @@ components:
                   - S256
                   - S384
                   - S512
+        
+        ImpedimentsMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - existence_of_impediments
+                expiration_date:
+                    type: string
+                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
+                    format: date
 
-        outcome_document:
+        resource_document:
             type: object
             additionalProperties: false
             required:
@@ -672,11 +686,11 @@ components:
               - alg_hash
             properties:
               resource_id:
-                  title: id della risorsa del documento di esito finale 
+                  title: id della risorsa del documento
                   type: string
                   minLength: 1
               filename:                      
-                  title: filename della risorsa del documento di esito finale
+                  title: filename della risorsa del documento
                   type: string
                   minLength: 1
               file_size:
@@ -688,7 +702,7 @@ components:
                       - application/pdf
                       - application/pkcs7-mime
               document_classification_coding:
-                  title: codifica della classificazione del documento di esito finale
+                  title: codifica della classificazione del documento
                   description: La classificazione viene recuperata dal Catalogo SSU, tuttavia, resta in capo al Back-Office la responsabilità di tale associazione e, qualora venga ritenuto opportuno, può ad ogni modo apportare una correzione. I valori ammissibili sono recuperabili al path catalogo-ssu_meta/classifications, filtrando per Classe 2.
                   type: string
                   pattern: "C2_[a-z]"
@@ -791,9 +805,41 @@ components:
                         - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
                 resource_rea_end:
-                    $ref: "#/components/schemas/suap_rea_end_fii"      
+                    $ref: "#/components/schemas/suap_rea_end_fii"     
+
+        TransferNotifyMessage:
+            type: object
+            oneOf:
+                - $ref: "#/components/schemas/OutcomeMessage"
+                - $ref: "#/components/schemas/ImpedimentsMessage"
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/ConditionalProvisionGranted"
+                - $ref: "#/components/schemas/ConditionalProvisionRescinded"
+                - $ref: "#/components/schemas/ConditionalProvisionDenied" 
                         
-        TransferOutcomeNotifyMessage:
+        TransferMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+                - c_fiscale_impresa
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    enum:
+                        - existence_of_impediments
+                c_fiscale_impresa:
+                    description: Codice fiscale dell'impresa
+                    type: string
+                resource_document:
+                    $ref: "#/components/schemas/resource_document"
+        
+        TransferOutcomeMessage:
             type: object
             required:
                 - cui
@@ -811,13 +857,116 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
+                        - end_by_integration_times_expired
                 c_fiscale_impresa:
                     description: Codice fiscale dell'impresa
                     type: string
                 resource_outcome:
-                    $ref: "#/components/schemas/outcome_document"
+                    $ref: "#/components/schemas/resource_document"
                 resource_rea_end:
                     $ref: "#/components/schemas/suap_rea_end_fii"
+    
+        OutcomeMessage:
+                type: object
+                allOf:
+                    - $ref: "#/components/schemas/TransferOutcomeMessage"
+                properties:
+                    event:
+                        type: string
+                        enum:
+                            - end_by_instance_refused
+                            - end_by_suspension_requested
+                            - end_by_positive_outcome
+                            - end_by_negative_outcome
+                        
+        ConditionalProvisionGranted:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_granted
+        
+        ConditionalProvisionDenied:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_denied
+        
+        ConditionalProvisionRescinded:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_rescinded
+        
+        DefinitiveProvision:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - date
+                - outcome
+                - document_classification_coding
+                - competent_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                outcome:
+                    type: string
+                    enum: 
+                        - definitive_provision_granted
+                competent_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                resource_id:
+                    title: id della risorsa associata all'esito del Provvedimento Definitivo, univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                document_classification_coding:
+                  title: codifica della classificazione del documento di esito finale
+                  description: La classificazione viene recuperata dal Catalogo SSU, tuttavia, resta in capo al Back-Office la responsabilità di tale associazione e, qualora venga ritenuto opportuno, può ad ogni modo apportare una correzione. I valori ammissibili sono recuperabili al path catalogo-ssu_meta/classifications, filtrando per Classe 2.
+                  type: string
+                  pattern: "C2_[a-z]"
+                tags: 
+                    description: Tag associati al documento.
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+                filename:                      
+                    title: filename dell'esito del Provvedimento Definitivo"
+                    type: string
+                    minLength: 1
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
 
     headers:
         Agid-JWT-Signature:
