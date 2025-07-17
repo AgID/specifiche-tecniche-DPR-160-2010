@@ -728,6 +728,7 @@ components:
                 - c_fiscale_impresa
                 - instance_index_fii
                 - general_index_fii
+                - receiver_administration
             type: object
             properties:
                 cui:
