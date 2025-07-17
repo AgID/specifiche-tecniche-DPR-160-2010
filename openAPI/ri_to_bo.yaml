@@ -60,8 +60,6 @@ paths:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
                                 - $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
-                            discriminator:
-                                propertyName: event
                 required: true
             responses:
                 "200":
