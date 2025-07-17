@@ -127,6 +127,52 @@ components:
                     $ref: "#/components/headers/Agid-JWT-Signature"
 
     schemas:
+        Error:
+            type: object
+            description: codice e descrizione condizione di errore
+            properties:
+                code:
+                    type: string
+                message:
+                    type: string
+            required:
+                - code
+                - message
+
+        TransferOutcomeNotifyMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    enum:
+                        - end_by_instance_refused
+                        - end_by_suspension_requested
+                        - end_by_positive_outcome
+                        - end_by_negative_outcome
+                resource_id:
+                    title: se presente, id della risorsa documento correlata all'evento notificato
+                    type: string
+                    minLength: 1
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+        
         cui:
             type: object
             description: codice unico dell'istanza
