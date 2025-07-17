@@ -2043,10 +2043,6 @@ components:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono effettuare una richiesta di proroga per il provvedimento condizionato 
           type: integer
           format: int32
-        date_cdss:
-          title: data evetuale conferenza di servizi sincrona
-          type: string
-          format: date
 
     Error:
       type: object
