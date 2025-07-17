@@ -59,7 +59,7 @@ paths:
                         schema:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
-                                - $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
+                                - $ref: "#/components/schemas/TransferNotifyMessage"
                 required: true
             responses:
                 "200":
@@ -631,16 +631,23 @@ components:
                 suap_rea_end:
                         $ref: '#/components/schemas/suap_rea_end_xml'
 
+        TransferNotifyMessage:
+            type: object
+            oneOf:
+                - $ref: "#/components/schemas/OutcomeMessage"
+                - $ref: "#/components/schemas/ImpedimentsMessage"
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/ConditionalProvisionGranted"
+                - $ref: "#/components/schemas/ConditionalProvisionRescinded"
+                - $ref: "#/components/schemas/ConditionalProvisionDenied"
 
 
-
-        TransferOutcomeNotifyMessage:
+        TransferMessage:
             type: object
             required:
                 - cui
                 - instance_descriptor_version
                 - event
-                - suap_rea_end
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -652,8 +659,8 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
-                suap_rea_end:
-                        $ref: '#/components/schemas/suap_rea_end_xml'
+                        - existence_of_impediments
+                        - end_by_integration_times_expired
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
                     type: string
@@ -665,6 +672,111 @@ components:
                 file_size:
                     description: Dimensione del file.
                     type: integer
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512 
+
+        ImpedimentsMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - existence_of_impediments
+                expiration_date:
+                    type: string
+                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
+                    format: date   
+
+        OutcomeMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - end_by_instance_refused
+                        - end_by_suspension_requested
+                        - end_by_positive_outcome
+                        - end_by_negative_outcome
+                        
+        ConditionalProvisionGranted:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_granted
+        
+        ConditionalProvisionDenied:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_denied
+        
+        ConditionalProvisionRescinded:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_rescinded
+        
+        DefinitiveProvision:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - date
+                - outcome
+                - competent_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                outcome:
+                    type: string
+                    enum: 
+                        - definitive_provision_granted
+                competent_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                resource_id:
+                    title: id della risorsa associata all'esito del Provvedimento Definitivo, univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename dell'esito del Provvedimento Definitivo"
+                    type: string
+                    minLength: 1
                 mime_type:
                     type: string
                     enum: 
