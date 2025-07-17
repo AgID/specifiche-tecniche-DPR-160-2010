@@ -124,13 +124,30 @@ paths:
                 "401":
                     $ref: "#/components/responses/Unauthorized"
                 "404":
-                    $ref: "#/components/responses/NotFound"
+                    description: risorsa non trovata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
                 "412":
-                    $ref: "#/components/responses/PreconditionFailed"
+                    description: precondizione fallita, rappresentazione risorsa non correttamente individuata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
                 "416":
-                    $ref: "#/components/responses/RangeNotSatisfiable"
+                    description: richiesta di range non soddisfacibile
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+                        Content-Range:
+                            description: espressione del range non soddisfacibile
+                            schema:
+                                type: string
+                                example: bytes 21010-47021/47022
                 "428":
-                    $ref: "#/components/responses/PreconditionRequired"
+                    description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -150,51 +167,6 @@ components:
 
         BadRequest:
             description: Forma della richiesta non conforme alla specifica
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/Error"
-            headers:
-                Agid-JWT-Signature:
-                    $ref: "#/components/headers/Agid-JWT-Signature"
-        
-        NotFound:
-            description: risorsa non trovata
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/Error"
-            headers:
-                Agid-JWT-Signature:
-                    $ref: "#/components/headers/Agid-JWT-Signature"
-                
-        PreconditionFailed:
-            description: precondizione fallita, rappresentazione risorsa non correttamente individuata
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/Error"
-            headers:
-                Agid-JWT-Signature:
-                    $ref: "#/components/headers/Agid-JWT-Signature"
-        
-        RangeNotSatisfiable:
-            description: richiesta di range non soddisfacibile
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/Error"
-            headers:
-                Agid-JWT-Signature:
-                    $ref: "#/components/headers/Agid-JWT-Signature"
-                Content-Range:
-                    description: lunghezza attuale della rappresentazione selezionata
-                    schema:
-                        type: string
-                        example: bytes */47022
-
-        PreconditionRequired:
-            description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
             content:
                 application/json:
                     schema:
