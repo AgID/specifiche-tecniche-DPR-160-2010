@@ -27,19 +27,19 @@ paths:
       parameters:
         - in: query
           name: typology
-          description: paramentro di filtering sulla tipologia richiesta, non valorizzato per richiedere l'intero set
+          description: parametro di filtering sulla tipologia richiesta, non valorizzato per richiedere l'intero set
           required: false
           schema:
             type: string
         - name: lifeevent
           in: query
-          description: paramentro di filtering su gli eventi della vita, non valorizzato per richiedere l'intero set
-          required: true
+          description: parametro di filtering sugli eventi della vita, non valorizzato per richiedere l'intero set
+          required: false
           schema:
             type: string
         - name: municipality
           in: query
-          description: paramentro di filtering sul comune richiesto, non valorizzato per richiedere l'intero set
+          description: parametro di filtering sul comune richiesto, non valorizzato per richiedere l'intero set
           required: false
           schema:
             type: string
