@@ -658,21 +658,7 @@ components:
                 enum:
                   - S256
                   - S384
-                  - S512
-        
-        ImpedimentsMessage:
-            type: object
-            allOf:
-                - $ref: "#/components/schemas/TransferMessage"
-            properties:
-                event:
-                    type: string
-                    enum:
-                        - existence_of_impediments
-                expiration_date:
-                    type: string
-                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
-                    format: date
+                  - S512     
 
         resource_document:
             type: object
@@ -829,17 +815,27 @@ components:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
                     type: string
-                event:
-                    type: string
-                    enum:
-                        - existence_of_impediments
                 c_fiscale_impresa:
                     description: Codice fiscale dell'impresa
                     type: string
                 resource_document:
                     $ref: "#/components/schemas/resource_document"
         
-        TransferOutcomeMessage:
+        ImpedimentsMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - existence_of_impediments
+                expiration_date:
+                    type: string
+                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
+                    format: date
+        
+        OutcomeMessage:
             type: object
             required:
                 - cui
@@ -865,19 +861,6 @@ components:
                     $ref: "#/components/schemas/resource_document"
                 resource_rea_end:
                     $ref: "#/components/schemas/suap_rea_end_fii"
-    
-        OutcomeMessage:
-                type: object
-                allOf:
-                    - $ref: "#/components/schemas/TransferOutcomeMessage"
-                properties:
-                    event:
-                        type: string
-                        enum:
-                            - end_by_instance_refused
-                            - end_by_suspension_requested
-                            - end_by_positive_outcome
-                            - end_by_negative_outcome
                         
         ConditionalProvisionGranted:
             allOf:
