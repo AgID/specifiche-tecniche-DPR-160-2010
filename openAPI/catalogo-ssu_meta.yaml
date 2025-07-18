@@ -27,19 +27,19 @@ paths:
       parameters:
         - in: query
           name: typology
-          description: paramentro di filtering sulla tipologia richiesta, non valorizzato per richiedere l'intero set
+          description: parametro di filtering sulla tipologia richiesta, non valorizzato per richiedere l'intero set
           required: false
           schema:
             type: string
         - name: lifeevent
           in: query
-          description: paramentro di filtering su gli eventi della vita, non valorizzato per richiedere l'intero set
+          description: parametro di filtering sugli eventi della vita, non valorizzato per richiedere l'intero set
           required: false
           schema:
             type: string
         - name: municipality
           in: query
-          description: paramentro di filtering sul comune richiesto, non valorizzato per richiedere l'intero set
+          description: parametro di filtering sul comune richiesto, non valorizzato per richiedere l'intero set
           required: false
           schema:
             type: string
@@ -196,6 +196,211 @@ paths:
 
       tags:
         - Proceedings
+
+  /document_classifications:
+    get:
+      description: |
+        Recupero di tutte le classificazioni che possono essere associate ai documenti secondo la Tassonomia in Allegato A - Art.5 comma 1 Decreto 17 settembre 2024 n.159 ss.mm.ii.
+
+      parameters:
+        - name: coding
+          in: query  
+          description: Codifica della classificazione associata ad un documento
+          required: false
+          schema:
+            type: string
+            pattern: "C[0-9]{1,2}_[a-z]"
+        - name: class_code
+          in: query  
+          description: Codice della Classe di un documento
+          required: false
+          schema:
+            type: string
+            pattern: "C[0-9]{1,2}"
+        - name: class_description
+          in: query  
+          description: Descrizione della Classe di un documento
+          required: false
+          schema:
+            type: string
+        - name: typology_code
+          in: query  
+          description: Codice della Tipologia di un documento
+          required: false
+          schema:
+            type: string
+            pattern: "[a-z]"
+        - name: typology_description
+          in: query  
+          description: Descrizione della Tipologia di un documento
+          required: false
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Elenco delle classificazioni che possono essere associate ai documenti.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DocumentClassification"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Classifications
+
+  /general_index_classifications/{name}:
+    get:
+      description: |
+        Recupero della classificazione associata ad un documento del General-Index, secondo la Tassonomia in Allegato A - Art.5 comma 1 Decreto 17 settembre 2024 n.159 ss.mm.ii.
+
+      parameters:
+        - name: name
+          in: path  
+          description: Nome del documento gestito nel General-Index
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Elenco delle classificazioni che possono essere associate ai documenti.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentClassification"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Classifications
+
+  /document_classification/form/{form_id_list}:
+    get:
+      description: |
+        Recupero della classificazione associata ai documenti di tipo Form secondo la Tassonomia in Allegato A - Art.5 comma 1 Decreto 17 settembre 2024 n.159 ss.mm.ii.
+
+      parameters:
+        - name: form_id_list
+          in: path
+          description: lista di id associati ai form
+          required: true
+          schema:
+              type: string
+
+      responses:
+        "200":
+          description: Elenco dei documenti classificati
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DocumentEntityClassified"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Classifications
+
+  /document_classification/attachment/{attachment_id_list}:
+    get:
+      description: |
+        Recupero della classificazione associata ai documenti di tipo Attachment secondo la Tassonomia in Allegato A - Art.5 comma 1 Decreto 17 settembre 2024 n.159 ss.mm.ii.
+
+      parameters:
+        - name: attachment_id_list
+          in: path
+          description: lista di id associati agli attachment
+          required: true
+          schema:
+              type: string
+
+      responses:
+        "200":
+          description: Elenco dei documenti classificati
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DocumentEntityClassified"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Classifications
 
   /proceeding/{proceeding_id}/{proceeding_version}/attachments:
     get:
@@ -1843,11 +2048,6 @@ components:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono effettuare una richiesta di proroga per il provvedimento condizionato 
           type: integer
           format: int32
-        date_cdss:
-          "$id": "#root/time/date_cdss"
-          title: data evetuale conferenza di servizi sincrona
-          type: string
-          format: date
 
     Error:
       type: object
@@ -1915,6 +2115,41 @@ components:
         start: 2024-01-01
         end: 2024-12-31
         state: Active
+    
+    DocumentClassification:
+      description: struttura oggetto classificazione dei documenti
+      type: object
+      required:
+        - coding
+        - class_code
+        - class_description
+        - typology_code
+        - typology_description
+      properties:
+        coding:
+          title: Codifica della classificazione associata ad un documento
+          type: string
+          pattern: "C[0-9]{1,2}_[a-z]"
+        class_code:
+          title: Codice della Classe di un documento
+          type: string
+          pattern: "C[0-9]{1,2}"
+        class_description:
+          title: Descrizione della Classe di un documento
+          type: string
+        typology_code:
+          title: Codice della Tipologia di un documento
+          type: string
+          pattern: "[a-z]"
+        typology_description:
+          title: Descrizione della Tipologia di un documento
+          type: string
+      example:
+        coding: "C2_b"
+        class_code: "C2"
+        class_description: "AUTORIZZAZIONI, PERMESSI E AUTOCERTIFICAZIONI"
+        typology_code: "b"
+        typology_description: "Autorizzazioni"
 
     DocumentEntity:
       allOf:
@@ -1934,6 +2169,22 @@ components:
         description: Entità id,versione, descrizione e tipo strutturato/non strutturato
         type: structured 
     
+    DocumentEntityClassified:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/DocumentEntity"
+        - type: object
+      properties:
+        document_classification_coding:
+          type: string
+          pattern: "C[0-9]{1,2}_[a-z]"
+      example:
+        id: 1
+        version: 1.0.0
+        description: Entità id,versione, descrizione e tipo strutturato/non strutturato
+        type: structured 
+        document_classification_coding: C1_a
+
     ResourceEntity:
       allOf:
         - $ref: "#/components/schemas/GenericEntity"

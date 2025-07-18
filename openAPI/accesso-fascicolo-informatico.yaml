@@ -1,0 +1,530 @@
+openapi: 3.0.3
+
+info:
+    title: Accesso al fascicolo informatico d'impresa.
+
+    version: 1.0.0
+
+    description: |-
+        API rese disponibili dal Fascicolo Informatico d'Impresa per garantire l'accesso ai documenti e alle informazioni.
+
+    contact:
+        name: AgID - Agenzia per l'Italia Digitale
+        url: https://www.agid.gov.it/
+
+    license:
+        name: CC BY-NC-SA 4.0
+        url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+servers:
+    - url: https://<system host+subdomains>.it
+      description: Fascicolo informatico d'impresa endpoint
+
+paths:
+    /fii/{c_fiscale_impresa}/documents/classifications:
+        get:
+            description: |
+              Recupero di tutte le classificazioni associate ai documenti appartenenti ad uno specifico fascicolo informatico d'impresa.
+            
+            parameters:
+              - name: c_fiscale_impresa
+                in: path
+                description: Codice fiscale dell'impresa
+                required: true
+                schema:
+                    type: string
+
+            responses:
+              "200":
+                description: Elenco delle classificazioni associate ai documenti appartenenti ad uno specifico fascicolo informatico d'impresa.
+                content:
+                  application/json:
+                    schema:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/DocumentClassification"
+
+                headers:
+                  Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+              "400":
+                $ref: "#/components/responses/BadRequest"
+              "401":
+                $ref: "#/components/responses/Unauthorized"
+              "404":
+                $ref: "#/components/responses/NotFound"
+              "500":
+                $ref: "#/components/responses/ServerError"
+              "503":
+                $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+              - bearerAuth: []
+                Agid-JWT-Signature: []
+
+            tags:
+              - Classifications
+
+    /fii/{c_fiscale_impresa}/documents/tags:
+        get:
+            description: |
+              Recupero di tutti i tag associati ai documenti appartenenti ad uno specifico fascicolo informatico d'impresa.
+            
+            parameters:
+              - name: c_fiscale_impresa
+                in: path
+                description: Codice fiscale dell'impresa
+                required: true
+                schema:
+                    type: string
+
+            responses:
+              "200":
+                description: Elenco dei tag di classificazione relativi ai documenti appartenenti ad uno specifico fascicolo informatico d'impresa. 
+                content:
+                  application/json:
+                    schema:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/DocumentTag"
+
+                headers:
+                  Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+              "400":
+                $ref: "#/components/responses/BadRequest"
+              "401":
+                $ref: "#/components/responses/Unauthorized"
+              "404":
+                $ref: "#/components/responses/NotFound"
+              "500":
+                $ref: "#/components/responses/ServerError"
+              "503":
+                $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+              - bearerAuth: []
+                Agid-JWT-Signature: []
+
+            tags:
+              - Classifications
+
+    /fii/{c_fiscale_impresa}/documents:
+        get:
+            description: |
+              Recupero dei resource_id associati ad uno specifico fascicolo informatico d'impresa.
+
+            parameters:
+              - name: c_fiscale_impresa
+                in: path
+                description: Codice fiscale dell'impresa
+                required: true
+                schema:
+                    type: string
+              - name: cui
+                in: query
+                description: uuid del codice unico dell'istanza
+                required: false
+                schema:
+                    type: string
+              - name: coding
+                in: query  
+                description: Codifica della classificazione associata ad un documento
+                required: false
+                schema:
+                  type: string
+                  pattern: "C[0-9]{1,2}_[a-z]"
+              - name: tag_key
+                in: query  
+                description: Chiave del Tag di classificazione associato ad un documento
+                required: false
+                schema:
+                  type: string
+              - name: tag_value
+                in: query  
+                description: Valore del Tag di classificazione associato ad un documento
+                required: false
+                schema:
+                  type: string
+              - name: start_date
+                in: query  
+                description: Recupera i documenti inseriti a partire da questa data.
+                required: false
+                schema:
+                  type: string
+                  format: date
+              - name: end_date
+                in: query  
+                description: Recupera i documenti inseriti fino a questa data.
+                required: false
+                schema:
+                  type: string
+                  format: date
+
+            responses:
+                "200":
+                  description: Elenco delle classificazioni che possono essere associate ai documenti.
+                  content:
+                    application/json:
+                      schema:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/FIIDocument"
+
+                  headers:
+                    Agid-JWT-Signature:
+                      $ref: "#/components/headers/Agid-JWT-Signature"
+
+                "400":
+                  $ref: "#/components/responses/BadRequest"
+                "401":
+                  $ref: "#/components/responses/Unauthorized"
+                "404":
+                  $ref: "#/components/responses/NotFound"
+                "500":
+                  $ref: "#/components/responses/ServerError"
+                "503":
+                  $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+              - bearerAuth: []
+                Agid-JWT-Signature: []
+
+            tags:
+              - Classifications
+
+    /fii/{c_fiscale_impresa}/document/{resource_id}:
+        get:
+            description: |
+                Recupero di una specifica risorsa (xml, documento digitale) in relazione ad un fascicolo informatico d'impresa.
+                Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
+
+            parameters:
+                - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
+                - in: header
+                  name: If-Match
+                  description: precondizione contenente l'hash della risorsa
+                  required: true
+                  schema:
+                      type: string
+                - name: c_fiscale_impresa
+                  in: path
+                  description: Codice fiscale dell'impresa
+                  required: true
+                  schema:
+                      type: string
+                - name: resource_id
+                  in: path
+                  description: id risorsa documento
+                  required: true
+                  schema:
+                      type: string
+
+            responses:
+                "200":
+                    description: risorsa richiesta, codificata in base64, il mime type relativo è specificato nel descrittore dell'istanza
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                format: byte
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+
+                "206":
+                    description: porzione di risorsa richiesta, codificata in base64, il mime type relativo è specificato nel descrittore dell'istanza
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                format: byte
+                    headers:
+                        Content-Range:
+                            description: espressione del range incluso nella risposta
+                            schema:
+                                type: string
+                                example: bytes 21010-47021/47022
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    description: risorsa non trovata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+                "412":
+                    description: precondizione fallita, rappresentazione risorsa non correttamente individuata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+                "416":
+                    description: richiesta di range non soddisfacibile
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+                        Content-Range:
+                            description: espressione del range non soddisfacibile
+                            schema:
+                                type: string
+                                example: bytes 21010-47021/47022
+                "428":
+                    description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+                  - bearerAuth: []
+                    Agid-JWT-Signature: []
+       
+components:
+    responses:
+        OKRequest:
+            description: Richiesta completata con successo
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+        BadRequest:
+            description: Forma della richiesta non conforme alla specifica
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        NotFound:
+            description: risorsa non trovata
+            headers:
+              Agid-JWT-Signature:
+                $ref: "#/components/headers/Agid-JWT-Signature"
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+
+        ServiceUnavaliable:
+            description: Servizio non disponibile
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        Unauthorized:
+            description: Richiesta non autorizzata
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+        
+        ServerError:
+            description: Errore processamento richiesta
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+    schemas:
+        cui:
+            type: object
+            description: codice unico dell'istanza
+            required:
+                - context
+                - data
+                - progressive
+                - uuid
+            properties:
+                context:
+                    title: contesto dell'istanza
+                    type: string
+                data:
+                    title: data emissione cui
+                    type: string
+                    format: date
+                
+                progressive:
+                    title: numero progressivo a rotazione annuale
+                    type: string
+
+                uuid:
+                    title: UUID chiave del CUI
+                    type: string
+        
+        DocumentClassification:
+            description: struttura oggetto classificazione dei documenti
+            type: object
+            required:
+              - coding
+              - class_code
+              - class_description
+              - typology_code
+              - typology_description
+            properties:
+              coding:
+                title: Codifica della classificazione associata ad un documento
+                type: string
+                pattern: "C[0-9]{1,2}_[a-z]"
+                example: "C2_b"
+              class_code:
+                title: Codice della Classe di un documento
+                type: string
+                pattern: "C[0-9]{1,2}"
+                example: "C2"
+              class_description:
+                title: Descrizione della Classe di un documento
+                type: string
+                example: "AUTORIZZAZIONI, PERMESSI E AUTOCERTIFICAZIONI"
+              typology_code:
+                title: Codice della Tipologia di un documento
+                type: string
+                pattern: "[a-z]"
+                example: "b"
+              typology_description:
+                title: Descrizione della Tipologia di un documento
+                type: string
+                example: "Autorizzazioni"
+        
+        FIIDocument:
+            description: struttura dei documenti gestiti nel fascicolo informatico d'impresa.
+            type: object
+            allOf:
+              - $ref: '#/components/schemas/DocumentClassification'
+              - type: object
+            required: 
+              - resource_id
+              - hash
+              - alg_hash
+            properties:
+              cui:
+                    $ref: "#/components/schemas/cui"
+              tags: 
+                description: Tag associati al documento.
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+              resource_id: 
+                description: Identificativo del documento.
+                type: string
+              filename:
+                description: Nome del file.
+                type: string
+              file_size:
+                description: Dimensione del file.
+                type: integer
+              mime_type:
+                  type: string
+                  enum: 
+                      - application/pdf
+                      - application/xml
+                      - application/pkcs7-mime
+              hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+              alg_hash:
+                  title: algoritmo hash applicato
+                  type: string
+                  enum:
+                  - S256
+                  - S384
+                  - S512
+              date:
+                description: Data di inserimento del documento sul fascicolo.
+                type: string
+                format: date      
+        
+        DocumentTag:
+            type: object
+            required:
+              - document_classification_coding
+            properties:
+              document_classification_coding:
+                title: Codifica della classificazione associata ad un documento
+                description: La classificazione viene recuperata dal Catalogo SSU, tuttavia, resta in capo al Back-Office la responsabilità di tale associazione e, qualora venga ritenuto opportuno, può ad ogni modo apportare una correzione. I valori ammissibili sono recuperabili al path catalogo-ssu_meta/document_classifications.
+                type: string
+                pattern: "C[0-9]{1,2}_[a-z]"
+              tag:
+                $ref: "#/components/schemas/Tag"
+        
+        Tag:
+            description: struttura oggetto Tag
+            type: object
+            required:
+              - tag_key
+              - tag_value
+            properties:
+              tag_key:
+                title: Chiave del Tag di classificazione associato ad un documento
+                type: string
+                example: "SottoProcedimento"
+              tag_value:
+                title: Valore del Tag di classificazione associato ad un documento
+                type: string
+                example: "AUA"
+             
+        Error:
+            type: object
+            description: codice e descrizione condizione di errore
+            properties:
+                code:
+                    type: string
+                message:
+                    type: string
+            required:
+                - code
+                - message
+        
+    headers:
+        Agid-JWT-Signature:
+            schema:
+                format: JWS
+                maxLength: 4096
+                type: string
+                example: eyJzd.fafa.fafafa
+            description: |-
+                Il valore di questo header è una token JWT firmato secondo la specifica JWS.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
+
+    securitySchemes:
+        bearerAuth:
+            scheme: bearer
+            bearerFormat: JWT
+            type: http
+            description: Implementazione conforme ad RFC8725
+
+        Agid-JWT-Signature:
+            type: apiKey
+            description: |-
+                Il valore di questo header è una token JWT firmato secondo la specifica JWS.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
+            name: Agid-JWT-Signature
+            in: header
