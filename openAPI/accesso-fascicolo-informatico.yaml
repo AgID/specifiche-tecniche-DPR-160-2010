@@ -438,6 +438,12 @@ components:
               file_size:
                 description: Dimensione del file.
                 type: integer
+              mime_type:
+                  type: string
+                  enum: 
+                      - application/pdf
+                      - application/xml
+                      - application/pkcs7-mime
               hash:
                     title: hash risorsa
                     type: string
