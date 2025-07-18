@@ -119,7 +119,7 @@ sequenceDiagram
 
         par
             alt 
-                E ->> B: send_conclusions(NegativeOutcomeRequired)
+                E ->> B: send_conclusions(NegativeOutcome)
                 B -->> E: ack 
                 E ->> C: audit(cui,suspension_requested_from_<ET>)
                 C -->> E: ack

@@ -1,3 +1,4 @@
+
 sequenceDiagram
     autonumber
     actor P as Presentatore    
@@ -6,7 +7,7 @@ sequenceDiagram
     participant C as Catalogo SSU 
     participant E as Enti Terzi    
     Note over F,B: istanza procedibile
-    alt CdSS da SUAP
+    alt Regime Amministrativo=AUTORIZZAZIONE | CdSS da SUAP
         opt 
             B ->> C: request_update_times(cui,times)
             C -->> B: instanceDescriptor
@@ -21,7 +22,7 @@ sequenceDiagram
         B ->> C: audit(cui,cdss_convened)
         C -->> B: ack
        
-    else No CdSS da SUAP
+    else Regime Amministrativo=AUTORIZZAZIONE,SCIA | No CdSS da SUAP
         par per ogni ente terzo interessato        
             B ->> E: send_instance(SendInstanceRequest)
             E -->> B: ack
@@ -38,7 +39,7 @@ sequenceDiagram
             E ->> C: audit(cui,instance_retrived)
             C -->> E: ack
         end
-        alt almeno un ET richiede CdSS entro i tempi
+        alt Regime Amministrativo=AUTORIZZAZIONE | almeno un ET richiede CdSS entro i tempi
             par almeno un ente terzo
                 E ->> B: request_cdss(cui, requester_administration)
                 B -->> E: ack 
@@ -58,8 +59,8 @@ sequenceDiagram
             
             B ->> C: audit(cui,cdss_convened)
             C -->> B: ack
-        else CdSS no richiesta da ET
-            opt almeno una richiesta integrazione
+        else Regime Amministrativo=AUTORIZZAZIONE,SCIA | CdSS no richiesta da ET
+            opt Regime Amministrativo=AUTORIZZAZIONE | almeno una richiesta integrazione
                 par almeno un ente terzo
                     E ->> B: request_integration(cui, instance_descriptor_version,integration_list,resource_id)
                     B -->> E: ack 
@@ -139,7 +140,7 @@ sequenceDiagram
                 end
             end
             
-            opt L'ente terzo invia dei motivi ostativi
+            opt Regime Amministrativo=AUTORIZZAZIONE | L'ente terzo invia dei motivi ostativi
                 E ->> B: send_impediments(Impediments)
                 B -->> E: ack
                 E ->> C: audit(cui, existence_of_impediments_from_<ET>, resource_id)
@@ -184,8 +185,95 @@ sequenceDiagram
                 end
             end
 
+            opt Regime Amministrativo=SCIA | almeno una richiesta conformazione
+                par almeno un ente terzo
+                    E ->> B: request_conformation(cui, instance_descriptor_version,conformation_list, conformation_document_list)
+                    B -->> E: ack 
+                    opt
+                        B ->> E: request_instance_document(cui, resource_id)
+                        note right of B: recupero documento di richiesta di conformazione
+                        E -->> B: instanceDocument    
+                    end
+                    E ->> C: audit(cui,conformation_requested_from_<ET>)
+                    C -->> E: ack           
+                end
 
-            alt integrazione non richiesta, oppure richiesta e istanza integrata nei tempi dal presentatore
+            
+                alt concluso il tempo di richiesta di conformazione 
+                    par per ogni ente terzo
+                        B ->> E: notify(cui, instance_descriptor_version, conformation_request_time_expired)
+                        E -->> B: ack
+                    end
+                    B ->> C: audit(cui, conformation_request_time_expired)
+                    C -->> B: ack
+                end 
+                
+                Note over B: concluso il tempo di richiesta conformazione AND almeno un ente terzo ha richiesto la conformazione
+                B ->> F: request_conformation(cui, instance_descriptor_version,conformation_list, conformation_document_list)
+                F -->> B: ack
+                B ->> C: audit(cui,conformation_requested)
+                C -->> B: ack
+                B ->> C: request_update_times(cui,times)
+                Note right of B: Aggiorna i tempi procedimentali incrementandoli di X giorni, dove X è max_gg_conf_resp dell'oggetto Times
+                C -->> B: instanceDescriptor
+                opt
+                    loop recupero documenti di richiesta di conformazione degli ET
+                    F ->> B: request_instance_document(cui, resource_id)
+                    note right of F: resource_id in conformation_document_list
+                    B -->> F: instanceDocument    
+                    end
+                end
+                F -) P: notification(cui,conformation_requested)    
+
+
+                alt oltre il tempo di conformazione del presentatore
+                    B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
+                    F -->> B: ack
+                    par per ogni ente terzo interessato
+                        B ->> E: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
+                        E -->> B: ack
+                    end
+                    B ->> C: audit(cui,end_by_conformation_request_time_expired)
+                    C -->> B: ack
+
+                    F -) P: notification(cui,end_by_conformation_times_expired)
+                else entro il tempo di conformazione del presentatore 
+                    P --) F: instanceConformated
+                    F ->> B: send_instance(SendInstanceRequest)
+                    B -->> F: ack
+                    F ->> C: audit(cui,instance_conformated_to_<BO>_sended)
+                    note right of F: <BO> codice BackOffice
+                    C -->> F: ack
+                    loop per ogni procedimento parte dell'istanza 
+                        B ->> F: request_instance_document(cui, resource_id)
+                        note left of B: resource_id da instance_index
+                        F -->> B: instanceDocument
+                    end
+                    B ->> C: audit(cui,instance_conformated_retrived)
+                    C -->> B: ack
+                    B ->> C: request_update_times(cui,times)
+                    Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per la conformazione e i giorni passati dall'invio della richiesta
+                    C -->> B: instanceDescriptor
+                    par per ogni ente terzo interessato                
+                        B ->> E: send_instance(SendInstanceRequest)
+                        E -->> B: ack
+                        B ->> C: audit(cui,instance_conformated_to_<ET>_sended)
+                        note right of B: <ET> codice ente terzo
+                        C -->> B: ack
+                        loop per ogni procedimento di interesse parte dell'istanza 
+                            E ->> B: request_instance_document(cui, resource_id)
+                            note left of E: resource_id da instance_index
+                            B -->> E: instanceDocument
+                        end
+                        E ->> C: audit(cui,instance_conformated_retrived)
+                        C -->> E: ack
+                    end
+
+                end
+
+            end
+
+            alt Regime Amministrativo=AUTORIZZAZIONE | integrazione non richiesta, oppure richiesta e istanza integrata nei tempi dal presentatore
                 par
                     opt se non si applica silenzio assenso
                         alt parere esplicito positivo
@@ -199,7 +287,7 @@ sequenceDiagram
                                 E -->> B: instanceDocument    
                             end
                         else parere esplicito negativo
-                            E ->> B: send_conclusions(NegativeOutcome)
+                            E ->> B: send_conclusions(NegativeOutcomeRequired)
                             B -->> E: ack 
                             E ->> C: audit(cui,negative_outcome_sended_from_<ET>)
                             C -->> E: ack
@@ -213,7 +301,7 @@ sequenceDiagram
                 end
  
                 Note over B,E: concluso tempo ricezione pareri o tutti gli ET hanno inviato parere (compreso silenzio assenso)
-                opt CdSS da SUAP
+                opt Regime Amministrativo=AUTORIZZAZIONE | CdSS da SUAP
                     opt 
                         B ->> C: request_update_times(cui,times)
                         C -->> B: instanceDescriptor
@@ -229,9 +317,50 @@ sequenceDiagram
                     C -->> B: ack
                 end            
             end
+
+            alt Regime Amministrativo=SCIA | conformazione non richiesta, oppure richiesta e istanza conformata nei tempi dal presentatore
+                par
+                    alt ET esprime parere negativo
+                        E ->> B: send_conclusions(NegativeOutcomeRequired)
+                        B -->> E: ack 
+                        E ->> C: audit(cui,suspension_requested_from_<ET>)
+                        C -->> E: ack
+                        opt
+                            B ->> E: request_instance_document(cui, resource_id)
+                            note right of B: recupero documento di richiesta sospensione
+                            E -->> B: instanceDocument    
+                        end   
+                    end       
+                end
+
+                alt concluso tempo istanza, senza richieste sospensione
+                    B ->> F: notify(cui, instance_descriptor_version,end_by_proceeding_time_expired)
+                    F -->> B: ack            
+                    par per ogni ente terzo interessato
+                        B ->> E: notify(cui, instance_descriptor_version,end_by_proceeding_time_expired)
+                        E -->> B: ack
+                    end
+                    B ->> C: audit(cui,end_by_proceeding_time_expired)
+                    C -->> B: ack
+                else concluso tempo istanza o tutti gli enti terzi hanno inoltrato conclusione, almeno una richiesta sospensione
+                    B ->> F: notify(cui, instance_descriptor_version,end_by_suspension_requested)
+                    F -->> B: ack  
+                    F -) P: notification(cui,end_by_suspension_requested)          
+                    par per ogni ente terzo interessato
+                        B ->> E: notify(cui, instance_descriptor_version,end_by_suspension_requested)
+                        E -->> B: ack
+                    end
+                    B ->> C: audit(cui,end_by_suspension_requested)
+                    C -->> B: ack
+                end
+
+
+            end
+
+
     end
-    Note over F, E: azione realizzata in ogni circostanza, anche in caso di CdSS
-    alt (concluso tempo istanza (eventuale silenzio assenso) o autorizzazione concessa) e integrazione del presentatore nei tempi 
+    Note over F, E: Regime Amministrativo=AUTORIZZAZIONE | azione realizzata in ogni circostanza, anche in caso di CdSS
+    alt Regime Amministrativo=AUTORIZZAZIONE | (concluso tempo istanza (eventuale silenzio assenso) o autorizzazione concessa) e integrazione del presentatore nei tempi 
         B ->> F: notify(cui, instance_descriptor_version,end_by_positive_outcome,resource_id)
         F -->> B: ack
         F ->> B: request_instance_document(cui, resource_id)
@@ -249,7 +378,7 @@ sequenceDiagram
         end
         B ->> C: audit(cui,end_by_positive_outcome)
         C -->> B: ack
-    else autorizzazione negata OR osservazioni ai motivi ostativi non inviate dal presentatore nei tempi (10 giorni)
+    else Regime Amministrativo=AUTORIZZAZIONE | autorizzazione negata OR osservazioni ai motivi ostativi non inviate dal presentatore nei tempi (10 giorni)
         B ->> F: notify(cui, instance_descriptor_version,end_by_negative_outcome,resource_id)
         F -->> B: ack
         F ->> B: request_instance_document(cui, resource_id)

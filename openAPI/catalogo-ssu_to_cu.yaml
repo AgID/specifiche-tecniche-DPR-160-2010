@@ -199,6 +199,7 @@ components:
                 title: data evetuale conferenza di servizi sincrona
                 type: string
                 format: date
+
             
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
@@ -305,8 +306,8 @@ components:
                             enum:
                                  - SCIA
                                  - AUTORIZZAZIONE
-                                 - SILENZIO-ASSENSO
-                                 - COMUNICAZIONE
+                                 - PROVVEDIMENTO-CONDIZIONATO
+                                 
                         version:              
                             title: version del regime amministrativo
                             type: string

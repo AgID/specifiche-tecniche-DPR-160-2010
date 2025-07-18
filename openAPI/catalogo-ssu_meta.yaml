@@ -1999,6 +1999,11 @@ components:
       - max_gg_proc
       properties:
 
+        start:
+          "$id": "#root/time/start"
+          title: data avvio dell'istanza
+          type: string
+          format: date
         max_gg_proc:          
           title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
           type: integer

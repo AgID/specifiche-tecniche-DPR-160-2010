@@ -709,6 +709,7 @@ components:
                   - S384
                   - S512
 
+
         Error:
             type: object
             description: codice e descrizione condizione di errore
@@ -720,7 +721,7 @@ components:
             required:
                 - code
                 - message
-        
+
         SendInstanceRequest:
             required:
                 - cui

@@ -220,8 +220,7 @@ components:
         message:
           type: string
           pattern: >-
-            ^receipt_sended|instance_to_[0-9]{1,10}_sended|corrected_instance_to_[0-9]{1,10}_sended|instance_integrated_to_[0-9]{1,10}_sended|submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_request_correction|retry_requested_for_request_integration|retry_requested_for_request_conformation|retry_requested_for_notify|instance_conformated_to_[0-9]{1,10}_sended$
-
+            ^receipt_sended|instance_to_[0-9]{1,10}_sended|corrected_instance_to_[0-9]{1,10}_sended|instance_integrated_to_[0-9]{1,10}_sended|submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_request_correction|retry_requested_for_request_integration|retry_requested_for_request_conformation|retry_requested_for_notify|instance_conformated_to_[0-9]{1,10}_sended|cu_fail_link|cu_fail_check$
     
         event_time:
           title: timestamp del momento in cui si è verificato l'evento
@@ -301,6 +300,7 @@ components:
           type: integer
           format: int32
         date_cdss:
+          "$id": "#root/time/date_cdss"
           title: data evetuale conferenza di servizi sincrona
           type: string
           format: date
@@ -411,8 +411,8 @@ components:
               enum:
                - SCIA
                - AUTORIZZAZIONE
-               - SILENZIO-ASSENSO
-               - COMUNICAZIONE
+               - PROVVEDIMENTO-CONDIZIONATO
+               
             version:              
               title: version del regime amministrativo
               type: string
@@ -573,6 +573,14 @@ components:
                       - S256
                       - S384
                       - S512
+                    code:
+                      title: identificativo dell'allegato presente nel Catalogo
+                      type: string
+                      minLength: 1
+                    version:
+                      title: versione dell'allegato presente nel Catalogo
+                      type: string
+                      minLength: 1
                     form:                      
                       title: riferimento agli oggetti per la validazione
                       type: object

@@ -307,8 +307,8 @@ components:
                             enum:
                                  - SCIA
                                  - AUTORIZZAZIONE
-                                 - SILENZIO-ASSENSO
-                                 - COMUNICAZIONE
+                                 - PROVVEDIMENTO-CONDIZIONATO
+                                 
                         version:              
                             title: version del regime amministrativo
                             type: string
