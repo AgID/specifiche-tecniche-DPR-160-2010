@@ -674,8 +674,8 @@ components:
                 receiver_administration:
                     title: amministrazione destinataria delle istanze
                     $ref: "#/components/schemas/AdministrationSchema"
-                scope:
-                    title: scopo dell'invio dell'istanza, se per conoscenza a fronte di una convocazione della cdss o se per istruttoria ET
+                purpose:
+                    title: motivo dell'invio dell'istanza (ad es: a fronte di una convocazione della Cdss o per via di una istruttoria ET)
                     type: string
                     enum:
                         - Cdss
