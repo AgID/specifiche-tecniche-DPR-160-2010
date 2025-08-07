@@ -582,7 +582,7 @@ components:
                 - $ref: "#/components/schemas/ConditionalProvisionGranted"
                 - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                 - $ref: "#/components/schemas/ConditionalProvisionDenied"
-                - $ref: "#/components/schemas/SpontaneousCommunication"
+                - $ref: "#/components/schemas/GenericCommunication"
 
 
         BaseTransferMessage:
@@ -669,7 +669,7 @@ components:
       
                   
                         
-        SpontaneousCommunication:
+        GenericCommunication:
             type: object
             allOf:
                 - $ref: "#/components/schemas/BaseTransferMessage"
@@ -687,7 +687,7 @@ components:
                     event:
                         type: string
                         enum:
-                            - spontaneous_communication
+                            - generic_communication
                     resource_id:
                         title: se presente, id della risorsa documento correlata all'evento notificato
                         type: string
