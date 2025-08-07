@@ -367,6 +367,7 @@ components:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
+                - $ref: "#/components/schemas/GenericCommunication"
 
         TransferMessage:
             allOf:
@@ -428,7 +429,7 @@ components:
                     enum:
                         - observations_to_impediments_provided
         
-        SpontaneousCommunication:
+        GenericCommunication:
             type: object
             allOf:
                 - $ref: "#/components/schemas/BaseTransferMessage"
@@ -446,7 +447,7 @@ components:
                     event:
                         type: string
                         enum:
-                            - spontaneous_communication
+                            - generic_communication
                     resource_id:
                         title: se presente, id della risorsa documento correlata all'evento notificato
                         type: string
