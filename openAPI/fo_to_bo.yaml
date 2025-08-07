@@ -582,54 +582,63 @@ components:
                 - $ref: "#/components/schemas/ConditionalProvisionGranted"
                 - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                 - $ref: "#/components/schemas/ConditionalProvisionDenied"
+                - $ref: "#/components/schemas/SpontaneousCommunication"
 
 
-        TransferMessage:
+        BaseTransferMessage:
             type: object
             required:
-                - cui
-                - instance_descriptor_version
-                - event
+               - cui
+               - instance_descriptor_version
             properties:
                 cui:
-                    $ref: "#/components/schemas/cui"
+                  $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
                     type: string
-                event:
-                    type: string
-                    enum:
-                        - end_by_suspension_requested
-                        - end_by_positive_outcome
-                        - end_by_negative_outcome
-                        - existence_of_impediments
-                        - end_by_integration_times_expired
-                resource_id:
-                    title: se presente, id della risorsa documento correlata all'evento notificato
-                    type: string
-                    minLength: 1
-                filename:                      
-                    title: filename della risorsa documento correlata all'evento notificato
-                    type: string
-                    minLength: 1
-                file_size:
-                    description: Dimensione del file.
-                    type: integer
-                mime_type:
-                    type: string
-                    enum: 
-                        - application/pdf
-                        - application/pkcs7-mime
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512 
+              
+
+        TransferMessage:
+            allOf:
+              - $ref: "#/components/schemas/BaseTransferMessage"
+              - type: object
+                required: [event]
+                properties:
+                    event:
+                        type: string
+                        enum:
+                            - end_by_suspension_requested
+                            - end_by_positive_outcome
+                            - end_by_negative_outcome
+                            - existence_of_impediments
+                            - end_by_integration_times_expired
+                    resource_id:
+                        title: se presente, id della risorsa documento correlata all'evento notificato
+                        type: string
+                        minLength: 1
+                    filename:                      
+                        title: filename della risorsa documento correlata all'evento notificato
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
+                    mime_type:
+                        type: string
+                        enum: 
+                            - application/pdf
+                            - application/pkcs7-mime
+                    hash:
+                        title: hash risorsa
+                        type: string
+                        minLength: 1
+                    alg_hash:
+                        title: algoritmo hash applicato
+                        type: string
+                        enum:
+                        - S256
+                        - S384
+                        - S512 
+            
 
         ImpedimentsMessage:
             type: object
@@ -657,6 +666,56 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
+      
+                  
+                        
+        SpontaneousCommunication:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/BaseTransferMessage"
+                - type: object
+                  required: [
+                    event, 
+                    resource_id, 
+                    filename, 
+                    file_size,
+                    mime_type
+                    hash,
+                    alg_hash
+                    ]
+                  properties:
+                    event:
+                        type: string
+                        enum:
+                            - spontaneous_communication
+                    resource_id:
+                        title: se presente, id della risorsa documento correlata all'evento notificato
+                        type: string
+                        minLength: 1
+                    filename:                      
+                        title: filename della risorsa documento correlata all'evento notificato
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
+                    mime_type:
+                        type: string
+                        enum: 
+                            - application/pdf
+                            - application/pkcs7-mime
+                    hash:
+                        title: hash risorsa
+                        type: string
+                        minLength: 1
+                    alg_hash:
+                        title: algoritmo hash applicato
+                        type: string
+                        enum:
+                        - S256
+                        - S384
+                        - S512
+                      
                         
         ConditionalProvisionGranted:
             allOf:
