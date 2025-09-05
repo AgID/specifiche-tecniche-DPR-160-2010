@@ -36,14 +36,10 @@
     <bpmn:messageFlow id="Flow_03gnb1d" name="Convocazione CDSS (Se ET = Ente procedente)" sourceRef="Participant_0l0guf4" targetRef="Activity_0ow85hf" />
     <bpmn:messageFlow id="Flow_1428cqi" sourceRef="Activity_1jtw7q2" targetRef="Activity_04zh2y1" />
     <bpmn:messageFlow id="Flow_1tdp0tt" sourceRef="Activity_04zh2y1" targetRef="Task_0lbnso8" />
-    <bpmn:textAnnotation id="TextAnnotation_1d1sdbt">
-      <bpmn:text>Conferenza di Servizi Sincrona invocata da SUAP dopo raccolta pareri</bpmn:text>
-    </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1gsgae9">
       <bpmn:text>10 giorni</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0hzkf2f" associationDirection="None" sourceRef="Activity_1e2nmty" targetRef="TextAnnotation_1gsgae9" />
-    <bpmn:association id="Association_0zcyjqi" sourceRef="Gateway_1gl0xym" targetRef="TextAnnotation_1d1sdbt" />
   </bpmn:collaboration>
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:laneSet id="LaneSet_1wdnd0m">
@@ -659,10 +655,14 @@
       <bpmn:text>Conferenza di Servizi Sincrona richiesta dal presentatore o invocata dal SUAP</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_12lg7a0">
-      <bpmn:text>Conferenza di Servizi Sincrona richiesta  da almeno un ET</bpmn:text>
+      <bpmn:text>(Casistica SUAP = ente procedente) Conferenza di Servizi Sincrona richiesta  da almeno un ET</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0b9c5h4" sourceRef="Event_070suiv" targetRef="TextAnnotation_0uirvm3" />
     <bpmn:association id="Association_089mzkj" sourceRef="Event_0cefuad" targetRef="TextAnnotation_12lg7a0" />
+    <bpmn:textAnnotation id="TextAnnotation_1d1sdbt">
+      <bpmn:text>(Casistica: SUAP = ente procedente) Conferenza di Servizi Sincrona invocata da SUAP dopo raccolta pareri</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0zcyjqi" sourceRef="Gateway_1gl0xym" targetRef="TextAnnotation_1d1sdbt" />
   </bpmn:process>
   <bpmn:process id="Process_02wpvkj" isExecutable="false">
     <bpmn:laneSet id="LaneSet_095opad" />
@@ -963,6 +963,10 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1it1clu_di" bpmnElement="Lane_1it1clu" isHorizontal="true">
         <dc:Bounds x="344" y="1360" width="3286" height="1070" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1d1sdbt_di" bpmnElement="TextAnnotation_1d1sdbt">
+        <dc:Bounds x="3150" y="1500" width="134.98650678256263" height="98.51551956815115" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0zhdww2_di" bpmnElement="Flow_0zhdww2">
@@ -1598,11 +1602,16 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_12lg7a0_di" bpmnElement="TextAnnotation_12lg7a0">
-        <dc:Bounds x="1630" y="1630" width="130" height="59" />
+        <dc:Bounds x="1630" y="1630" width="129.9932585393208" height="83.67071524966262" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0uirvm3_di" bpmnElement="TextAnnotation_0uirvm3">
         <dc:Bounds x="355" y="1942" width="149" height="75" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0zcyjqi_di" bpmnElement="Association_0zcyjqi">
+        <di:waypoint x="3142" y="1605" />
+        <di:waypoint x="3150" y="1592" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BoundaryEvent_0wfx8er_di" bpmnElement="BoundaryEvent_0z8p1bp">
         <dc:Bounds x="609" y="1822" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -1611,7 +1620,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_089mzkj_di" bpmnElement="Association_089mzkj">
         <di:waypoint x="1712" y="1714" />
-        <di:waypoint x="1701" y="1689" />
+        <di:waypoint x="1712" y="1714" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0b9c5h4_di" bpmnElement="Association_0b9c5h4">
         <di:waypoint x="419" y="2036" />
@@ -1726,17 +1735,10 @@
       <bpmndi:BPMNShape id="TextAnnotation_1c5ocu9_di" bpmnElement="TextAnnotation_1c5ocu9">
         <dc:Bounds x="477" y="3173" width="534" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1d1sdbt_di" bpmnElement="TextAnnotation_1d1sdbt">
-        <dc:Bounds x="3163" y="1518" width="135" height="70" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1gsgae9_di" bpmnElement="TextAnnotation_1gsgae9">
         <dc:Bounds x="2610" y="1390" width="100" height="30" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_0zcyjqi_di" bpmnElement="Association_0zcyjqi">
-        <di:waypoint x="3145" y="1608" />
-        <di:waypoint x="3164" y="1588" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0hzkf2f_di" bpmnElement="Association_0hzkf2f">
         <di:waypoint x="2609" y="1439" />
         <di:waypoint x="2638" y="1420" />
