@@ -421,6 +421,57 @@ paths:
 
       tags:
         - UseCases
+        
+  /usecase-proceeding/{usecase_proceedings_id}/{usecase_proceedings_version}/proceeding:
+    get:
+      description: |
+        Recupero elenco delle fattispecie relazionate a una data fattispecie
+
+      parameters:
+        - in: path
+          name: usecase_proceedings_id
+          description: id della fattispecie
+          required: true
+          schema:
+            type: string
+        - name: usecase_proceedings_version
+          in: path
+          description: versione della fattispecie
+          required: true
+          schema:
+            type: string
+            pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+
+      responses:
+        "200":
+          description: Elenco delle fattispecie relazionate alla fattispecie richiesta
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/Proceeding"
+
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - UseCases        
 
   /form/{form_id}/{form_version}/xsd:
     get:
