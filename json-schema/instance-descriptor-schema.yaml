@@ -122,6 +122,9 @@ properties:
           "$id": "#root/usecase_proceedings/competent_administration"
           title: amministrazione competente del procedimento
           $ref: https://raw.githubusercontent.com/AgID/specifiche-tecniche-DPR-160-2010/refs/heads/approved02/json-schema/administration-schema.yaml
+        interested_administration:                
+          title: amministrazione interessata al procedimento
+          $ref: "#/components/schemas/InterestedAdministrationSchema"
         form:
           "$id": "#root/usecase_proceedings/form"
           title: riferimento agli oggetti per la validazione
@@ -335,3 +338,30 @@ properties:
                           type: string
               mime_type:
                 type: string
+  InterestedAdministrationSchema:
+    description: Un array di amministrazioni competenti.
+    type: array
+    items:
+      type: object
+      description: Amministrazione competente censita nel Catalogo SSU
+      required:
+        - description
+      properties:
+        ipacode:
+          title: codice IPA dell'amministrazione
+          type: string
+          minLength: 1
+        officecode:
+          title: codice dell'ufficio dell'amministrazione
+          type: string
+          minLength: 1
+        fiscal_code:
+          title: codice fiscale dell'ente
+          type: string
+          minLength: 1
+        flag_ente_terzo_special:
+          title: flag che indica che l'ente non è una pubblica amministrazione ma presente su IPA
+          type: boolean
+        description:
+          title: descrizione dell'amministrazione
+          type: string

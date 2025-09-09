@@ -264,7 +264,6 @@ components:
           title: data evetuale conferenza di servizi sincrona
           type: string
           format: date
-    
     AdministrationSchema:
       description: Amministrazione compentente censita nel Catalogo SSU
       type: object
@@ -289,7 +288,33 @@ components:
         description:
             title: descrizione dell'amministrazione
             type: string
-
+    InterestedAdministrationSchema:
+      description: Un array di amministrazioni competenti.
+      type: array
+      items:
+        type: object
+        description: Amministrazione competente censita nel Catalogo SSU
+        required:
+          - description
+        properties:
+          ipacode:
+            title: codice IPA dell'amministrazione
+            type: string
+            minLength: 1
+          officecode:
+            title: codice dell'ufficio dell'amministrazione
+            type: string
+            minLength: 1
+          fiscal_code:
+            title: codice fiscale dell'ente
+            type: string
+            minLength: 1
+          flag_ente_terzo_special:
+            title: flag che indica che l'ente non è una pubblica amministrazione ma presente su IPA
+            type: boolean
+          description:
+            title: descrizione dell'amministrazione
+            type: string            
     InstanceDescriptor:
       description: descrittore istanza
       type: object
@@ -400,6 +425,9 @@ components:
               competent_administration:                
                 title: amministrazione competente del procedimento
                 $ref: "#/components/schemas/AdministrationSchema"
+              interested_administration:                
+                title: amministrazione interessata al procedimento
+                $ref: "#/components/schemas/InterestedAdministrationSchema"                
               form:                
                 title: riferimento agli oggetti per la validazione
                 type: object
