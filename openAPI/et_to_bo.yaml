@@ -732,6 +732,7 @@ components:
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
+                - $ref: "#/components/schemas/GenericCommunicationMessage"
                         
         TransferMessage:
             type: object
@@ -801,6 +802,16 @@ components:
                     type: string
                     enum:
                         - observations_to_impediments_provided
+
+        GenericCommunicationMessage:
+            type: object
+            allOf:
+              - $ref: "#/components/schemas/TransferMessage"
+            properties:
+              event:
+                type: string
+                enum:
+                  - generic_communication
 
         CdssNotifyMessage:
             allOf:
