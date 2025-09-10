@@ -681,6 +681,105 @@ paths:
       tags:
         - Administrations
 
+  /competent-administration/{competent_administration_ipacode}/{competent_administration_code}/third-party-system:  
+    get:
+      description: |
+        Recupero elenco componenti di una specifica amministrazione competente
+
+      parameters:
+        - in: path
+          name: competent_administration_ipacode
+          description: codice ipa dell'amministrazione
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: competent_administration_code
+          description: codice dell'ufficio dell'amministrazione
+          required: true
+          schema:
+            type: string
+
+
+      responses:
+        "200":
+          description: Elenco sistema Ente Terzo dell'amministrazione richiesta
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/third_party_system"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Administrations
+
+  /administration/{fiscal_code}/third-party-system:  
+    get:
+      description: |
+        Recupero elenco componenti di una specifica amministrazione competente dato il solo fiscalcode (amminitrazione ghost)
+
+      parameters:
+        - in: path
+          name: fiscal_code
+          description: fiscal_code dell'amministrazione
+          required: true
+          schema:
+            type: string
+       
+
+
+      responses:
+        "200":
+          description: Elenco sistema Ente Terzo dell'amministrazione richiesta
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/third_party_system"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Administrations
+
   /suap/{municipality}:
     get:
       description: |
@@ -2013,6 +2112,9 @@ components:
               enum: 
                 - Active
                 - Not Active
+            flag_competent_administration_special:
+              title: il procedimento che gli enti competenti hanno funzioni suap
+              type: boolean
 
       example:
         id: 1
@@ -2022,6 +2124,7 @@ components:
         lifeevent: apertura
         territorial_scope: 00000000
         status: Active
+        flag_competent_administration_special: false
 
 
     UseCaseProceeding:
