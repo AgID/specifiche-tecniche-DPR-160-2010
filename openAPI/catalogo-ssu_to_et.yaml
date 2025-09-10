@@ -46,6 +46,40 @@ paths:
       security:
         - bearerAuth: []
           Agid-JWT-Signature: []
+  /administration_ghost/{fiscal_code}/{cui_uuid}:
+    description: Recupero amminstrazione ghost
+    get:
+      parameters:
+        - name: cui_uuid
+          in: path
+          description: UUID del CUI
+          required: true
+          schema:
+            type: string
+        - name: fiscal_code
+          in: path
+          description: fiscal_code ente
+          required: true
+          schema:
+            type: string
+            
+      responses:
+        "200":
+          $ref: "#/components/responses/OKAdministrationGhost"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+            description: risorsa non trovata
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []          
 
   /audit:
     description: Audit azioni realizzate dalle componenti
@@ -73,6 +107,32 @@ paths:
         - bearerAuth: []
           Agid-JWT-Signature: []
 
+  /updateCdssEtTime:
+    description: aggiornamento data indizione  cdss_et
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCdssTime"
+        required: true
+
+      responses:
+        "200":
+          $ref: "#/components/responses/OKInstanceDescriptor"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []          
+
 components:
   responses:
     OKInstanceDescriptor:
@@ -99,6 +159,15 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/AuditResponse"
+    OKAdministrationGhost:
+      description: Richiesta recuperPec amminstrazione Ghost conclusa con successo
+      headers:
+        Agid-JWT-Signature:
+          $ref: "#/components/headers/Agid-JWT-Signature"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AdministrationGhost"
 
     BadRequest:
       description: Forma della richiesta non conforme alla specifica
@@ -181,7 +250,7 @@ components:
         - cui
         - message
         - event_time
-
+    
       properties:
         cui:
           $ref: "#/components/schemas/cui"
@@ -195,7 +264,27 @@ components:
           title: timestamp del momento in cui si è verificato l'evento
           type: string
           format: date-time
+    UpdateCdssTime:
+      type: object
 
+      required:
+        - cui
+        - date_cdss_et
+        - event_time
+    
+      properties:
+        cui:
+          $ref: "#/components/schemas/cui"
+
+        date_cdss_et:
+          title: data indizione cdss
+          type: string
+          format: date
+
+        event_time:
+          title: timestamp del momento in cui si è verificato l'evento
+          type: string
+          format: date-time
     AuditResponse:
       type: object
       description: risposta audit
@@ -212,7 +301,21 @@ components:
         message:
           title: messaggio
           type: string
-    
+    AdministrationGhost:
+      type: object
+      description: risposta AdministrationGhost
+      required:
+        - type
+      properties:
+        cui_uuid:
+          title: tipo messaggio
+          type: string
+        fiscal_code:
+          title: messaggio
+          type: string
+        pec:
+          title: messaggio
+          type: string
     Times:
       description: tempi amministrativi dell'istanza
       type: object
@@ -264,6 +367,14 @@ components:
           title: data evetuale conferenza di servizi sincrona
           type: string
           format: date
+        date_cdss_et:
+          title: data evetuale conferenza di servizi sincrona indetta dagli enti terzi
+          type: string
+          format: date          
+        max_gg_cdss_et_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi indire conferenza di servizi sincrona
+          type: integer
+          format: int32          
     AdministrationSchema:
       description: Amministrazione compentente censita nel Catalogo SSU
       type: object
@@ -305,16 +416,23 @@ components:
             title: codice dell'ufficio dell'amministrazione
             type: string
             minLength: 1
-          fiscal_code:
-            title: codice fiscale dell'ente
-            type: string
-            minLength: 1
-          flag_ente_terzo_special:
-            title: flag che indica che l'ente non è una pubblica amministrazione ma presente su IPA
-            type: boolean
           description:
             title: descrizione dell'amministrazione
-            type: string            
+            type: string
+    InterestedAdministrationGhostSchema:
+      description: Un array di amministrazioni competenti non censite su ipa.
+      type: array
+      items:
+        type: object
+        description: Amministrazione competente censita nel Catalogo SSU
+        properties:
+          fiscal_code:
+            title: codice fiscale  dell'amministrazione non presente su IPA
+            type: string
+            minLength: 1
+          description:
+            title: descrizione dell'amministrazione
+            type: string           
     InstanceDescriptor:
       description: descrittore istanza
       type: object
@@ -428,6 +546,10 @@ components:
               interested_administration:                
                 title: amministrazione interessata al procedimento
                 $ref: "#/components/schemas/InterestedAdministrationSchema"                
+              interested_administration_ghost:                
+                title: amministrazione ghost interessata al procedimento
+                $ref: "#/components/schemas/InterestedAdministrationGhostSchema"
+                
               form:                
                 title: riferimento agli oggetti per la validazione
                 type: object

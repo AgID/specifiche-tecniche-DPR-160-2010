@@ -53,4 +53,11 @@ properties:
     title: data evetuale conferenza di servizi sincrona
     type: string
     format: date
-  
+  date_cdss_et:
+    title: data evetuale conferenza di servizi sincrona indetta dagli enti terzi
+    type: string
+    format: date          
+  max_gg_cdss_et_req:          
+    title: numero di giorni limite a partire da start entro cui gli enti terzi indire conferenza di servizi sincrona
+    type: integer
+    format: int32

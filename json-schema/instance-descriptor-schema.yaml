@@ -125,6 +125,10 @@ properties:
         interested_administration:                
           title: amministrazione interessata al procedimento
           $ref: "#/components/schemas/InterestedAdministrationSchema"
+        interested_administration_ghost:                
+          title: amministrazione ghost interessata al procedimento
+          $ref: "#/components/schemas/InterestedAdministrationGhostSchema"
+
         form:
           "$id": "#root/usecase_proceedings/form"
           title: riferimento agli oggetti per la validazione
@@ -355,13 +359,20 @@ properties:
           title: codice dell'ufficio dell'amministrazione
           type: string
           minLength: 1
+        description:
+          title: descrizione dell'amministrazione
+          type: string
+  InterestedAdministrationGhostSchema:
+    description: Un array di amministrazioni competenti non censite su ipa.
+    type: array
+    items:
+      type: object
+      description: Amministrazione competente censita nel Catalogo SSU
+      properties:
         fiscal_code:
-          title: codice fiscale dell'ente
+          title: codice fiscale  dell'amministrazione non presente su IPA
           type: string
           minLength: 1
-        flag_ente_terzo_special:
-          title: flag che indica che l'ente non è una pubblica amministrazione ma presente su IPA
-          type: boolean
         description:
           title: descrizione dell'amministrazione
           type: string

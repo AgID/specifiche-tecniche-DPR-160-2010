@@ -192,7 +192,14 @@ components:
                 title: data evetuale conferenza di servizi sincrona
                 type: string
                 format: date
-
+              date_cdss_et:
+                title: data evetuale conferenza di servizi sincrona indetta dagli enti terzi
+                type: string
+                format: date          
+              max_gg_cdss_et_req:          
+                title: numero di giorni limite a partire da start entro cui gli enti terzi indire conferenza di servizi sincrona
+                type: integer
+                format: int32
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
             type: object
@@ -234,13 +241,20 @@ components:
                 title: codice dell'ufficio dell'amministrazione
                 type: string
                 minLength: 1
+              description:
+                title: descrizione dell'amministrazione
+                type: string
+        InterestedAdministrationGhostSchema:
+          description: Un array di amministrazioni competenti non censite su ipa.
+          type: array
+          items:
+            type: object
+            description: Amministrazione competente censita nel Catalogo SSU
+            properties:
               fiscal_code:
-                title: codice fiscale dell'ente
+                title: codice fiscale  dell'amministrazione non presente su IPA
                 type: string
                 minLength: 1
-              flag_ente_terzo_special:
-                title: flag che indica che l'ente non è una pubblica amministrazione ma presente su IPA
-                type: boolean
               description:
                 title: descrizione dell'amministrazione
                 type: string
@@ -357,6 +371,9 @@ components:
                             interested_administration:                
                                 title: amministrazione interessata al procedimento
                                 $ref: "#/components/schemas/InterestedAdministrationSchema"
+                            interested_administration_ghost:                
+                              title: amministrazione ghost interessata al procedimento
+                              $ref: "#/components/schemas/InterestedAdministrationGhostSchema"
                             form:                
                                 title: riferimento agli oggetti per la validazione
                                 type: object
