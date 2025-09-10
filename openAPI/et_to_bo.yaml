@@ -805,6 +805,14 @@ components:
 
         GenericCommunicationMessage:
             type: object
+            required:
+              - resource_id
+              - filename
+              - mime_type
+              - file_size
+              - hash
+              - alg_hash
+              - requester_administration
             allOf:
               - $ref: "#/components/schemas/TransferMessage"
             properties:
@@ -812,6 +820,9 @@ components:
                 type: string
                 enum:
                   - generic_communication
+              requester_administration:
+                title: amministrazione richiedente
+                $ref: "#/components/schemas/AdministrationSchema"
 
         CdssNotifyMessage:
             allOf:
