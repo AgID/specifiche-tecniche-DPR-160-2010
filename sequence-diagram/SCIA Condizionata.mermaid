@@ -7,22 +7,7 @@ sequenceDiagram
     participant C as Catalogo SSU 
     participant E as Enti Terzi    
     Note over F,B: istanza procedibile
-    alt Regime Amministrativo=AUTORIZZAZIONE | CdSS da SUAP
-        opt 
-            B ->> C: request_update_times(cui,times)
-            C -->> B: instanceDescriptor
-        end 
-        B ->> F: notify(cui, instance_descriptor_version,cdss_convened)
-        F -->> B: ack    
-        par per ogni ente terzo interessato
-            B ->> E: notify(cui, instance_descriptor_version,cdss_convened)
-            E -->> B: ack
-        end
-        
-        B ->> C: audit(cui,cdss_convened)
-        C -->> B: ack
-       
-    else Regime Amministrativo=AUTORIZZAZIONE,SCIA | No CdSS da SUAP
+    alt Regime Amministrativo=AUTORIZZAZIONE
         par per ogni ente terzo interessato        
             B ->> E: send_instance(SendInstanceRequest)
             E -->> B: ack
@@ -39,6 +24,23 @@ sequenceDiagram
             E ->> C: audit(cui,instance_retrived)
             C -->> E: ack
         end
+    end
+    alt Regime Amministrativo=AUTORIZZAZIONE | CdSS da SUAP AND SUAP ente procedente
+        opt 
+            B ->> C: request_update_times(cui,times)
+            C -->> B: instanceDescriptor
+        end 
+        B ->> F: notify(cui, instance_descriptor_version,cdss_convened)
+        F -->> B: ack    
+        par per ogni ente terzo interessato
+            B ->> E: notify(cui, instance_descriptor_version,cdss_convened)
+            E -->> B: ack
+        end
+        
+        B ->> C: audit(cui,cdss_convened)
+        C -->> B: ack
+       
+    else Regime Amministrativo=AUTORIZZAZIONE,SCIA | No CdSS da SUAP
         alt Regime Amministrativo=AUTORIZZAZIONE | almeno un ET richiede CdSS entro i tempi
             par almeno un ente terzo
                 E ->> B: request_cdss(cui, requester_administration)
@@ -56,9 +58,23 @@ sequenceDiagram
                 B ->> E: notify(cui, instance_descriptor_version,cdss_convened)
                 E -->> B: ack
             end
-            
             B ->> C: audit(cui,cdss_convened)
             C -->> B: ack
+        else Regime Amministrativo=AUTORIZZAZIONE | ET ente procedente AND CDSS da ET
+            opt 
+                E ->> C: request_update_times(cui,times)
+                C -->> E: instanceDescriptor
+            end
+            E ->> B: notify(cui,instance_descriptor_version,cdss_convened_from_<ET>)
+            B -->> E: ack
+            B ->> F: notify(cui, instance_descriptor_version,cdss_convened_from_<ET>)
+            F -->> B: ack    
+            par ET procedente convoca gli altri ET interessati
+                E ->> E: notify(cui, instance_descriptor_version,cdss_convened_from_<ET>)
+                E -->> E: ack
+            end
+            E ->> C: audit(cui,cdss_convened_from_<ET>)
+            C -->> E: ack
         else Regime Amministrativo=AUTORIZZAZIONE,SCIA | CdSS no richiesta da ET
             opt Regime Amministrativo=AUTORIZZAZIONE | almeno una richiesta integrazione
                 par almeno un ente terzo
