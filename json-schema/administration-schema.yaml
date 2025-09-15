@@ -5,7 +5,7 @@ description: Amministrazione compentente censita nel Catalogo SSU
 type: object
 required:
   - ipacode
-  - code
+  - officecode
   - version
   - description
 properties:
@@ -14,8 +14,8 @@ properties:
     title: codice IPA dell'amministrazione
     type: string
     minLength: 1
-  code:
-    "$id": "#root/code"
+  officecode:
+    "$id": "#root/officecode"
     title: codice dell'ufficio dell'amministrazione 
     type: string
     minLength: 1

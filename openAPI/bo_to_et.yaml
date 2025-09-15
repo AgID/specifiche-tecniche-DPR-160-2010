@@ -29,6 +29,10 @@ paths:
                     application/json:
                         schema:
                             type: object
+                            required:
+                                - cui
+                                - requester_administration
+                                - operation
                             properties:
                                 cui:
                                     $ref: "#/components/schemas/cui"
@@ -38,6 +42,9 @@ paths:
                                     enum:
                                         - send_instance
                                         - notify
+                                requester_administration:
+                                    title: amministrazione richiedente
+                                    $ref: "#/components/schemas/AdministrationSchema"
                                 error:
                                     $ref: "#/components/schemas/Error"
 
@@ -88,7 +95,16 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/cui"
+                            type: object
+                            required:
+                                - cui
+                                - requester_administration
+                            properties:
+                                cui: 
+                                    $ref: "#/components/schemas/cui"
+                                requester_administration:
+                                    title: amministrazione richiedente
+                                    $ref: "#/components/schemas/AdministrationSchema"
                 required: true
             responses:
                 "200":
@@ -154,6 +170,7 @@ paths:
                   required: true
                   schema:
                       type: string
+                
 
             responses:
                 "200":
@@ -292,6 +309,32 @@ components:
                 uuid:
                     title: UUID chiave del CUI
                     type: string
+
+        AdministrationSchema:
+            description: Amministrazione compentente censita nel Catalogo SSU
+            type: object
+            required:
+                - ipacode
+                - officecode
+                - version
+                - description
+            properties:
+                ipacode:
+                    title: codice IPA dell'amministrazione
+                    type: string
+                    minLength: 1
+                officecode:
+                    title: codice dell'ufficio dell'amministrazione 
+                    type: string
+                    minLength: 1
+                version:
+                    title: versione dell'ufficio dell'amministrazione 
+                    type: string
+                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+                description:
+                    title: descrizione dell'amministrazione
+                    type: string
+                    
         Error:
             type: object
             description: codice e descrizione condizione di errore
@@ -328,59 +371,82 @@ components:
                                 type: string
                                 minLength: 1
                             ref:
-                                title: riferimento all'elemento dell'istanza relativo al procedimento
+                                title: riferimento all'elemento dell'istanza relativo al procedimento (procedimento o allegato)
                                 type: string
                                 minLength: 1
                             integration_request:
-                                title: integrazione richiesta
+                                title: elenco integrazioni richieste da uno o più enti terzi
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        request:
+                                            title: testo integrazione richiesta
+                                            type: string
+                                        requester_administration:
+                                            title: amministrazione richiedente
+                                            $ref: "#/components/schemas/AdministrationSchema"
+
+                integration_document_list:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            requester_administration:
+                                title: amministrazione richiedente
+                                $ref: "#/components/schemas/AdministrationSchema"
+                            resource_id:
+                                title: id della risorsa "documento di richiesta integrazioni", univoco per erogatore e CUI.UUID
                                 type: string
-                resource_id:
-                    title: id della risorsa "documento di richiesta integrazione", univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
+                                minLength: 1
+                            hash:
+                                title: hash risorsa
+                                type: string
+                                minLength: 1
+                            alg_hash:
+                                title: algoritmo hash applicato
+                                type: string
+                                enum:
+                                - S256
+                                - S384
+                                - S512
 
         SendConclusionRequests:
             type: object
             oneOf:
-                - $ref: "#/components/schemas/SuspendRequired"
+                - $ref: "#/components/schemas/NegativeOutcomeRequired"
                 - $ref: "#/components/schemas/ConformationRequired"
                 - $ref: "#/components/schemas/PositiveOutcome"
             discriminator:
                 propertyName: conclusions_type
                 mapping:
-                    suspension_requested: "#/components/schemas/SuspendRequired"
+                    suspension_requested: "#/components/schemas/NegativeOutcomeRequired"
                     conformation_requested: "#/components/schemas/ConformationRequired"
                     positive_outcome: "#/components/schemas/PositiveOutcome"
 
-        SuspendRequired:
+        NegativeOutcomeRequired:
             type: object
             required:
                 - cui
                 - instance_descriptor_version
-                - suspend_motivation
+                - negative_outcome_motivation
                 - conclusions_type
+                - requester_administration
             properties:
                 conclusions_type:
                     type: string
-                    example: suspension_requested
+                    enum: 
+                    - suspension_requested
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
                     type: string
-                suspend_motivation:
+                negative_outcome_motivation:
                     type: string
                     minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di richiesta sospensione", univoco per erogatore e CUI.UUID
                     type: string
@@ -405,10 +471,12 @@ components:
                 - date
                 - conformation_requested
                 - conclusions_type
+                - requester_administration
             properties:
                 conclusions_type:
                     type: string
-                    example: conformation_requested
+                    enum: 
+                    - conformation_requested
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
@@ -419,6 +487,9 @@ components:
                 conformation_requested:
                     type: string
                     minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
                     type: string
@@ -439,12 +510,14 @@ components:
             required:
                 - cui
                 - instance_descriptor_version
-                - outcome
+                - positive_outcome
                 - conclusions_type
+                - requester_administration
             properties:
                 conclusions_type:
                     type: string
-                    example: positive_outcome
+                    enum: 
+                    - positive_outcome
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
@@ -452,6 +525,9 @@ components:
                 positive_outcome:
                     type: string
                     minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
                     type: string

@@ -59,7 +59,7 @@ paths:
 
       responses:
         "200":
-          $ref: "#/components/responses/OKRequest"
+          $ref: "#/components/responses/OKAuditResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -89,6 +89,16 @@ components:
       headers:
         Agid-JWT-Signature:
           $ref: "#/components/headers/Agid-JWT-Signature"
+    
+    OKAuditResponse:
+      description: Richiesta di Audit completata con successo
+      headers:
+        Agid-JWT-Signature:
+          $ref: "#/components/headers/Agid-JWT-Signature"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AuditResponse"
 
     BadRequest:
       description: Forma della richiesta non conforme alla specifica
@@ -170,6 +180,7 @@ components:
       required:
         - cui
         - message
+        - event_time
 
       properties:
         cui:
@@ -177,54 +188,71 @@ components:
 
         message:
           type: string
+          pattern: ^instance_retrived|integration_requested_from_[0-9]{1,10}|instance_integrated_retrived|suspension_requested_from_[0-9]{1,10}|conformation_requested_from_[0-9]{1,10}|cdss_requested_from_[0-9]{1,10}|positive_outcome_sended_from_[0-9]{1,10}|retry_requested_for_send_instance|retry_requested_for_notify|negative_outcome_sended$
+
+        event_time:
+          title: timestamp del momento in cui si è verificato l'evento
+          type: string
+          format: date-time
+
+    AuditResponse:
+      type: object
+      description: risposta audit
+      required:
+        - type
+      properties:
+        type:
+          title: tipo messaggio
+          type: string
           enum:
-            - instance_retrived
-            - integration_requested
-            - instance_integrated_retrived
-            - suspension_requested
-            - conformation_requested
-            - cdss_requested
-            - positive_outcome_sended
-            - retry_requested_for_send_instance
-            - retry_requested_for_notify
+            - ok
+            - out_of_flow
+            - expected_time_exceeded
+        message:
+          title: messaggio
+          type: string
     
     Times:
       description: tempi amministrativi dell'istanza
       type: object
       required:
       - start
-      - end
+      - max_gg_proc
       properties:
-        start:          
+        start:
           title: data avvio dell'istanza
           type: string
           format: date
-        end:          
-          title: data entro cui l'istanza deve concludersi
-          type: string
-          format: date
-        max_admissibility:          
-          title: data limite verifica ammissibilità
-          type: string
-          format: date
-        max_integration_request:          
-          title: data limite richiesta integrazione degli enti terzi
-          type: string
-          format: date
-        max_integration_response:          
-          title: data limite integrazione del soggetto presentatore
-          type: string
-          format: date
-        max_conclusions_sending:          
-          title: data limite inoltro conclusioni degli enti terzi
-          type: string
-          format: date
-        date_cdss:          
+        max_gg_proc:          
+          title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
+          type: integer
+          format: int32
+        max_gg_correction:
+          title: numero di giorni limite a partire da start per la correzione a valle di un controllo formale
+          type: integer
+          format: int32
+        max_gg_admissibility:          
+          title: numero di giorni limite a partire da start per la verifica di ammissibilità
+          type: integer
+          format: int32
+        max_gg_int_req:          
+          title: numero di giorni limite a partire da start per la richiesta di integrazione degli enti terzi
+          type: integer
+          format: int32
+        max_gg_int_resp:          
+          title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
+          type: integer
+          format: int32
+        max_gg_concl_send:          
+          title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
+          type: integer
+          format: int32
+        max_gg_cdss_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
+          type: integer
+          format: int32
+        date_cdss:
           title: data evetuale conferenza di servizi sincrona
-          type: string
-          format: date
-        max_cdss_request:          
-          title: data entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
           type: string
           format: date
     
@@ -233,7 +261,7 @@ components:
       type: object
       required:
         - ipacode
-        - code
+        - officecode
         - version
         - description
       properties:
@@ -241,7 +269,7 @@ components:
           title: codice IPA dell'amministrazione
           type: string
           minLength: 1
-        code:
+        officecode:
           title: codice dell'ufficio dell'amministrazione 
           type: string
           minLength: 1
@@ -276,7 +304,7 @@ components:
         legal_person:          
           title: codice fiscale persona giuridica
           type: string
-          pattern: "^[0-9]{9}$"
+          pattern: "^[0-9]{11}|^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$"
         
         instance_status:          
           title: stato dell'istanza
@@ -304,6 +332,7 @@ components:
                 - ended_by_conformation_requested
                 - ended_by_proceeding_time_expired
                 - ended_by_positive_outcome
+                - ended_by_negative_outcome
                 - ended_by_submitter_cancel_requested
                 
               timestamp:                
@@ -325,6 +354,11 @@ components:
             id:              
               title: identificativo univo del regime amministrativo
               type: string
+              enum:
+               - SCIA
+               - AUTORIZZAZIONE
+               - SILENZIO-ASSENSO
+               - COMUNICAZIONE
             version:              
               title: version del regime amministrativo
               type: string
@@ -339,6 +373,7 @@ components:
             - code
             - version
             - competent_administration
+            - instance
             properties:
               code:                
                 title: codice della fattispecie presente nel Catalogo
@@ -356,7 +391,6 @@ components:
                 type: object
                 required:
                 - xsd
-                - schematron
                 properties:
                   xsd:                    
                     title: xsd per la validazione
@@ -423,6 +457,35 @@ components:
                     - S512
                   mime_type:
                     type: string
+                    enum: 
+                       - application/xml
+                  activity_model: 
+                     title: porzione distinta modello attivita
+                     type: object
+                     properties:
+                        ref:                    
+                          title: distinta modello attivitÃ 
+                          type: string
+                          minLength: 1
+                        filename:                      
+                            title: filename del modello distinta attivita
+                            type: string
+                            minLength: 1
+                        hash:                    
+                          title: hash del modello distinta attivita
+                          type: string
+                          minLength: 1
+                        alg_hash:                    
+                          title: algoritmo hash del modello distinta attivita
+                          type: string
+                          enum:
+                          - S256
+                          - S384
+                          - S512
+                        mime_type:
+                          type: string
+                          enum: 
+                             - application/pdf
               attachments:                
                 title: allegati all'istanza relativi al procedimento
                 type: array
@@ -459,7 +522,6 @@ components:
                       type: object
                       required:
                       - xsd
-                      - schematron
                       properties:
                         xsd:                          
                           title: xsd per la validazione
