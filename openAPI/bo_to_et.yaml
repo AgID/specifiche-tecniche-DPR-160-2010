@@ -336,28 +336,46 @@ components:
 
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
-            type: object
-            required:
-                - ipacode
-                - officecode
-                - version
-                - description
-            properties:
-                ipacode:
-                    title: codice IPA dell'amministrazione
-                    type: string
-                    minLength: 1
-                officecode:
-                    title: codice dell'ufficio dell'amministrazione 
-                    type: string
-                    minLength: 1
-                version:
-                    title: versione dell'ufficio dell'amministrazione 
-                    type: string
-                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
-                description:
-                    title: descrizione dell'amministrazione
-                    type: string
+            oneOf:
+                - type: object
+                  required:
+                    - ipacode
+                    - officecode
+                    - description
+                  properties:
+                    ipacode:
+                        title: codice IPA dell'amministrazione
+                        type: string
+                        minLength: 1
+                    officecode:
+                        title: codice dell'ufficio dell'amministrazione 
+                        type: string
+                        minLength: 1
+                    version:
+                        title: versione dell'ufficio dell'amministrazione, necessaria quando non è un ente ghost
+                        type: string
+                        pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+                    description:
+                        title: descrizione dell'amministrazione
+                        type: string
+                - type: object
+                  required:
+                    - fiscal_code
+                    - description
+                    - id
+                  properties:
+                    fiscal_code:
+                        title: codice fiscale dell'amministrazione
+                        type: string
+                        minLength: 1
+                    description:
+                        title: descrizione dell'amministrazione
+                        type: string
+                        minLength: 1
+                    id:
+                        title: id univoco dell'amministrazione
+                        type: string
+                        minLength: 1
                     
         Error:
             type: object
@@ -430,7 +448,7 @@ components:
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
                                 type: string
-                        minLength: 1
+                                minLength: 1
                             hash:
                                 title: hash risorsa
                                 type: string
