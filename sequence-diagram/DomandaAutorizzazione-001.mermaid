@@ -59,10 +59,6 @@ sequenceDiagram
             B ->> C: audit(cui,cdss_convened)
             C -->> B: ack
         else ET ente procedente AND CDSS da ET
-            opt 
-                E ->> C: request_update_times(cui,times)
-                C -->> E: instanceDescriptor
-            end
             E ->> B: notify(cui,instance_descriptor_version,cdss_convened_from_<ET>)
             B -->> E: ack
             B ->> F: notify(cui, instance_descriptor_version,cdss_convened_from_<ET>)
