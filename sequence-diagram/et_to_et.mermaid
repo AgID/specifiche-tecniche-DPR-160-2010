@@ -1,0 +1,47 @@
+sequenceDiagram
+    autonumber
+    participant SUAP as SUAP (BO)
+    participant ET1 as ET₁ (Livello 1)
+    participant ET2 as ET₂ (Livello 2 - ricorsivo)
+
+    %% --- AVVIO ---
+    SUAP->>ET1: send_instance (chain_id=CH-123, depth=0)
+    Note right of ET1: chain_id creato da SUAP<br/>depth=0 → livello radice
+
+    %% --- DELEGA RICORSIVA ---
+    ET1->>ET2: send_instance (chain_id=CH-123, depth=1, parent_cui=CUI_ET1)
+    Note right of ET2: Riceve CUI figlio + chain_id
+
+    %% --- INTEGRAZIONI ---
+    alt ET₂ richiede integrazione
+        ET2-->>ET1: request_integration (chain_id=CH-123, depth=1, parent_cui=CUI_ET1)
+        ET1->>SUAP: request_integration (propagata a SUAP)
+        alt Documenti pervenuti
+            SUAP-->>ET1: notify(integration_documents_provided)
+            ET1-->>ET2: notify(integration_documents_provided)
+        else Timeout integrazione
+            SUAP-->>ET1: notify(integration_request_time_expired)
+            ET1-->>ET2: notify(integration_request_time_expired)
+        end
+    end
+
+    %% --- EVENTUALE RICORSIONE LIVELLO 3 ---
+    opt ET₂ delega a un ET₃
+        ET2->>ET2: send_instance (chain_id=CH-123, depth=2, parent_cui=CUI_ET2)
+        Note left of ET2: Avvio di un nuovo livello ricorsivo
+    end
+
+    %% --- INVIO ESITO ---
+    ET2-->>ET1: send_conclusions (chain_id=CH-123, depth=1, parent_cui=CUI_ET1)
+    Note left of ET1: ET₁ collega l'esito al caso padre grazie a parent_cui
+
+    %% --- CHIUSURA ITER ---
+    ET1->>SUAP: send_conclusions (aggregato fan-in, chain_id=CH-123, depth=0)
+    Note left of SUAP: SUAP riceve tutti gli esiti e chiude la pratica
+
+    %% --- RETRY/DE-DUP ---
+    rect rgb(245,245,245)
+    Note over ET1,ET2: Caso di perdita messaggio o errore
+    ET1->>ET2: retry(operation=send_conclusions, chain_id=CH-123)
+    ET2-->>ET1: resend send_conclusions (idempotency_key=id-abc)
+    end
