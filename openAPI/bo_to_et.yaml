@@ -563,6 +563,9 @@ components:
                                 title: filename della risorsa "documento di richiesta conformazione"
                                 type: string
                                 minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta conformazione"
                                 type: string
@@ -610,6 +613,9 @@ components:
                     title: filename della risorsa "documento di motivi ostativi"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     title: "indica il formato dei dati previsto per il documento di motivi ostativi"
                     type: string
@@ -803,6 +809,9 @@ components:
                     title: filename dell'esito del Provvedimento Condizionato"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     type: string
                     enum: 
@@ -852,6 +861,9 @@ components:
                     title: filename dell'esito del Provvedimento Definitivo"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     type: string
                     enum: 
