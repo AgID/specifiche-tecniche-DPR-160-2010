@@ -83,7 +83,7 @@ sequenceDiagram
                 B ->> F: request_integration(cui, instance_descriptor_version,list_of_integration_list,integration_document_list)
                 F -->> B: ack
                 B ->> C: audit(cui,integration_requested)
-                C -->> B: ack
+                C -->> B: ack  
                 B ->> C: request_update_times(cui,times)
                 Note right of B: Aggiorna i tempi procedimentali incrementantoli di X giorni, dove X è max_gg_int_resp dell'oggetto Times
                 C -->> B: instanceDescriptor
@@ -95,6 +95,10 @@ sequenceDiagram
                     end
                 end
                 F -) P: notification(cui,integration_requested) 
+                loop per ogni ente terzo interessato
+                    B -->> E: notify(integration_requested)
+                    E -->> B: ack
+                end  
                 alt oltre il tempo di integrazione del presentatore
                     B ->> F: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
                     F -->> B: ack
