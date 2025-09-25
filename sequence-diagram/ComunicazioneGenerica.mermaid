@@ -2,56 +2,56 @@ sequenceDiagram
     autonumber
       
     actor P as Presentatore  
-    participant A as Component A 
-    participant C as Catalogo SSU 
-    participant B as Component B
+    participant F as FrontOffice 
+    participant B as BackOffice
+    participant E as EnteTerzo
+    participant C as Catalogo SSU
 
    
-    Note over A,B: {Component A ,Component B} = (<br/>{FrontOffice,BackOffice} |<br/> {BackOffice,Ente Terzo} <br/>)
+    Note over P,E: istanza presentata e processo in corso
 
-   
-    Note over A,B: istanza presentata e processo in corso
-
-    alt Comunicazione generica da tra BO(A) ed ET(B)
-
-        opt
-            loop Inizio scambio di comunicazioni
-                opt        
-                    A->>B: send_generic_communication(cui, requester_administration, resource_id)
-                    B-->>A: ack
-                    A-->>C: audit(cui, communication_to_<ET>_sended)
-                    C-->>A: ack
-                end
-                opt        
-                    B->>A: notify(GenericCommunicationMessage)
-                    A-->>B: ack
-                    B-->>C: audit(cui, communication_sended_from_<ET>)
-                    C-->>A: ack
-                end
+    Note over P,E: Possibile comunicazione tra SUAP ed ET
+    opt Comunicazione generica da tra BO(A) ed ET(B)
+        
+        loop Inizio scambio di comunicazioni
+            opt        
+                B->>E: send_generic_communication(cui, requester_administration, resource_id)
+                E-->>B: ack
+                B-->>C: audit(cui, communication_to_<ET>_sended)
+                C-->>B: ack
+            end
+            opt        
+                E->>B: notify(GenericCommunicationMessage)
+                B-->>E: ack
+                E-->>C: audit(cui, communication_sended_from_<ET>)
+                C-->>B: ack
             end
         end
+    end   
     
-    else Comunicazione spontanea dal Presentatore al SUAP
+    Note over P,E: Possibile comunicazione tra Presentatore e SUAP
+    opt Comunicazione spontanea dal Presentatore al SUAP
 
-        P-->>A: Invio comunicazione<br/>spontanea
-        A->> B: notify(GenericCommunicationMessage)
-        B -->> A: ack
-        A->> C: audit(cui, communication_fo_to_bo)
-        C -->> A: ack
+        P--)F: Invio comunicazione<br/>spontanea
+        F->> B: notify(GenericCommunicationMessage)
+        B -->> F: ack
+        F->> C: audit(cui, communication_fo_to_bo)
+        C -->> F: ack
 
         loop Inizio scambio di comunicazioni
             opt
-                B->>A: notify(GenericCommunicationMessage)
-                A-->>B: ack
+                B->>F: notify(GenericCommunicationMessage)
+                F-->>B: ack
+                F--)P: Comunicazione del SUAP
                 B-->>C: audit(cui, communication_bo_to_fo)
                 C-->>B: ack
             end
             opt
-                P-->>A: Invio comunicazione
-                A->> B: notify(GenericCommunicationMessage)
-                B -->> A: ack
-                A->> C: audit(cui, communication_fo_to_bo)
-                C -->> A: ack
+                P--)F: Invio comunicazione
+                F->> B: notify(GenericCommunicationMessage)
+                B -->> F: ack
+                F->> C: audit(cui, communication_fo_to_bo)
+                C -->> F: ack
             end
         end
 
