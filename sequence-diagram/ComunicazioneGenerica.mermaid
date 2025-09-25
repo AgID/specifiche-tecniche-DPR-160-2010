@@ -15,13 +15,13 @@ sequenceDiagram
         
         loop Inizio scambio di comunicazioni
             opt        
-                B->>E: send_generic_communication(cui, requester_administration, resource_id)
+                B->>E: notify(GenericCommunicationMessage)
                 E-->>B: ack
                 B-->>C: audit(cui, communication_to_<ET>_sended)
                 C-->>B: ack
             end
             opt        
-                E->>B: notify(GenericCommunicationMessage)
+                E->>B: send_generic_communication(cui, requester_administration, resource_id)
                 B-->>E: ack
                 E-->>C: audit(cui, communication_sended_from_<ET>)
                 C-->>B: ack
