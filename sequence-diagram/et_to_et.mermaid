@@ -112,19 +112,19 @@ sequenceDiagram
             else Timeout integrazione
                 SUAP->>ET1: notify(integration_request_time_expired)
                 ET1 -->> SUAP: ack
-                ET1->>ET2: notify(integration_request_time_expired)
+                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, integration_request_time_expired)
                 ET2-->>ET1: ack
                 opt 
                     loop per ogni ente nella chain
-                        ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET2, integration_request_time_expired)
+                        ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, integration_request_time_expired)
                     end
                 end
                 Note over ET1:ET₂ A seguito dell'invio del diniego verso il presentatore
-                ET1->>ET2: notify(end_by_integration_request_time_expired)
+                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, end_by_integration_request_time_expired)
                 ET2-->>ET1: ack
                 opt 
                     loop per ogni ente nella chain
-                        ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET2, end_by_integration_request_time_expired)
+                        ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_integration_request_time_expired)
                     end
                 end
                 Note over SUAP: SUAP chiude la pratica con esito negativo
@@ -183,7 +183,7 @@ sequenceDiagram
                 Note over SUAP: SUAP chiude la pratica per silenzio-assenso           
             end
 
-            else Timeout integrazione
+            else Timeout conformazione
                 SUAP->>ET1: notify(conformation_request_time_expired)
                 ET1 -->> SUAP: ack
                 ET1->>ET2: notify(end_by_conformation_request_time_expired)
