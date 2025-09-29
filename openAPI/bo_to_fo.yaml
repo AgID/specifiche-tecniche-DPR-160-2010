@@ -504,7 +504,7 @@ components:
             minItems: 0
             uniqueItems: true
             items:
-            anyOf:
+                anyOf:
                 - $ref: '#/components/schemas/ricevuta_xml'
                 - $ref: '#/components/schemas/ricevuta_pdf'
                 - $ref: '#/components/schemas/suap_xml'
