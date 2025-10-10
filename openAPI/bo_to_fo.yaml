@@ -258,30 +258,13 @@ paths:
                 "401":
                     $ref: "#/components/responses/Unauthorized"
                 "404":
-                    description: risorsa non trovata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/NotFound"
                 "412":
-                    description: precondizione fallita, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionFailed"
                 "416":
-                    description: richiesta di range non soddisfacibile
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
-                        Content-Range:
-                            description: espressione del range non soddisfacibile
-                            schema:
-                                type: string
-                                example: bytes 21010-47021/47022
+                    $ref: "#/components/responses/RangeNotSatisfiable"
                 "428":
-                    description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionRequired"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -308,6 +291,52 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        NotFound:
+            description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                
+        PreconditionFailed:
+            description: precondizione fallita, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        RangeNotSatisfiable:
+            description: richiesta di range non soddisfacibile
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                Content-Range:
+                    description: lunghezza attuale della rappresentazione selezionata
+                    schema:
+                        type: string
+                        example: bytes */47022
+
+        PreconditionRequired:
+            description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
         ServiceUnavaliable:
             description: Servizio non disponibile
             content:
@@ -373,46 +402,57 @@ components:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
+                - $ref: "#/components/schemas/GenericCommunication"
 
         TransferMessage:
+            allOf:
+                - $ref: "#/components/schemas/BaseTransferMessage"
+                - type: object
+                  required: [event]
+                  properties:
+                      cui:
+                          $ref: "#/components/schemas/cui"
+                      instance_descriptor_version:
+                          type: string
+                      event:
+                          type: string
+                          enum:
+                              - observations_to_impediments_provided
+                      resource_id:
+                          title: se presente, id della risorsa documento correlata all'evento notificato
+                          type: string
+                          minLength: 1
+                      filename:                      
+                          title: filename della risorsa documento correlata all'evento notificato
+                          type: string
+                          minLength: 1
+                      mime_type:
+                          type: string
+                          enum: 
+                              - application/pdf
+                              - application/pkcs7-mime
+                      hash:
+                          title: hash risorsa
+                          type: string
+                          minLength: 1
+                      alg_hash:
+                          title: algoritmo hash applicato
+                          type: string
+                          enum:
+                          - S256
+                          - S384
+                          - S512
+        
+        BaseTransferMessage:
             type: object
             required:
-                - cui
-                - instance_descriptor_version
-                - event
+               - cui
+               - instance_descriptor_version
             properties:
                 cui:
-                    $ref: "#/components/schemas/cui"
+                  $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
                     type: string
-                event:
-                    type: string
-                    enum:
-                        - observations_to_impediments_provided
-                resource_id:
-                    title: se presente, id della risorsa documento correlata all'evento notificato
-                    type: string
-                    minLength: 1
-                filename:                      
-                    title: filename della risorsa documento correlata all'evento notificato
-                    type: string
-                    minLength: 1
-                mime_type:
-                    type: string
-                    enum: 
-                        - application/pdf
-                        - application/pkcs7-mime
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
 
         ObservationsToImpedimentsMessage:
             type: object
@@ -423,6 +463,53 @@ components:
                     type: string
                     enum:
                         - observations_to_impediments_provided
+        
+        GenericCommunication:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/BaseTransferMessage"
+                - type: object
+                  required: [
+                    event, 
+                    resource_id, 
+                    filename, 
+                    file_size,
+                    mime_type
+                    hash,
+                    alg_hash
+                    ]
+                  properties:
+                    event:
+                        type: string
+                        enum:
+                            - generic_communication
+                    resource_id:
+                        title: se presente, id della risorsa documento correlata all'evento notificato
+                        type: string
+                        minLength: 1
+                    filename:                      
+                        title: filename della risorsa documento correlata all'evento notificato
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
+                    mime_type:
+                        type: string
+                        enum: 
+                            - application/pdf
+                            - application/pkcs7-mime
+                    hash:
+                        title: hash risorsa
+                        type: string
+                        minLength: 1
+                    alg_hash:
+                        title: algoritmo hash applicato
+                        type: string
+                        enum:
+                        - S256
+                        - S384
+                        - S512
                     
         InstanceIndex:
                     type: array

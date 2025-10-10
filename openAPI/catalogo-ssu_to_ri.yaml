@@ -206,7 +206,6 @@ components:
                 title: data evetuale conferenza di servizi sincrona
                 type: string
                 format: date
-
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
             type: object
@@ -231,7 +230,55 @@ components:
                 description:
                     title: descrizione dell'amministrazione
                     type: string
-
+        InterestedAdministrationSchema:
+          description: Un array di amministrazioni competenti.
+          type: array
+          items:
+            type: object
+            description: Amministrazione competente censita nel Catalogo SSU
+            required:
+              - description
+              - ipacode
+              - officecode
+              - id
+            properties:
+              ipacode:
+                title: codice IPA dell'amministrazione
+                type: string
+                minLength: 1
+              officecode:
+                title: codice dell'ufficio dell'amministrazione
+                type: string
+                minLength: 1
+              description:
+                title: descrizione dell'amministrazione
+                type: string
+              id:
+                title: identificativo dell'amministrazione
+                type: string
+                minLength: 1                        
+              version:
+                title: versione dell'ufficio dell'amministrazione 
+                type: string
+                pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+        InterestedAdministrationCFSchema:
+          description: Un array di amministrazioni competenti non censite su ipa.
+          type: array
+          items:
+            type: object
+            description: Amministrazione competente censita nel Catalogo SSU
+            properties:
+              fiscal_code:
+                title: codice fiscale  dell'amministrazione non presente su IPA
+                type: string
+                minLength: 1
+              description:
+                title: descrizione dell'amministrazione
+                type: string
+              id:
+                title: identificativo dell'amministrazione
+                type: string
+                minLength: 1                        
         InstanceDescriptor:
             description: descrittore istanza
             type: object
@@ -344,6 +391,12 @@ components:
                             competent_administration:                
                                 title: amministrazione competente del procedimento
                                 $ref: "#/components/schemas/AdministrationSchema"
+                            interested_administration:                
+                                title: amministrazione interessata al procedimento
+                                $ref: "#/components/schemas/InterestedAdministrationSchema"
+                            interested_administration_fiscal_code:                
+                              title: amministrazione ghost interessata al procedimento
+                              $ref: "#/components/schemas/InterestedAdministrationCFSchema"
                             form:                
                                 title: riferimento agli oggetti per la validazione
                                 type: object
