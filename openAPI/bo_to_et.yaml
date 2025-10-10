@@ -249,8 +249,6 @@ paths:
                   required: true
                   schema:
                       type: string
-                
-
             responses:
                 "200":
                     description: risorsa richiesta, codificata in base64, il mime type relativo è specificato nel descrittore dell'istanza
@@ -299,6 +297,69 @@ paths:
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
+
+    /send_generic_communication:
+      post:
+        description: Comunicazione generica tra enti terzi e backoffice
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - cui
+                  - requester_administration
+                  - resource_id
+                  - filename
+                  - mime_type
+                  - hash
+                  - alg_hash
+                properties:
+                  cui:
+                    $ref: "#/components/schemas/cui"
+                  requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                  resource_id:
+                    title: id della risorsa documento correlata alla comunicazione spontanea
+                    type: string
+                    minLength: 1
+                  filename:
+                    title: filename della risorsa documento correlata alla comunicazione spontanea
+                    type: string
+                    minLength: 1
+                  mime_type:
+                    type: string
+                    enum:
+                      - application/pdf
+                      - application/pkcs7-mime
+                  hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                  alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                      - S256
+                      - S384
+                      - S512
+          required: true
+        responses:
+          "200":
+            $ref: "#/components/responses/OKRequest"
+          "400":
+            $ref: "#/components/responses/BadRequest"
+          "401":
+            $ref: "#/components/responses/Unauthorized"
+          "500":
+            $ref: "#/components/responses/ServerError"
+          "503":
+            $ref: "#/components/responses/ServiceUnavaliable"
+
+        security:
+          - bearerAuth: [ ]
+            Agid-JWT-Signature: [ ]
 
 components:    
     responses:

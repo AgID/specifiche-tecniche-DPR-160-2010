@@ -767,6 +767,7 @@ components:
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
+                - $ref: "#/components/schemas/GenericCommunicationMessage"
                         
         TransferMessage:
             type: object
@@ -836,6 +837,27 @@ components:
                     type: string
                     enum:
                         - observations_to_impediments_provided
+
+        GenericCommunicationMessage:
+            type: object
+            required:
+              - resource_id
+              - filename
+              - mime_type
+              - file_size
+              - hash
+              - alg_hash
+              - requester_administration
+            allOf:
+              - $ref: "#/components/schemas/TransferMessage"
+            properties:
+              event:
+                type: string
+                enum:
+                  - generic_communication
+              requester_administration:
+                title: amministrazione richiedente
+                $ref: "#/components/schemas/AdministrationSchema"
 
         CdssNotifyMessage:
             allOf:
