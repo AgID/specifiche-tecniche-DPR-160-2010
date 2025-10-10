@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: FrontOffice SUAP to ComUnica
+    title: FrontOffice to ComUnica
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili da FrontOffice SUAP a ComUnica
+        API rese disponibili da FrontOffice a ComUnica
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: FrontOffice SUAP to ComUnica endpoint
+      description: FrontOffice to ComUnica endpoint
 
 paths:
 

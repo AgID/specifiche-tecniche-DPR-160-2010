@@ -6,7 +6,7 @@ info:
     version: 1.0.0
 
     description: |-
-        API rese disponibili da BackOffice SUAP al Registro Imprese
+        API rese disponibili da BackOffice al Registro Imprese
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -237,6 +237,7 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
                 - progressive
                 - uuid
@@ -244,6 +245,11 @@ components:
                 context:
                     title: contesto dell'istanza
                     type: string
+
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+                    type: string
+                    
                 data:
                     title: data emissione cui
                     type: string

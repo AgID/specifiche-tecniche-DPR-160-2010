@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: Ente Terzo to BackOffice SUAP
+    title: Ente Terzo to BackOffice
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili da  Ente Terzo a BackOffice SUAP
+        API rese disponibili da  Ente Terzo a BackOffice
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: BackOffice SUAP to Ente Terzo SUAP endpoint
+      description: BackOffice to Ente Terzo endpoint
 
 paths:
     /retry:
@@ -291,6 +291,7 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
                 - progressive
                 - uuid
@@ -298,6 +299,11 @@ components:
                 context:
                     title: contesto dell'istanza
                     type: string
+                
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+                    type: string
+                    
                 data:
                     title: data emissione cui
                     type: string

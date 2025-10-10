@@ -4,7 +4,8 @@ info:
   title: Catalogo SSU Metadata
   version: 1.0.0
   description: |-
-    API rese disponibili dal Catalogo SSU alle componenti FrontOffice/BackOffice SUAP e Enti Terzi per la consultazione dei metadati
+    API rese disponibili dal Catalogo SSU alle componenti FrontOffice/BackOffice e Enti Terzi per la consultazione dei metadati
+
   contact:
     name: AgID - Agenzia per l'Italia Digitale
     url: https://www.agid.gov.it/
@@ -17,7 +18,57 @@ servers:
     description: Catalogo SSU Metadata endpoint
 
 paths:
-  /typologies-lifeevents:
+  /context:
+    get:
+      description: Recupero dei possibili valori del contesto di riferimento
+
+      responses:
+        "200":
+          description: Elenco dei possibili valori del contesto di riferimento
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - code
+                    - description
+                    - sub_context
+                  properties:
+                    code:
+                      title: contesto di riferimento
+                      type: string
+                    description:
+                      title: descrizione del contesto di riferimento (es. ZES)
+                      type: string
+                    sub_context:
+                      title: Specificità del contesto (es. ZES)
+                      type: string
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Context
+
+  /typologies-lifeevents/{context}:
     get:
       description: Recupero elenco tipologie ed eventi della vita dei procedimenti
       parameters:
@@ -39,6 +90,13 @@ paths:
           required: false
           schema:
             type: string
+        - in: path
+          name: context
+          description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
 
       responses:
         "200":
@@ -53,6 +111,7 @@ paths:
                     - typology
                     - lifeevent
                     - municipality
+                    - context
                   properties:
                     typology:
                       description: tipologia del procedimento (es. esercizio di vicinato, grande/media struttura di vendita)
@@ -62,6 +121,87 @@ paths:
                       type: string
                     municipality:
                       description: identificativo del comune per cui la coppia  {typology,lifeevent} esiste per almeno un procedimento afferente afferente al comune
+                      type: string
+                    context:
+                      description: contesto di riferimento (es. SUAP, SUE, ZES)
+                      type: string
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: risorsa non trovata
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Lookup
+  
+  /administrative-regimes/{context}:
+    get:
+      description: Recupero elenco dei regimi amministrativi legati ad uno specifico contesto
+      parameters:
+        - in: query
+          name: id
+          description: paramentro di filtering sull'identificativo del regime amministrativo, se non valorizzato restituisce l'intero set
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: version
+          description: paramentro di filtering sulla versione del regime amministrativo, se non valorizzato restituisce l'intero set
+          required: false
+          schema:
+            type: string
+        - in: path
+          name: context
+          description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
+
+      responses:
+        "200":
+          description: Elenco delle tuple {id, version, description, context} filtrato in base ai paramentri di richiesta
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                    - version
+                    - description
+                    - context
+                  properties:
+                    id:
+                      description: identificativo del regime amministrativo nell'ambito del contesto (es. SCIA, AUTORIZZAZIONE, SILENZIO ASSENSO, COMUNICAZIONE)
+                      type: string
+                    version:
+                      description: versione del regime amministrativo nell'ambito del contesto
+                      type: string
+                    description:
+                      description: descrizione del regime amministrativo nell'ambito del contesto
+                      type: string
+                    context:
+                      description: contesto di riferimento (es. SUAP, SUE, ZES)
                       type: string
 
           headers:
@@ -90,13 +230,13 @@ paths:
       tags:
         - Lookup
 
-  /proceedings:
+  /proceedings/{context}:
     get:
       description: Recupero elenco procedimenti per tipologia,evento della vita e comune (mapping su ambito territoriale)
       parameters:
         - in: query
           name: typology
-          description: tipologia del procedimento (es. esercizio di vicinato, grande/media struttura di vendita)
+          description: Recupero elenco procedimenti per tipologia, evento della vita, comune (mapping su ambito territoriale) e contesto di riferimento
           schema:
             type: string
         - name: lifeevent
@@ -110,6 +250,13 @@ paths:
           required: true
           schema:
             type: string
+        - in: path
+          name: context
+          description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
 
       responses:
         "200":
@@ -875,7 +1022,7 @@ paths:
       tags:
         - Attachments
  
-  /competent-administration/{competent_administration_ipacode}/{competent_administration_code}/{competent_administration_version}/third-party-system:  
+  /competent-administration/{competent_administration_ipacode}/{competent_administration_code}/{competent_administration_version}/third-party-system:
     get:
       description: |
         Recupero elenco Enti Terzi di una specifica amministrazione competente
@@ -1168,26 +1315,33 @@ paths:
       tags:
         - Administrations
 
-  /suap/{municipality}:
+  /single-desk/{municipality}/{context}:
     get:
       description: |
-        Recupero Sportello SUAP per uno specifico comune
+        Recupero Sportello per uno specifico comune
 
       parameters:
         - in: path
           name: municipality
-          description: comune dello sportello SUAP
+          description: comune dello sportello
           required: true
           schema:
             type: string
+        - in: path
+          name: context
+          description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
 
       responses:
         "200":
-          description: Sportello SUAP del comune richiesto
+          description: Sportello del comune richiesto
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GenericEntity"
+                $ref: "#/components/schemas/DeskEntity"
           headers:
             Agid-JWT-Signature:
               $ref: "#/components/headers/Agid-JWT-Signature"
@@ -1208,22 +1362,22 @@ paths:
           Agid-JWT-Signature: []
 
       tags:
-        - Sportello SUAP
+        - Sportello
 
-  /suap/{suap_id}/{suap_version}/frontoffice-system:
+  /single-desk/{single_desk_id}/{single_desk_version}/frontoffice-system:
     get:
       description: |
-        Recupero Sistema FrontOffice di uno specifico Sportello SUAP
+        Recupero Sistema FrontOffice di uno specifico Sportello
       parameters:
         - in: path
-          name: suap_id
-          description: id dello Sportello SUAP
+          name: single_desk_id
+          description: id dello Sportello
           required: true
           schema:
             type: string
-        - name: suap_version
+        - name: single_desk_version
           in: path
-          description: versione dello Sportello SUAP
+          description: versione dello Sportello
           required: true
           schema:
             type: string
@@ -1231,7 +1385,7 @@ paths:
 
       responses:
         "200":
-          description: Sistema FrontOffice dello Sportello SUAP richiesto
+          description: Sistema FrontOffice dello Sportello richiesto
           content:
             application/json:
               schema:
@@ -1257,22 +1411,22 @@ paths:
           Agid-JWT-Signature: []
 
       tags:
-        - Sportello SUAP
+        - Sportello
 
-  /suap/{suap_id}/{suap_version}/backoffice-system:
+  /single_desk/{single_desk_id}/{single_desk_version}/backoffice-system:
     get:
       description: |
-        Recupero Sistema BackOffice di uno specifico Sportello SUAP
+        Recupero Sistema BackOffice di uno specifico Sportello
       parameters:
         - in: path
-          name: suap_id
-          description: id dello Sportello SUAP
+          name: single_desk_id
+          description: id dello Sportello
           required: true
           schema:
             type: string
-        - name: suap_version
+        - name: single_desk_version
           in: path
-          description: versione dello Sportello SUAP
+          description: versione dello Sportello
           required: true
           schema:
             type: string
@@ -1280,7 +1434,7 @@ paths:
 
       responses:
         "200":
-          description: Sistema BackOffice dello Sportello SUAP richiesto
+          description: Sistema BackOffice dello Sportello richiesto
           content:
             application/json:
               schema:
@@ -1306,9 +1460,9 @@ paths:
           Agid-JWT-Signature: []
 
       tags:
-        - Sportello SUAP
+        - Sportello
 
-  /proceedings-by-municipality/{municipality_list}:
+  /proceedings-by-municipality/{municipality_list}/{context}:
     get:
       description: |
         Recupero bulk elenco procedimenti(tutte le versioni) per una lista di comuni
@@ -1323,6 +1477,13 @@ paths:
               type: string
             maxItems: 50
           style: simple
+        - in: path
+          name: context
+          description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
 
       responses:
         "200":
@@ -1437,7 +1598,7 @@ paths:
                     - mandatory
                   properties:
                     proceeding:
-                      $ref: "#/components/schemas/GenericEntity"
+                      $ref: "#/components/schemas/ContextEntity"
                     attachment:
                       $ref: "#/components/schemas/DocumentEntity"
                     mandatory:
@@ -1553,7 +1714,7 @@ paths:
                     - usecase-proceeding
                   properties:
                     proceeding:
-                        $ref: "#/components/schemas/GenericEntity"
+                        $ref: "#/components/schemas/ContextEntity"
                     usecase-proceeding:
                       type: array
                       items:
@@ -1582,10 +1743,10 @@ paths:
       tags:
         - Bulk
 
-  /usecase-proceedings-endoproceedings/{id_usecase_proceeding_list}:
+  /usecase-proceedings-endoproceedings/{id_usecase_proceeding_list}/{context}:
     get:
       description: |
-         Recupero bulk tuple {fattispecie,fattispecie,obbligatorio}(tutte le versioni)(tutte le versioni) per una lista di identificativi procedimento
+         Recupero bulk tuple {fattispecie,fattispecie,obbligatorio}(tutte le versioni) per una lista di identificativi procedimento
       parameters:
         - in: path
           name: id_usecase_proceeding_list
@@ -1597,8 +1758,13 @@ paths:
               type: string
             maxItems: 50
           style: simple
-    
-
+        - in: path
+          name: context
+          description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context
+          required: true
+          schema:
+            type: string
+            default: "SUAP"  
 
       responses:
         "200":
@@ -1671,7 +1837,7 @@ paths:
                     - form
                   properties:
                     proceeding:
-                      $ref: "#/components/schemas/GenericEntity"
+                      $ref: "#/components/schemas/ContextEntity"
                     form:
                       $ref: "#/components/schemas/GenericEntity"
 
@@ -1843,7 +2009,7 @@ paths:
                     - municipality
                   properties:
                     proceeding:
-                      $ref: "#/components/schemas/GenericEntity"
+                      $ref: "#/components/schemas/ContextEntity"
                     competent_administration:
                       $ref: "#/components/schemas/GenericEntity"
                     municipality:
@@ -1911,7 +2077,7 @@ paths:
                     - municipality
                   properties:
                     proceeding:
-                      $ref: "#/components/schemas/GenericEntity"
+                      $ref: "#/components/schemas/ContextEntity"
                     competent_administration:
                       $ref: "#/components/schemas/GenericEntity"
                     municipality:
@@ -1942,7 +2108,7 @@ paths:
   /competent-administrations-systems/{id_competent_administrations_list}:
     get:
       description: |
-         Recupero bulk tuple {amministrazione competente,sistema ente terzo}(tutte le versioni) per una lista di identificativi delle amministrazioni competenti
+         Recupero bulk tuple {amministrazione competente,sistema ente terzo}(tutte le versioni) per una lista di identificativi dell'amministrazione competente
       parameters:
         - in: path
           name: id_competent_administrations_list
@@ -1995,10 +2161,10 @@ paths:
       tags:
         - Bulk
 
-  /suaps-by-municipality/{municipality_list}:
+  /single_desks-by-municipality/{municipality_list}/{context}:
     get:
       description: |
-        Recupero bulk elenco SUAP(tutte le versioni) per una lista di comuni
+        Recupero bulk elenco degli sportelli (tutte le versioni) per una lista di comuni
       parameters:
         - in: path
           name: municipality_list
@@ -2010,10 +2176,17 @@ paths:
               type: string
             maxItems: 50
           style: simple
+        - in: path
+          name: context
+          description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
 
       responses:
         "200":
-          description: Elenco SUAP richiesto
+          description: Elenco dei sportelli richiesti
           content:
             application/json:
               schema:
@@ -2021,11 +2194,11 @@ paths:
                 items:
                   type: object
                   required:
-                    - competent_administration
+                    - single_desk
                     - municipality
                   properties:
-                    competent_administration:
-                      $ref: "#/components/schemas/ComponentEntity"
+                    single_desk:
+                      $ref: "#/components/schemas/DeskEntity"
                     municipality:
                       type: string
           headers:
@@ -2050,13 +2223,13 @@ paths:
       tags:
         - Bulk
 
-  /suaps-by-id/{id_suap_list}:
+  /single_desks-by-id/{id_single_desk_list}:
     get:
       description: |
-        Recupero bulk elenco SUAP(tutte le versioni) per una lista di identificativi suap
+        Recupero bulk elenco sportelli (tutte le versioni) per una lista di identificativi sportelli
       parameters:
         - in: path
-          name: id_suap_list
+          name: id_single_desk_list
           description: elenco degli id per le quali la risorsa è richiesta
           required: true
           schema: 
@@ -2065,18 +2238,21 @@ paths:
               type: string
             maxItems: 50
           style: simple
-    
-
 
       responses:
         "200":
-          description: Elenco SUAP richiesto
+          description: Elenco sportelli richiesti
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ComponentEntity"
+                  type: object
+                  required:
+                    - single_desk
+                  properties:
+                    single_desk:
+                      $ref: "#/components/schemas/DeskEntity"
 
           headers:
             Agid-JWT-Signature:
@@ -2100,13 +2276,13 @@ paths:
       tags:
         - Bulk
 
-  /suaps-fo-systems/{id_suap_list}:
+  /single_desks-fo-systems/{id_single_desk_list}:
     get:
       description: |
-         Recupero bulk tuple {SUAP,sistema FrontOffice SUAP}(tutte le versioni) per una lista di identificativi SUAP
+         Recupero bulk tuple {sportello, sistema FrontOffice}(tutte le versioni) per una lista di identificativi degli sportelli
       parameters:
         - in: path
-          name: id_suap_list
+          name: id_single_desk_list
           description: elenco degli id per le quali la risorsa è richiesta
           required: true
           schema: 
@@ -2118,7 +2294,7 @@ paths:
       
       responses:
         "200":
-          description: Elenco tuple {SUAP,sistema FrontOffice SUAP} richiesto
+          description: Elenco tuple {sportello,sistema FrontOffice} richiesto
           content:
             application/json:
               schema:
@@ -2126,11 +2302,11 @@ paths:
                 items:
                   type: object
                   required:
-                    - competent_administration
+                    - single_desk
                     - fo_system
                   properties:
-                    competent_administration:
-                      $ref: "#/components/schemas/ComponentEntity"
+                    single_desk:
+                      $ref: "#/components/schemas/DeskEntity"
                     fo_system:
                       $ref: "#/components/schemas/FOSystemEntity"
               
@@ -2156,13 +2332,13 @@ paths:
       tags:
         - Bulk
 
-  /suaps-bo-systems/{id_suap_list}: 
+  /single_desks-bo-systems/{id_single_desk_list}:
     get:
       description: |
-         Recupero bulk tuple {SUAP,sistema BackOffice SUAP}(tutte le versioni) per una lista di identificativi SUAP
+         Recupero bulk tuple {sportello, sistema BackOffice}(tutte le versioni) per una lista di identificativi
       parameters:
         - in: path
-          name: id_suap_list
+          name: id_single_desk_list
           description: elenco degli id per le quali la risorsa è richiesta
           required: true
           schema: 
@@ -2171,10 +2347,10 @@ paths:
               type: string
             maxItems: 50
           style: simple
-      
+
       responses:
         "200":
-          description: Elenco tuple {SUAP,sistema BackOffice SUAP} richiesto
+          description: Elenco tuple {sportello, sistema BackOffice} richiesto
           content:
             application/json:
               schema:
@@ -2182,11 +2358,11 @@ paths:
                 items:
                   type: object
                   required:
-                    - competent_administration
+                    - single_desk
                     - bo_system
                   properties:
-                    competent_administration:
-                      $ref: "#/components/schemas/ComponentEntity"
+                    single_desk:
+                      $ref: "#/components/schemas/DeskEntity"
                     bo_system:
                       $ref: "#/components/schemas/BOSystemEntity"
               
@@ -2366,11 +2542,6 @@ components:
       required:
       - max_gg_proc
       properties:
-
-        start:
-          title: data avvio dell'istanza
-          type: string
-          format: date
         max_gg_proc:          
           title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
           type: integer
@@ -2449,9 +2620,24 @@ components:
         id: 1
         version: 1.0.0
         description: Entità generica con id,versione, descrizione
+    
+    ContextEntity:
+      allOf:
+        - $ref: "#/components/schemas/GenericEntity"
+        - type: object
+          required:
+            - context
+          properties:
+            context:
+              title: contesto di riferimento
+              type: string
+      example:
+        id: 1
+        version: 1.0.0
+        description: Entità generica con id,versione, descrizione
+        context: SUAP
 
     ComponentEntity:
-      description: struttura di risorsa generica con id,versione e descrizione
       allOf:
         - $ref: "#/components/schemas/GenericEntity"
         - type: object
@@ -2523,6 +2709,27 @@ components:
         end: 2024-12-31
         state: Active
     
+    DeskEntity:
+      description: struttura di risorsa generica con id,versione e descrizione
+      allOf:
+        - $ref: "#/components/schemas/ComponentEntity"
+        - type: object
+          required:
+            - context
+          properties:
+            context:
+              title: contesto di riferimento (es. SUAP, SUE, ZES)
+              type: string
+
+      example:
+        id: 1
+        version: 1.0.0
+        description: Entità generica con id,versione, descrizione
+        start: 2024-01-01
+        end: 2024-12-31
+        state: Active
+        context: SUAP
+
     DocumentClassification:
       description: struttura oggetto classificazione dei documenti
       type: object
@@ -2629,7 +2836,6 @@ components:
         - type: object
           required:
             - e_service_to_bo
-            - e_service_to_cu
           properties:
             e_service_to_bo:
               type: string
@@ -2670,7 +2876,7 @@ components:
         e_service_to_fo: string
         e_service_to_et: string  
         e_service_to_ri: string
-  
+
     Proceeding:
       description: procedimento amministrativo
       allOf:
@@ -2681,6 +2887,7 @@ components:
             - lifeevent
             - territorial_scope
             - status
+            - context
           properties:
             typology:
               title: tipologia del procedimento
@@ -2697,6 +2904,9 @@ components:
               enum: 
                 - Active
                 - Not Active
+            context:
+              title: contesto di riferimento (SUAP, SUE, ZES)
+              type: string
             flag_competent_administration_special:
               title: il procedimento che gli enti competenti hanno funzioni suap
               type: boolean
@@ -2709,8 +2919,8 @@ components:
         lifeevent: apertura
         territorial_scope: 00000000
         status: Active
+        context: ZES
         flag_competent_administration_special: false
-
 
     UseCaseProceeding:
       allOf:
@@ -2719,37 +2929,42 @@ components:
           required:
             - proceeding_id
             - proceeding_version
+            - proceeding_context
           properties:
             proceeding_id:
               type: string
             proceeding_version:
               type: string
+            proceeding_context:
+              title: contesto di riferimento (SUAP, SUE, ZES)
+              type: string
             schematron_phase:
               type: string
+
       example:
         id: 1
         version: 1.0.0
         description: Entita  fattispecie procedimento
         proceeding_id: string
         proceeding_version: 1.0.0
+        proceeding_context: SUAP
         schematron_phase: phase_1
     
     AdministrativeRegime:
       description: Regimi amministrativi dei procedimenti
       type: object
       required:
+        - context
         - id
         - version
         - description
       properties:
-        id:
-          title: regime amministrativo
+        context:
+          title: contesto cui il regime amministrativo è associato
           type: string
-          enum:
-               - SCIA
-               - AUTORIZZAZIONE
-               - SILENZIO-ASSENSO
-               - COMUNICAZIONE
+        id:
+          title: identificativo unico del regime amministrativo recuperato da apposito servizio
+          type: string
         version:
           title: version del regime amministrativo
           type: string
@@ -2757,9 +2972,11 @@ components:
           title: descrizione del regime amministrativo
           type: string
       example:
+        context: SUAP
         id: SCIA
         version: 1.0.0
         description: Entità regime amministrativo con id,versione, descrizione
+
     third_party_system:
       allOf:
         - $ref: "#/components/schemas/SystemEntity"
@@ -2771,6 +2988,7 @@ components:
             date_to:
               type: string
               format: date
+              
       example:
         id: 1
         version: 1.0.0

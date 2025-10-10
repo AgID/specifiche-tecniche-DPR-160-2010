@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: FrontOffice SUAP to BackOffice SUAP
+    title: FrontOffice to BackOffice
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili da FrontOffice SUAP a BackOffice SUAP
+        API rese disponibili da FrontOffice a BackOffice
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: FrontOffice SUAP to BackOffice SUAP endpoint
+      description: FrontOffice to BackOffice endpoint
 
 
 paths:
@@ -339,6 +339,7 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
                 - progressive
                 - uuid
@@ -346,6 +347,11 @@ components:
                 context:
                     title: contesto dell'istanza
                     type: string
+
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+                    type: string
+
                 data:
                     title: data emissione cui
                     type: string
@@ -636,6 +642,7 @@ components:
                         - end_by_conformation_times_expired
                         - end_by_submitter_cancel_requested
                         - cdss_convened
+                        - transferred_instance
                         - end_by_instance_deleted_for_cu_fail_link
                         - end_by_instance_deleted_for_cu_fail_check
 

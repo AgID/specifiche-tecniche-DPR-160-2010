@@ -41,7 +41,7 @@ properties:
       properties:
         state:
           "$id": "#root/instance_status/state"
-          title: stato dell'istanza, stato inziiale da impostare in started
+          title: stato dell'istanza, stato iniziale da impostare in started
           type: string
           enum:
           - started
@@ -61,6 +61,7 @@ properties:
           - ended_by_positive_outcome
           - ended_by_negative_outcome
           - ended_by_submitter_cancel_requested
+          - instance_transferred
           
         timestamp:
           "$id": "#root/instance_status/timestamp"
@@ -73,7 +74,7 @@ properties:
     
   workflow:
     "$id": "#root/workflow"
-    title: regime amministrativo dell'istanza
+    title: workflow del regime amministrativo dell'istanza
     type: object
     
     required:
@@ -83,15 +84,16 @@ properties:
     properties:
       id:
         "$id": "#root/workflow/id"
-        title: identificativo univoco del regime amministrativo
+        title: identificativo univoco del workflow del regime amministrativo
         type: string
         enum:
              - SCIA
              - AUTORIZZAZIONE
              - PROVVEDIMENTO-CONDIZIONATO
+             - SCIA-CONDIZIONATA
       version:
         "$id": "#root/workflow/version"
-        title: version del regime amministrativo
+        title: version del workflow del regime amministrativo
         type: string
         pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
     

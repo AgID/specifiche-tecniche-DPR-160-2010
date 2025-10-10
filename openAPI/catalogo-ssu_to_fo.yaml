@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-  title: SUAP_CatalogoSSU to FrontOffice SUAP
+  title: CatalogoSSU to FrontOffice
 
   version: 1.0.0
 
   description: |-
-    API rese disponibili da Catalogo SSU alle componenti FrontOffice SUAP'
+    API rese disponibili da Catalogo SSU alle componenti FrontOffice
 
   contact:
     name: AgID - Agenzia per l'Italia Digitale
@@ -18,13 +18,28 @@ info:
 
 servers:
   - url: https://<system host+subdomains>.it
-    description: Catalogo SSU to FrontOffice SUAP endpoint
+    description: Catalogo SSU to FrontOffice endpoint
 
 paths:
-  /request_cui:
+  /request_cui/{context}/{sub_context}:
     description: Richiesta del CUI
 
     post:
+      parameters:
+        - in: path
+          name: context
+          description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context dell'OpenAPI catalogo-ssu_meta
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
+        - in: path
+          name: sub_context
+          description: specificità del contesto (es. SUE Produttivo, SUE Residenziale). I valori ammissibili sono reperibili invocando il path /context dell'OpenAPI catalogo-ssu_meta
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
       requestBody:
         content:
           application/json:
@@ -48,7 +63,7 @@ paths:
           Agid-JWT-Signature: []
 
   /audit:
-    description: Audit azioni realizzate dalla componenti
+    description: Audit azioni realizzate dalle componenti
     post:
       requestBody:
         content:
@@ -74,8 +89,7 @@ paths:
           Agid-JWT-Signature: []
 
   /instance_descriptor/{cui_uuid}:
-    description: |
-        Recupero InstanceDescriptor 
+    description: Recupero InstanceDescriptor 
     get:
       parameters:
         - name: cui_uuid
@@ -175,6 +189,7 @@ components:
       description: codice unico dell'istanza
       required:
           - context
+          - sub_context
           - data
           - progressive
           - uuid
@@ -182,6 +197,11 @@ components:
           context:
               title: contesto dell'istanza
               type: string
+          
+          sub_context:
+              title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+              type: string
+
           data:
               title: data emissione cui
               type: string
@@ -416,7 +436,7 @@ components:
             - timestamp
             properties:
               state:                
-                title: stato dell'istanza
+                title: stato dell'istanza, stato iniziale da impostare in started
                 type: string
                 enum:
                 - started
@@ -431,6 +451,7 @@ components:
                 - ended_by_conformation_times_expired
                 - conformated
                 - cdss_convened
+                - instance_transferred
                 - ended_by_suspension_requested
                 - ended_by_proceeding_time_expired
                 - ended_by_positive_outcome
@@ -447,22 +468,23 @@ components:
         
         workflow:          
           type: object
-          title: regime amministrativo dell'istanza          
+          title: workflow del regime amministrativo dell'istanza          
           
           required:
             - id
             - version
           properties:
             id:              
-              title: identificativo univoco del regime amministrativo
+              title: identificativo univoco del workflow del regime amministrativo
               type: string
               enum:
                - SCIA
                - AUTORIZZAZIONE
                - PROVVEDIMENTO-CONDIZIONATO
+               - SCIA-CONDIZIONATA
                
             version:              
-              title: version del regime amministrativo
+              title: version del workflow del regime amministrativo
               type: string
               pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
         
