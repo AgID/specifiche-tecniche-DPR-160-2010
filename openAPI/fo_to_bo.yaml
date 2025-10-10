@@ -503,6 +503,43 @@ components:
                                 - S384
                                 - S512
 
+                integration_synthesis:
+                  type: object
+                  properties:
+                    integration_synthesis_note:
+                      title: eventuali note operatore all'integrazione richiesta
+                      type: string
+                    integration_synthesis_attachment_list:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          resource_id:
+                            title: id della risorsa "documento di sintesi alla richiesta integrazioni"
+                            type: string
+                            minLength: 1
+                          filename:
+                            title: filename della risorsa "documento di sintesi alla richiesta integrazioni"
+                            type: string
+                            minLength: 1
+                          file_size:
+                            description: Dimensione del file.
+                            type: integer
+                          mime_type:
+                            title: "indica il formato dei dati previsto per il documento di sintesi alla richiesta integrazioni"
+                            type: string
+                          hash:
+                            title: hash risorsa
+                            type: string
+                            minLength: 1
+                          alg_hash:
+                            title: algoritmo hash applicato
+                            type: string
+                            enum:
+                              - S256
+                              - S384
+                              - S512
+
         ConformationRequest:
             type: object
             required:
