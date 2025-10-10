@@ -149,30 +149,13 @@ paths:
                 "401":
                     $ref: "#/components/responses/Unauthorized"
                 "404":
-                    description: risorsa non trovata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/NotFound"
                 "412":
-                    description: precondizione fallita, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionFailed"
                 "416":
-                    description: richiesta di range non soddisfacibile
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
-                        Content-Range:
-                            description: espressione del range non soddisfacibile
-                            schema:
-                                type: string
-                                example: bytes 21010-47021/47022
+                    $ref: "#/components/responses/RangeNotSatisfiable"
                 "428":
-                    description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionRequired"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -227,6 +210,52 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
+
+        NotFound:
+            description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                
+        PreconditionFailed:
+            description: precondizione fallita, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        RangeNotSatisfiable:
+            description: richiesta di range non soddisfacibile
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                Content-Range:
+                    description: lunghezza attuale della rappresentazione selezionata
+                    schema:
+                        type: string
+                        example: bytes */47022
+
+        PreconditionRequired:
+            description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
         ServiceUnavaliable:
             description: Servizio non disponibile
             content:
@@ -674,6 +703,12 @@ components:
                 receiver_administration:
                     title: amministrazione destinataria delle istanze
                     $ref: "#/components/schemas/AdministrationSchema"
+                purpose:
+                    title: motivo dell'invio dell'istanza (ad es: a fronte di una convocazione della Cdss o per via di una istruttoria ET)
+                    type: string
+                    enum:
+                        - Cdss
+                        - Istruttoria 
         
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
@@ -726,12 +761,15 @@ components:
                         - conditional_provision_extended
                         - conformation_request_times_expired
                         - end_by_observations_times_expired
+                        - integration_requested
+                        - conformation_requested
         
         TransferNotifyMessage:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
+                - $ref: "#/components/schemas/GenericCommunicationMessage"
                         
         TransferMessage:
             type: object
@@ -801,6 +839,27 @@ components:
                     type: string
                     enum:
                         - observations_to_impediments_provided
+
+        GenericCommunicationMessage:
+            type: object
+            required:
+              - resource_id
+              - filename
+              - mime_type
+              - file_size
+              - hash
+              - alg_hash
+              - requester_administration
+            allOf:
+              - $ref: "#/components/schemas/TransferMessage"
+            properties:
+              event:
+                type: string
+                enum:
+                  - generic_communication
+              requester_administration:
+                title: amministrazione richiedente
+                $ref: "#/components/schemas/AdministrationSchema"
 
         CdssNotifyMessage:
             allOf:
