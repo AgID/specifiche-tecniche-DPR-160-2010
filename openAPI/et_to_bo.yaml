@@ -761,6 +761,8 @@ components:
                         - conditional_provision_extended
                         - conformation_request_times_expired
                         - end_by_observations_times_expired
+                        - integration_requested
+                        - conformation_requested
         
         TransferNotifyMessage:
             type: object
