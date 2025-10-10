@@ -703,6 +703,12 @@ components:
                 receiver_administration:
                     title: amministrazione destinataria delle istanze
                     $ref: "#/components/schemas/AdministrationSchema"
+                purpose:
+                    title: motivo dell'invio dell'istanza (ad es: a fronte di una convocazione della Cdss o per via di una istruttoria ET)
+                    type: string
+                    enum:
+                        - Cdss
+                        - Istruttoria 
         
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
