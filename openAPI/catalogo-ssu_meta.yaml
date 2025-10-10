@@ -1039,6 +1039,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
 
       responses:
@@ -1086,6 +1087,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
 
@@ -1135,6 +1137,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
       responses:
@@ -1193,6 +1196,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
 
       responses:
@@ -1250,6 +1254,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
       responses:
@@ -1308,6 +1313,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
 
@@ -1366,6 +1372,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
   
       responses:
@@ -1422,6 +1429,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
 
@@ -1479,6 +1487,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
       responses:
@@ -1534,6 +1543,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
       
       responses:
@@ -1601,6 +1611,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
 
       responses:
@@ -1659,6 +1670,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
       
       responses:
@@ -1714,6 +1726,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
 
       responses:
@@ -1768,6 +1781,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
 
@@ -1817,6 +1831,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
       
       responses:
@@ -1872,6 +1887,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
       
       responses:
