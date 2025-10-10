@@ -2,12 +2,16 @@ openapi: 3.0.3
 
 info:
   title: Catalogo SSU Metadata
+
   version: 1.0.0
+
   description: |-
     API rese disponibili dal Catalogo SSU alle componenti FrontOffice/BackOffice SUAP e Enti Terzi per la consultazione dei metadati
+
   contact:
     name: AgID - Agenzia per l'Italia Digitale
     url: https://www.agid.gov.it/
+
   license:
     name: CC BY-NC-SA 4.0
     url: https://creativecommons.org/licenses/by-nc-sa/4.0/
@@ -1031,143 +1035,6 @@ paths:
       tags:
         - Administrations          
 
-  /competent-administration/{competent_administration_ipacode}/{competent_administration_code}/third-party-system:  
-    get:
-      description: |
-        Recupero elenco componenti di una specifica amministrazione competente
-
-      parameters:
-        - in: path
-          name: competent_administration_ipacode
-          description: codice ipa dell'amministrazione
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: competent_administration_code
-          description: codice dell'ufficio dell'amministrazione
-          required: true
-          schema:
-            type: string
-
-
-      responses:
-        "200":
-          description: Elenco sistema Ente Terzo dell'amministrazione richiesta
-          content:
-            application/json:
-              schema:
-                type: array
-                items: 
-                  $ref: "#/components/schemas/third_party_system"
-
-          headers:
-            Agid-JWT-Signature:
-              $ref: "#/components/headers/Agid-JWT-Signature"
-
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/ServerError"
-        "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
-
-      security:
-        - bearerAuth: []
-          Agid-JWT-Signature: []
-
-      tags:
-        - Administrations
-
-  /administration/{fiscal_code}/third-party-system:  
-    get:
-      description: |
-        Recupero elenco componenti di una specifica amministrazione competente dato il solo fiscalcode (amminitrazione ghost)
-
-      parameters:
-        - in: path
-          name: fiscal_code
-          description: fiscal_code dell'amministrazione
-          required: true
-          schema:
-            type: string
-       
-
-
-      responses:
-        "200":
-          description: Elenco sistema Ente Terzo dell'amministrazione richiesta
-          content:
-            application/json:
-              schema:
-                type: array
-                items: 
-                  $ref: "#/components/schemas/third_party_system"
-
-          headers:
-            Agid-JWT-Signature:
-              $ref: "#/components/headers/Agid-JWT-Signature"
-
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/ServerError"
-        "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
-
-      security:
-        - bearerAuth: []
-          Agid-JWT-Signature: []
-
-      tags:
-        - Administrations
-
-  /administration/{fiscal_code}:
-    get:
-      description: Recupero amministrazione dato il codice fiscale
-      parameters:
-        - in: path
-          name: fiscal_code
-          description: codice fiscale dell'amministrazione
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Amministrazione competente richiesta
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdministrationFiscalCode'
-          headers:
-            Agid-JWT-Signature:
-              $ref: "#/components/headers/Agid-JWT-Signature"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/ServerError"
-        "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
-
-      security:
-        - bearerAuth: []
-          Agid-JWT-Signature: []
-
-      tags:
-        - Administrations
-
   /suap/{municipality}:
     get:
       description: |
@@ -1969,7 +1836,7 @@ paths:
                     - third_party_system
                   properties:
                     competent_administration:
-                      $ref: "#/components/schemas/AdministrationEntity"
+                      $ref: "#/components/schemas/ComponentEntity"
                     third_party_system:
                       $ref: "#/components/schemas/third_party_system"
               
@@ -2212,55 +2079,6 @@ paths:
       tags:
         - Bulk
 
-  /administrations-by-id/{ids}:
-    get:
-      description: |
-        Recupero bulk elenco amministrazioni dati i codici fiscali
-      parameters:
-        - in: path
-          name: ids
-          description: elenco deigli id degli enti 
-          required: true
-          schema:
-            type: array
-            items:
-              type: string
-          style: simple
-      responses:
-        "200":
-          description: Elenco delle amministrazioni richieste
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  administrations_with_fiscal_code:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/AdministrationFiscalCode"
-                  administrations_with_ipa:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/AdministrationSchema"
-          headers:
-            Agid-JWT-Signature:
-              $ref: "#/components/headers/Agid-JWT-Signature"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/ServerError"
-        "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
-      security:
-        - bearerAuth: []
-          Agid-JWT-Signature: []
-      tags:
-        - Bulk
-
 components:
   responses:
     
@@ -2344,22 +2162,6 @@ components:
           type: string
           minLength: 1
 
-    AdministrationFiscalCode:
-      description: Struttura di ritorno per fiscal_code, description, id
-      type: object
-      required:
-        - id
-        - fiscal_code
-        - description
-      properties:
-        id:
-          type: string
-        fiscal_code:
-          type: string
-        description:
-          type: string
-
-
     Times:
       description: tempi amministrativi dell'istanza
       type: object
@@ -2368,6 +2170,7 @@ components:
       properties:
 
         start:
+          "$id": "#root/time/start"
           title: data avvio dell'istanza
           type: string
           format: date
@@ -2475,46 +2278,6 @@ components:
                 - Active
                 - Not Active
                 - Revocated
-      example:
-        id: 1
-        version: 1.0.0
-        description: Entità generica con id,versione, descrizione
-        start: 2024-01-01
-        end: 2024-12-31
-        state: Active
-        
-    AdministrationEntity:
-      description: struttura di risorsa generica con id,versione e descrizione
-      allOf:
-        - type: object
-          required:
-            - id
-            - description
-          properties:
-           id:
-              title: identificativo univoco della risorsa
-              type: string
-           version:
-             title: version della risorsa
-             type: string
-           description:
-             title: descrizione della risorsa
-             type: string
-           start:          
-             title: data inizio intervallo di validità della versione
-             type: string
-             format: date
-           end:          
-             title: data fine intervallo di validità della versione
-             type: string
-             format: date
-           state:
-             title: stato di validità della versione
-             type: string
-             enum:
-               - Active
-               - Not Active
-               - Revocated
       example:
         id: 1
         version: 1.0.0
@@ -2697,9 +2460,6 @@ components:
               enum: 
                 - Active
                 - Not Active
-            flag_competent_administration_special:
-              title: il procedimento che gli enti competenti hanno funzioni suap
-              type: boolean
 
       example:
         id: 1
@@ -2709,7 +2469,6 @@ components:
         lifeevent: apertura
         territorial_scope: 00000000
         status: Active
-        flag_competent_administration_special: false
 
 
     UseCaseProceeding:

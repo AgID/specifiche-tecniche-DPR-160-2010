@@ -46,40 +46,6 @@ paths:
       security:
         - bearerAuth: []
           Agid-JWT-Signature: []
-  /administration_ghost/{fiscal_code}/{cui_uuid}:
-    description: Recupero amminstrazione ghost
-    get:
-      parameters:
-        - name: cui_uuid
-          in: path
-          description: UUID del CUI
-          required: true
-          schema:
-            type: string
-        - name: fiscal_code
-          in: path
-          description: fiscal_code ente
-          required: true
-          schema:
-            type: string
-            
-      responses:
-        "200":
-          $ref: "#/components/responses/OKAdministrationGhost"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-            description: risorsa non trovata
-        "500":
-          $ref: "#/components/responses/ServerError"
-        "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
-
-      security:
-        - bearerAuth: []
-          Agid-JWT-Signature: []          
 
   /audit:
     description: Audit azioni realizzate dalle componenti
@@ -107,7 +73,6 @@ paths:
         - bearerAuth: []
           Agid-JWT-Signature: []
 
-
 components:
   responses:
     OKInstanceDescriptor:
@@ -134,15 +99,6 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/AuditResponse"
-    OKAdministrationGhost:
-      description: Richiesta recuperPec amminstrazione Ghost conclusa con successo
-      headers:
-        Agid-JWT-Signature:
-          $ref: "#/components/headers/Agid-JWT-Signature"
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/AdministrationGhost"
 
     BadRequest:
       description: Forma della richiesta non conforme alla specifica
@@ -225,14 +181,15 @@ components:
         - cui
         - message
         - event_time
-    
+
       properties:
         cui:
           $ref: "#/components/schemas/cui"
 
         message:
           type: string
-          pattern: ^instance_retrived|integration_requested_from_(?:GHS)?[0-9]{1,10}|instance_integrated_retrived|suspension_requested_from_(?:GHS)?[0-9]{1,10}|conformation_requested_from_(?:GHS)?[0-9]{1,10}|cdss_requested_from_(?:GHS)?[0-9]{1,10}|positive_outcome_sended_from_(?:GHS)?[0-9]{1,10}|retry_requested_for_send_instance|retry_requested_for_notify|negative_outcome_sended_from_(?:GHS)?[0-9]{1,10}|instance_conformated_retrieved|conditional_provision_granted_from_[0-9]{1,10}|conditional_provision_extended_from_[0-9]{1,10}|conditional_provision_rescinded_from_[0-9]{1,10}|conditional_provision_denied_from_[0-9]{1,10}|existence_of_impediments_from_[0-9]{1,10}|communication_sended_from_(?:GHS)?[0-9]{1,10}$
+          pattern: ^instance_retrived|integration_requested_from_[0-9]{1,10}|instance_integrated_retrived|suspension_requested_from_[0-9]{1,10}|conformation_requested_from_[0-9]{1,10}|cdss_requested_from_[0-9]{1,10}|positive_outcome_sended_from_[0-9]{1,10}|retry_requested_for_send_instance|retry_requested_for_notify|negative_outcome_sended_from_[0-9]{1,10}|instance_conformated_retrieved|conditional_provision_granted_from_[0-9]{1,10}|conditional_provision_extended_from_[0-9]{1,10}|conditional_provision_rescinded_from_[0-9]{1,10}|conditional_provision_denied_from_[0-9]{1,10}|existence_of_impediments_from_[0-9]{1,10}|communication_sended_from_(?:GHS)?[0-9]{1,10}$
+
 
         event_time:
           title: timestamp del momento in cui si è verificato l'evento
@@ -255,21 +212,7 @@ components:
         message:
           title: messaggio
           type: string
-    AdministrationGhost:
-      type: object
-      description: risposta AdministrationGhost
-      required:
-        - type
-      properties:
-        cui_uuid:
-          title: tipo messaggio
-          type: string
-        fiscal_code:
-          title: messaggio
-          type: string
-        pec:
-          title: messaggio
-          type: string
+    
     Times:
       description: tempi amministrativi dell'istanza
       type: object
@@ -326,9 +269,11 @@ components:
           type: integer
           format: int32
         date_cdss:
+          "$id": "#root/time/date_cdss"
           title: data evetuale conferenza di servizi sincrona
           type: string
           format: date
+    
     AdministrationSchema:
       description: Amministrazione compentente censita nel Catalogo SSU
       type: object
@@ -353,55 +298,7 @@ components:
         description:
             title: descrizione dell'amministrazione
             type: string
-    InterestedAdministrationSchema:
-      description: Un array di amministrazioni competenti.
-      type: array
-      items:
-        type: object
-        description: Amministrazione competente censita nel Catalogo SSU
-        required:
-          - description
-          - ipacode
-          - officecode
-          - id
-        properties:
-          ipacode:
-            title: codice IPA dell'amministrazione
-            type: string
-            minLength: 1
-          officecode:
-            title: codice dell'ufficio dell'amministrazione
-            type: string
-            minLength: 1
-          description:
-            title: descrizione dell'amministrazione
-            type: string
-          id:
-            title: identificativo dell'amministrazione
-            type: string
-            minLength: 1                        
-          version:
-              title: versione dell'ufficio dell'amministrazione 
-              type: string
-              pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
-    InterestedAdministrationCFSchema:
-      description: Un array di amministrazioni competenti non censite su ipa.
-      type: array
-      items:
-        type: object
-        description: Amministrazione competente censita nel Catalogo SSU
-        properties:
-          fiscal_code:
-            title: codice fiscale  dell'amministrazione non presente su IPA
-            type: string
-            minLength: 1
-          description:
-            title: descrizione dell'amministrazione
-            type: string        
-          id:
-            title: identificativo dell'amministrazione
-            type: string
-            minLength: 1                        
+
     InstanceDescriptor:
       description: descrittore istanza
       type: object
@@ -512,13 +409,6 @@ components:
               competent_administration:                
                 title: amministrazione competente del procedimento
                 $ref: "#/components/schemas/AdministrationSchema"
-              interested_administration:                
-                title: amministrazione interessata al procedimento
-                $ref: "#/components/schemas/InterestedAdministrationSchema"                
-              interested_administration_fiscal_code:                
-                title: amministrazione ghost interessata al procedimento
-                $ref: "#/components/schemas/InterestedAdministrationCFSchema"
-                
               form:                
                 title: riferimento agli oggetti per la validazione
                 type: object
