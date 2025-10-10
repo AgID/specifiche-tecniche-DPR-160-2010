@@ -66,7 +66,10 @@ sequenceDiagram
             end
         end
         F -) P: notification(cui,conformation_requested)    
-
+        loop per ogni ente terzo interessato
+            B -->> E: notify(conformation_requested)
+            E -->> B: ack
+        end
 
         alt oltre il tempo di conformazione del presentatore
             B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
@@ -119,7 +122,7 @@ sequenceDiagram
 
         par
             alt 
-                E ->> B: send_conclusions(NegativeOutcomeRequired)
+                E ->> B: send_conclusions(NegativeOutcome)
                 B -->> E: ack 
                 E ->> C: audit(cui,suspension_requested_from_<ET>)
                 C -->> E: ack
@@ -154,5 +157,3 @@ sequenceDiagram
 
 
     end
-
-   

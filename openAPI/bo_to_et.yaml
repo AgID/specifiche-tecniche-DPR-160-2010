@@ -63,6 +63,30 @@ paths:
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
+    
+    /send_impediments:
+        description: Inoltro dei motivi ostativi relativi alle proprie istruttorie in relazione a una data instanza di procedimento
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Impediments"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
 
     /send_conclusions:
         description: Inoltro delle conclusioni delle proprie istruttorie in relazione a una data instanza di procedimento
@@ -72,6 +96,30 @@ paths:
                     application/json:
                         schema:
                             $ref: "#/components/schemas/SendConclusionRequests"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+    /send_conditional_provision:
+        description: Inoltro del Provvedimento Condizionato
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ConditionalProvisionGranted"
                 required: true
             responses:
                 "200":
@@ -128,7 +176,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/RequestIntegrationRequest"
+                            $ref: "#/components/schemas/IntegrationRequest"
                 required: true
             responses:
                 "200":
@@ -152,7 +200,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/RequestConformationRequest"
+                            $ref: "#/components/schemas/ConformationRequest"
                 required: true
             responses:
                 "200":
@@ -177,6 +225,13 @@ paths:
             
             parameters:
                 - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
+                - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
                   required: true
@@ -194,8 +249,6 @@ paths:
                   required: true
                   schema:
                       type: string
-                
-
             responses:
                 "200":
                     description: risorsa richiesta, codificata in base64, il mime type relativo è specificato nel descrittore dell'istanza
@@ -229,30 +282,13 @@ paths:
                 "401":
                     $ref: "#/components/responses/Unauthorized"
                 "404":
-                    description: risorsa non trovata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/NotFound"
                 "412":
-                    description: precondizione fallita, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionFailed"
                 "416":
-                    description: richiesta di range non soddisfacibile
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
-                        Content-Range:
-                            description: espressione del range non soddisfacibile
-                            schema:
-                                type: string
-                                example: bytes 21010-47021/47022
+                    $ref: "#/components/responses/RangeNotSatisfiable"
                 "428":
-                    description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionRequired"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -261,6 +297,69 @@ paths:
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
+
+    /send_generic_communication:
+      post:
+        description: Comunicazione generica tra enti terzi e backoffice
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - cui
+                  - requester_administration
+                  - resource_id
+                  - filename
+                  - mime_type
+                  - hash
+                  - alg_hash
+                properties:
+                  cui:
+                    $ref: "#/components/schemas/cui"
+                  requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                  resource_id:
+                    title: id della risorsa documento correlata alla comunicazione spontanea
+                    type: string
+                    minLength: 1
+                  filename:
+                    title: filename della risorsa documento correlata alla comunicazione spontanea
+                    type: string
+                    minLength: 1
+                  mime_type:
+                    type: string
+                    enum:
+                      - application/pdf
+                      - application/pkcs7-mime
+                  hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                  alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                      - S256
+                      - S384
+                      - S512
+          required: true
+        responses:
+          "200":
+            $ref: "#/components/responses/OKRequest"
+          "400":
+            $ref: "#/components/responses/BadRequest"
+          "401":
+            $ref: "#/components/responses/Unauthorized"
+          "500":
+            $ref: "#/components/responses/ServerError"
+          "503":
+            $ref: "#/components/responses/ServiceUnavaliable"
+
+        security:
+          - bearerAuth: [ ]
+            Agid-JWT-Signature: [ ]
 
 components:    
     responses:
@@ -279,6 +378,52 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        NotFound:
+            description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                
+        PreconditionFailed:
+            description: precondizione fallita, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        RangeNotSatisfiable:
+            description: richiesta di range non soddisfacibile
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                Content-Range:
+                    description: lunghezza attuale della rappresentazione selezionata
+                    schema:
+                        type: string
+                        example: bytes */47022
+
+        PreconditionRequired:
+            description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
         ServiceUnavaliable:
             description: Servizio non disponibile
             content:
@@ -388,7 +533,8 @@ components:
             required:
                 - code
                 - message
-        RequestIntegrationRequest:
+
+        IntegrationRequest:
             type: object
             required:
                 - cui
@@ -445,6 +591,9 @@ components:
                                 title: filename della risorsa "documento di richiesta integrazioni"
                                 type: string
                                 minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
                                 type: string
@@ -461,25 +610,140 @@ components:
                                 - S384
                                 - S512
 
-        RequestConformationRequest:
-            allOf:
-                - $ref: "#/components/schemas/RequestIntegrationRequest"
-                - type: object
-                  required:
-                  - expirationDate
-                  properties:
-                    expirationDate:
+        ConformationRequest:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - expirationDate
+                - conformation_list
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                expirationDate:
                         title: data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione
                         type: string
                         format: date
+                conformation_list:
+                    type: array
+                    items:
+                        type: object
+                        required:
+                            - code
+                            - ref
+                            - conformation_request
+                        properties:
+                            code:
+                                title: codice della fattispecie presente nel Catalogo
+                                type: string
+                                minLength: 1
+                            ref:
+                                title: riferimento all'elemento dell'istanza relativo al procedimento (procedimento o allegato)
+                                type: string
+                                minLength: 1
+                            conformation_request:
+                                title: elenco conformazioni richieste da uno o più enti terzi
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        request:
+                                            title: testo conformazione richiesta
+                                            type: string
+                                        requester_administration:
+                                            title: amministrazione richiedente
+                                            $ref: "#/components/schemas/AdministrationSchema"
+                conformation_document_list:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            requester_administration:
+                                title: amministrazione richiedente
+                                $ref: "#/components/schemas/AdministrationSchema"
+                            resource_id:
+                                title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
+                                type: string
+                                minLength: 1
+                            filename:                      
+                                title: filename della risorsa "documento di richiesta conformazione"
+                                type: string
+                                minLength: 1
+                            mime_type:
+                                title: "indica il formato dei dati previsto per il documento di richiesta conformazione"
+                                type: string
+                                minLength: 1
+                            hash:
+                                title: hash risorsa
+                                type: string
+                                minLength: 1
+                            alg_hash:
+                                title: algoritmo hash applicato
+                                type: string
+                                enum:
+                                - S256
+                                - S384
+                                - S512
+        
+        Impediments:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - expiration_date
+                - impediments
+                - requester_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                expiration_date:
+                    type: string
+                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
+                    format: date
+                impediments:
+                    type: string
+                    minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                resource_id:
+                    title: id della risorsa "documento di motivi ostativi", univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename della risorsa "documento di motivi ostativi"
+                    type: string
+                    minLength: 1
+                mime_type:
+                    title: "indica il formato dei dati previsto per il documento di motivi ostativi"
+                    type: string
+                    minLength: 1
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
 
         SendConclusionRequests:
             type: object
             oneOf:
-                - $ref: "#/components/schemas/NegativeOutcomeRequired"
+                - $ref: "#/components/schemas/NegativeOutcome"
                 - $ref: "#/components/schemas/PositiveOutcome"
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/ConditionalProvisionRescinded"
+                - $ref: "#/components/schemas/ConditionalProvisionDenied"
 
-        NegativeOutcomeRequired:
+        NegativeOutcome:
             type: object
             required:
                 - cui
@@ -487,10 +751,13 @@ components:
                 - negative_outcome_motivation
                 - conclusions_type
                 - requester_administration
+                - usecase_proceeding_list
             properties:
                 conclusions_type:
                     type: string
                     enum: 
+                    - suspension_requested
+                    - suspension_requested_for_impediments
                     - negative_outcome
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -506,6 +773,16 @@ components:
                     title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
                     type: string
                     minLength: 1
+                filename:                      
+                    title: filename della risorsa "documento di parere negativo"
+                    type: string
+                    minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
+                mime_type:
+                    title: "indica il formato dei dati previsto per il documento di parere negativo"
+                    type: string
                 hash:
                     title: hash risorsa
                     type: string
@@ -517,6 +794,13 @@ components:
                     - S256
                     - S384
                     - S512
+                usecase_proceeding_list:
+                    type: array
+                    items:
+                        type: string
+                        title: codice della fattispecie presente nel Catalogo
+                        minLength: 1
+
             example:
                 conclusions_type: "negative_outcome"
                 cui: 
@@ -532,8 +816,12 @@ components:
                     version: "00.00.00"
                     description: "string"
                 resource_id: "string"
+                filename: "string"
+                file_size: 1234
+                mime_type: "string"
                 hash: "string"
                 alg_hash: "S256"
+                
 
         PositiveOutcome:
             required:
@@ -542,6 +830,7 @@ components:
                 - positive_outcome
                 - conclusions_type
                 - requester_administration
+                - usecase_proceeding_list
             properties:
                 conclusions_type:
                     type: string
@@ -561,6 +850,16 @@ components:
                     title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
                     type: string
                     minLength: 1
+                filename:                      
+                    title: filename della risorsa "documento di parere positivo"
+                    type: string
+                    minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
+                mime_type:
+                    title: "indica il formato dei dati previsto per il documento di parere positivo"
+                    type: string
                 hash:
                     title: hash risorsa
                     type: string
@@ -572,6 +871,141 @@ components:
                     - S256
                     - S384
                     - S512
+                usecase_proceeding_list:
+                    type: array
+                    items:
+                        type: string
+                        title: codice della fattispecie presente nel Catalogo
+                        minLength: 1
+        
+        ConditionalProvision:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - date
+                - outcome
+                - competent_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                outcome:
+                    type: string
+                    enum: 
+                        - conditional_provision_granted
+                        - conditional_provision_denied
+                        - conditional_provision_rescinded
+                competent_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                resource_id:
+                    title: id della risorsa associata all'esito del Provvedimento Condizionato, univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename dell'esito del Provvedimento Condizionato"
+                    type: string
+                    minLength: 1
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+        
+        DefinitiveProvision:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - date
+                - outcome
+                - competent_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                outcome:
+                    type: string
+                    enum: 
+                        - definitive_provision_granted
+                competent_administration:
+
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                resource_id:
+                    title: id della risorsa associata all'esito del Provvedimento Definitivo, univoco per erogatore e CUI.UUID
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename dell'esito del Provvedimento Definitivo"
+                    type: string
+                    minLength: 1
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+        
+        ConditionalProvisionGranted:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_granted
+        
+        ConditionalProvisionDenied:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_denied
+        
+        ConditionalProvisionRescinded:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_rescinded
 
     headers:
         Agid-JWT-Signature:

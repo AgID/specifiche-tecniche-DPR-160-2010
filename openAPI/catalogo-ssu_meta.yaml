@@ -23,19 +23,19 @@ paths:
       parameters:
         - in: query
           name: typology
-          description: paramentro di filtering sulla tipologia richiesta, non valorizzato per richiedere l'intero set
+          description: parametro di filtering sulla tipologia richiesta, non valorizzato per richiedere l'intero set
           required: false
           schema:
             type: string
         - name: lifeevent
           in: query
-          description: paramentro di filtering su gli eventi della vita, non valorizzato per richiedere l'intero set
-          required: true
+          description: parametro di filtering sugli eventi della vita, non valorizzato per richiedere l'intero set
+          required: false
           schema:
             type: string
         - name: municipality
           in: query
-          description: paramentro di filtering sul comune richiesto, non valorizzato per richiedere l'intero set
+          description: parametro di filtering sul comune richiesto, non valorizzato per richiedere l'intero set
           required: false
           schema:
             type: string
@@ -192,6 +192,211 @@ paths:
 
       tags:
         - Proceedings
+
+  /document_classifications:
+    get:
+      description: |
+        Recupero di tutte le classificazioni che possono essere associate ai documenti secondo la Tassonomia in Allegato A - Art.5 comma 1 Decreto 17 settembre 2024 n.159 ss.mm.ii.
+
+      parameters:
+        - name: coding
+          in: query  
+          description: Codifica della classificazione associata ad un documento
+          required: false
+          schema:
+            type: string
+            pattern: "C[0-9]{1,2}_[a-z]"
+        - name: class_code
+          in: query  
+          description: Codice della Classe di un documento
+          required: false
+          schema:
+            type: string
+            pattern: "C[0-9]{1,2}"
+        - name: class_description
+          in: query  
+          description: Descrizione della Classe di un documento
+          required: false
+          schema:
+            type: string
+        - name: typology_code
+          in: query  
+          description: Codice della Tipologia di un documento
+          required: false
+          schema:
+            type: string
+            pattern: "[a-z]"
+        - name: typology_description
+          in: query  
+          description: Descrizione della Tipologia di un documento
+          required: false
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Elenco delle classificazioni che possono essere associate ai documenti.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DocumentClassification"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Classifications
+
+  /general_index_classifications/{name}:
+    get:
+      description: |
+        Recupero della classificazione associata ad un documento del General-Index, secondo la Tassonomia in Allegato A - Art.5 comma 1 Decreto 17 settembre 2024 n.159 ss.mm.ii.
+
+      parameters:
+        - name: name
+          in: path  
+          description: Nome del documento gestito nel General-Index
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Elenco delle classificazioni che possono essere associate ai documenti.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentClassification"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Classifications
+
+  /document_classification/form/{form_id_list}:
+    get:
+      description: |
+        Recupero della classificazione associata ai documenti di tipo Form secondo la Tassonomia in Allegato A - Art.5 comma 1 Decreto 17 settembre 2024 n.159 ss.mm.ii.
+
+      parameters:
+        - name: form_id_list
+          in: path
+          description: lista di id associati ai form
+          required: true
+          schema:
+              type: string
+
+      responses:
+        "200":
+          description: Elenco dei documenti classificati
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DocumentEntityClassified"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Classifications
+
+  /document_classification/attachment/{attachment_id_list}:
+    get:
+      description: |
+        Recupero della classificazione associata ai documenti di tipo Attachment secondo la Tassonomia in Allegato A - Art.5 comma 1 Decreto 17 settembre 2024 n.159 ss.mm.ii.
+
+      parameters:
+        - name: attachment_id_list
+          in: path
+          description: lista di id associati agli attachment
+          required: true
+          schema:
+              type: string
+
+      responses:
+        "200":
+          description: Elenco dei documenti classificati
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DocumentEntityClassified"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Classifications
 
   /proceeding/{proceeding_id}/{proceeding_version}/attachments:
     get:
@@ -417,6 +622,57 @@ paths:
 
       tags:
         - UseCases
+        
+  /usecase-proceeding/{usecase_proceedings_id}/{usecase_proceedings_version}/proceeding:
+    get:
+      description: |
+        Recupero elenco delle fattispecie relazionate a una data fattispecie
+
+      parameters:
+        - in: path
+          name: usecase_proceedings_id
+          description: id della fattispecie
+          required: true
+          schema:
+            type: string
+        - name: usecase_proceedings_version
+          in: path
+          description: versione della fattispecie
+          required: true
+          schema:
+            type: string
+            pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+
+      responses:
+        "200":
+          description: Elenco delle fattispecie relazionate alla fattispecie richiesta
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/Proceeding"
+
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - UseCases        
 
   /form/{form_id}/{form_version}/xsd:
     get:
@@ -676,6 +932,104 @@ paths:
 
       tags:
         - Administrations
+        
+  /competent-administration/{competent_administration_ipacode}/{competent_administration_code}:  
+    get:
+      description: |
+        Recupero elenco Enti Terzi di una specifica amministrazione competente
+
+      parameters:
+        - in: path
+          name: competent_administration_ipacode
+          description: codice ipa dell'amministrazione
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: competent_administration_code
+          description: codice dell'ufficio dell'amministrazione
+          required: true
+          schema:
+            type: string
+
+
+      responses:
+        "200":
+          description: Elenco sistema Ente Terzo dell'amministrazione richiesta
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/AdministrationSchema"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Administrations        
+
+  /competent-administration/{competent_administration_ipacode}:  
+    get:
+      description: |
+        Recupero elenco Enti Terzi di una specifica amministrazione competente
+
+      parameters:
+        - in: path
+          name: competent_administration_ipacode
+          description: codice ipa dell'amministrazione
+          required: true
+          schema:
+            type: string
+
+
+      responses:
+        "200":
+          description: Elenco sistema Ente Terzo dell'amministrazione richiesta
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/AdministrationSchema"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Administrations          
 
   /competent-administration/{competent_administration_ipacode}/{competent_administration_code}/third-party-system:  
     get:
@@ -967,6 +1321,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
 
       responses:
@@ -1014,6 +1369,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
 
@@ -1063,6 +1419,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
       responses:
@@ -1121,6 +1478,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
 
       responses:
@@ -1178,6 +1536,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
       responses:
@@ -1236,6 +1595,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
 
@@ -1294,6 +1654,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
   
       responses:
@@ -1350,6 +1711,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
 
@@ -1407,6 +1769,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
       responses:
@@ -1462,6 +1825,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
       
       responses:
@@ -1529,6 +1893,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
 
       responses:
@@ -1587,6 +1952,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
       
       responses:
@@ -1642,6 +2008,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
 
       responses:
@@ -1696,6 +2063,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
     
 
@@ -1745,6 +2113,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
       
       responses:
@@ -1800,6 +2169,7 @@ paths:
             type: array
             items:
               type: string
+            maxItems: 50
           style: simple
       
       responses:
@@ -1950,6 +2320,8 @@ components:
       required:
         - ipacode
         - officecode
+        - version
+        - id
         - description
       properties:
         ipacode:
@@ -1967,6 +2339,10 @@ components:
         description:
             title: descrizione dell'amministrazione
             type: string 
+        id:
+          title: identificativo SSU dell'amministrazione
+          type: string
+          minLength: 1
 
     AdministrationFiscalCode:
       description: Struttura di ritorno per fiscal_code, description, id
@@ -1991,6 +2367,10 @@ components:
       - max_gg_proc
       properties:
 
+        start:
+          title: data avvio dell'istanza
+          type: string
+          format: date
         max_gg_proc:          
           title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
           type: integer
@@ -2011,12 +2391,28 @@ components:
           title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
           type: integer
           format: int32
+        max_gg_conf_req:          
+          title: numero di giorni limite a partire da start per la richiesta di conformazione degli enti terzi
+          type: integer
+          format: int32
+        max_gg_conf_resp:          
+          title: numero di giorni limite a partire da start per conformazione del soggetto presentatore
+          type: integer
+          format: int32
         max_gg_concl_send:          
           title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
           type: integer
           format: int32
         max_gg_cdss_req:          
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
+          type: integer
+          format: int32
+        max_gg_inspection:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono effettuare un'ispezione e inviare il relativo esito
+          type: integer
+          format: int32
+        max_gg_prov_cond_ext_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono effettuare una richiesta di proroga per il provvedimento condizionato 
           type: integer
           format: int32
 
@@ -2126,6 +2522,42 @@ components:
         start: 2024-01-01
         end: 2024-12-31
         state: Active
+    
+    DocumentClassification:
+      description: struttura oggetto classificazione dei documenti
+      type: object
+      required:
+        - coding
+        - class_code
+        - class_description
+        - typology_code
+        - typology_description
+      properties:
+        coding:
+          title: Codifica della classificazione associata ad un documento
+          type: string
+          pattern: "C[0-9]{1,2}_[a-z]"
+        class_code:
+          title: Codice della Classe di un documento
+          type: string
+          pattern: "C[0-9]{1,2}"
+        class_description:
+          title: Descrizione della Classe di un documento
+          type: string
+        typology_code:
+          title: Codice della Tipologia di un documento
+          type: string
+          pattern: "[a-z]"
+        typology_description:
+          title: Descrizione della Tipologia di un documento
+          type: string
+      example:
+        coding: "C2_b"
+        class_code: "C2"
+        class_description: "AUTORIZZAZIONI, PERMESSI E AUTOCERTIFICAZIONI"
+        typology_code: "b"
+        typology_description: "Autorizzazioni"
+
     DocumentEntity:
       allOf:
         - $ref: "#/components/schemas/GenericEntity"
@@ -2144,6 +2576,22 @@ components:
         description: Entità id,versione, descrizione e tipo strutturato/non strutturato
         type: structured 
     
+    DocumentEntityClassified:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/DocumentEntity"
+        - type: object
+      properties:
+        document_classification_coding:
+          type: string
+          pattern: "C[0-9]{1,2}_[a-z]"
+      example:
+        id: 1
+        version: 1.0.0
+        description: Entità id,versione, descrizione e tipo strutturato/non strutturato
+        type: structured 
+        document_classification_coding: C1_a
+
     ResourceEntity:
       allOf:
         - $ref: "#/components/schemas/GenericEntity"
@@ -2222,7 +2670,7 @@ components:
         e_service_to_fo: string
         e_service_to_et: string  
         e_service_to_ri: string
-	
+  
     Proceeding:
       description: procedimento amministrativo
       allOf:

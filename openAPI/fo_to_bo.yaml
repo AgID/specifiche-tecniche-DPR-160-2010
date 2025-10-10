@@ -115,7 +115,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/RequestConformationRequest"
+                            $ref: "#/components/schemas/ConformationRequest"
                 required: true
             responses:
                 "200":
@@ -139,6 +139,13 @@ paths:
                 Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
             
             parameters:
+                - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
                 - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
@@ -191,30 +198,13 @@ paths:
                 "401":
                     $ref: "#/components/responses/Unauthorized"
                 "404":
-                    description: risorsa non trovata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/NotFound"
                 "412":
-                    description: precondizione fallita, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionFailed"
                 "416":
-                    description: richiesta di range non soddisfacibile
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
-                        Content-Range:
-                            description: espressione del range non soddisfacibile
-                            schema:
-                                type: string
-                                example: bytes 21010-47021/47022
+                    $ref: "#/components/responses/RangeNotSatisfiable"
                 "428":
-                    description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionRequired"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -233,7 +223,7 @@ paths:
                         schema:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
-                                - $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
+                                - $ref: "#/components/schemas/TransferNotifyMessage"
                 required: true
             responses:
                 "200":
@@ -268,6 +258,52 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
+
+        NotFound:
+            description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                
+        PreconditionFailed:
+            description: precondizione fallita, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        RangeNotSatisfiable:
+            description: richiesta di range non soddisfacibile
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                Content-Range:
+                    description: lunghezza attuale della rappresentazione selezionata
+                    schema:
+                        type: string
+                        example: bytes */47022
+
+        PreconditionRequired:
+            description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
         ServiceUnavaliable:
             description: Servizio non disponibile
             content:
@@ -378,7 +414,7 @@ components:
                         required:
                             - code
                             - ref
-                            - correction_requested
+                            - correction_request
                         properties:
                             code:
                                 title: codice della fattispecie presente nel Catalogo
@@ -449,6 +485,9 @@ components:
                                 title: filename della risorsa "documento di richiesta integrazioni"
                                 type: string
                                 minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
                                 type: string
@@ -464,18 +503,83 @@ components:
                                 - S384
                                 - S512
 
-        RequestConformationRequest:
-            allOf:
-                - $ref: "#/components/schemas/RequestIntegrationRequest"
-                - type: object
-                  required:
-                  - expirationDate
-                  properties:
-                    expirationDate:
+        ConformationRequest:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - expirationDate
+                - conformation_list
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                expirationDate:
                         title: data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione
                         type: string
                         format: date
-
+                conformation_list:
+                    type: array
+                    items:
+                        type: object
+                        required:
+                            - code
+                            - ref
+                            - conformation_request
+                        properties:
+                            code:
+                                title: codice della fattispecie presente nel Catalogo
+                                type: string
+                                minLength: 1
+                            ref:
+                                title: riferimento all'elemento dell'istanza relativo al procedimento (procedimento o allegato)
+                                type: string
+                                minLength: 1
+                            conformation_request:
+                                title: elenco conformazioni richieste da uno o più enti terzi
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        request:
+                                            title: testo conformazione richiesta
+                                            type: string
+                                        requester_administration:
+                                            title: amministrazione richiedente
+                                            $ref: "#/components/schemas/AdministrationSchema"
+                conformation_document_list:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            requester_administration:
+                                title: amministrazione richiedente
+                                $ref: "#/components/schemas/AdministrationSchema"
+                            resource_id:
+                                title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
+                                type: string
+                                minLength: 1
+                            filename:                      
+                                title: filename della risorsa "documento di richiesta conformazione"
+                                type: string
+                                minLength: 1
+                            mime_type:
+                                title: "indica il formato dei dati previsto per il documento di richiesta conformazione"
+                                type: string
+                                minLength: 1
+                            hash:
+                                title: hash risorsa
+                                type: string
+                                minLength: 1
+                            alg_hash:
+                                title: algoritmo hash applicato
+                                type: string
+                                enum:
+                                - S256
+                                - S384
+                                - S512
+        
         NotifyMessage:
             type: object
             required:
@@ -498,22 +602,92 @@ components:
                         - end_by_instance_deleted_for_cu_fail_link
                         - end_by_instance_deleted_for_cu_fail_check
 
-        TransferOutcomeNotifyMessage:
+        TransferNotifyMessage:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
+                - $ref: "#/components/schemas/ImpedimentsMessage"
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/ConditionalProvisionGranted"
+                - $ref: "#/components/schemas/ConditionalProvisionRescinded"
+                - $ref: "#/components/schemas/ConditionalProvisionDenied"
+                - $ref: "#/components/schemas/GenericCommunication"
+
+
+        BaseTransferMessage:
+            type: object
+            required:
+               - cui
+               - instance_descriptor_version
+            properties:
+                cui:
+                  $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+              
+
+        TransferMessage:
+            allOf:
+              - $ref: "#/components/schemas/BaseTransferMessage"
+              - type: object
+                required: [event]
+                properties:
+                    event:
+                        type: string
+                        enum:
+                            - end_by_suspension_requested
+                            - end_by_positive_outcome
+                            - end_by_negative_outcome
+                            - existence_of_impediments
+                            - end_by_integration_times_expired
+                    resource_id:
+                        title: se presente, id della risorsa documento correlata all'evento notificato
+                        type: string
+                        minLength: 1
+                    filename:                      
+                        title: filename della risorsa documento correlata all'evento notificato
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
+                    mime_type:
+                        type: string
+                        enum: 
+                            - application/pdf
+                            - application/pkcs7-mime
+                    hash:
+                        title: hash risorsa
+                        type: string
+                        minLength: 1
+                    alg_hash:
+                        title: algoritmo hash applicato
+                        type: string
+                        enum:
+                        - S256
+                        - S384
+                        - S512 
+            
+
+        ImpedimentsMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - existence_of_impediments
+                expiration_date:
+                    type: string
+                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
+                    format: date   
 
         OutcomeMessage:
             type: object
-            required:
-                - cui
-                - instance_descriptor_version
-                - event
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
             properties:
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
                 event:
                     type: string
                     enum:
@@ -521,19 +695,124 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
+      
+                  
+                        
+        GenericCommunication:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/BaseTransferMessage"
+                - type: object
+                  required: [
+                    event, 
+                    resource_id, 
+                    filename, 
+                    file_size,
+                    mime_type
+                    hash,
+                    alg_hash
+                    ]
+                  properties:
+                    event:
+                        type: string
+                        enum:
+                            - generic_communication
+                    resource_id:
+                        title: se presente, id della risorsa documento correlata all'evento notificato
+                        type: string
+                        minLength: 1
+                    filename:                      
+                        title: filename della risorsa documento correlata all'evento notificato
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
+                    mime_type:
+                        type: string
+                        enum: 
+                            - application/pdf
+                            - application/pkcs7-mime
+                    hash:
+                        title: hash risorsa
+                        type: string
+                        minLength: 1
+                    alg_hash:
+                        title: algoritmo hash applicato
+                        type: string
+                        enum:
+                        - S256
+                        - S384
+                        - S512
+                      
+                        
+        ConditionalProvisionGranted:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_granted
+        
+        ConditionalProvisionDenied:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_denied
+        
+        ConditionalProvisionRescinded:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - type: object
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_rescinded
+        
+        DefinitiveProvision:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - date
+                - outcome
+                - competent_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                outcome:
+                    type: string
+                    enum: 
+                        - definitive_provision_granted
+                competent_administration:
 
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
-                    title: se presente, id della risorsa documento correlata all'evento notificato
+                    title: id della risorsa associata all'esito del Provvedimento Definitivo, univoco per erogatore e CUI.UUID
                     type: string
                     minLength: 1
                 filename:                      
-                    title: filename della risorsa documento correlata all'evento notificato 
+                    title: filename dell'esito del Provvedimento Definitivo"
                     type: string
                     minLength: 1
                 mime_type:
                     type: string
                     enum: 
-                        - application/pdf|application/pkcs7-mime
+                        - application/pdf
+                        - application/pkcs7-mime
                 hash:
                     title: hash risorsa
                     type: string
@@ -545,7 +824,7 @@ components:
                     - S256
                     - S384
                     - S512
-
+                    
     headers:
         Agid-JWT-Signature:
             schema:
