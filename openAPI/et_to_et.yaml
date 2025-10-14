@@ -96,7 +96,7 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: "#/components/schemas/RequestIntegrationRequest"
+                - $ref: "#/components/schemas/IntegrationRequest"
                 - type: object
                   required: [ chain ]
                   properties:
@@ -121,7 +121,7 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: "#/components/schemas/RequestConformationRequest"
+                - $ref: "#/components/schemas/ConformationRequest"
                 - type: object
                   required: [ chain ]
                   properties:
@@ -214,8 +214,7 @@ paths:
                       required: [ chain ]
                       properties:
                         chain: { $ref: "#/components/schemas/ChainContext" }
-              discriminator:
-                propertyName: event
+
       responses:
         "200": { $ref: "#/components/responses/OKRequest" }
         "400": { $ref: "#/components/responses/BadRequest" }
@@ -239,7 +238,6 @@ paths:
               required: [ cui, operation, requester_administration ]
               properties:
                 cui: { $ref: "#/components/schemas/cui" }
-                chain: { $ref: "#/components/schemas/ChainContext" }
                 operation:
                   type: string
                   description: Operazione oggetto di ritrasmissione
@@ -381,7 +379,7 @@ components:
     ChainContext:
       type: object
       description: Contesto ricorsivo ET→ET
-      required: [ chain_id, parent_cui, requester_administration ]
+      required: [ chain_id, cui, parent_et ]
       properties:
         chain_id:
           type: string
@@ -391,9 +389,9 @@ components:
           type: integer
           minimum: 1
           description: Livello ricorsivo (0=SUAP→ET, 1=primo ET-figlio, etc.)
-        parent_cui:
+        cui:
           $ref: "#/components/schemas/cui"
-        requester_administration:
+        parent_et:
           $ref: "#/components/schemas/AdministrationSchema"
 
     # --- Indici/documenti (riuso) ---
@@ -408,6 +406,8 @@ components:
           ref:  { type: string }
           description: { type: string }
           resource_id: { type: string }
+          filename: { type: string }
+          file_size: { type: integer }
           hash: { type: string }
           alg_hash: { type: string, enum: [ S256, S384, S512 ] }
 
@@ -441,6 +441,8 @@ components:
       properties:
         mime_type: { type: string, enum: [ application/xml, application/pkcs7-mime ] }
         resource_id: { type: string }
+        filename: { type: string }
+        file_size: { type: integer }
         hash: { type: string }
         alg_hash: { type: string, enum: [ S256, S384, S512 ] }
 
@@ -450,6 +452,8 @@ components:
       properties:
         mime_type: { type: string, enum: [ application/pdf, application/pkcs7-mime ] }
         resource_id: { type: string }
+        filename: { type: string }
+        file_size: { type: integer }
         hash: { type: string }
         alg_hash: { type: string, enum: [ S256, S384, S512 ] }
 
@@ -464,7 +468,7 @@ components:
         general_index: { $ref: "#/components/schemas/GeneralIndex" }
         chain: { $ref: "#/components/schemas/ChainContext" }
 
-    RequestIntegrationRequest:
+    IntegrationRequest:
       type: object
       required: [ cui, instance_descriptor_version, integration_list ]
       properties:
@@ -479,6 +483,7 @@ components:
               code: { type: string }
               ref:  { type: string }
               integration_request:
+                title: elenco integrazioni richieste da uno o più enti terzi
                 type: array
                 items:
                   type: object
@@ -493,20 +498,49 @@ components:
               requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
               resource_id: { type: string }
               filename: { type: string }
+              file_size: { type: integer }
               mime_type: { type: string }
               hash: { type: string }
               alg_hash: { type: string, enum: [ S256, S384, S512 ] }
-
-    RequestConformationRequest:
-      allOf:
-        - $ref: "#/components/schemas/RequestIntegrationRequest"
-        - type: object
-          required: [ expirationDate ]
-          properties:
-            expirationDate:
+    
+    ConformationRequest:
+      type: object
+      required: [ cui, instance_descriptor_version, conformation_list ]
+      properties:
+        cui: { $ref: "#/components/schemas/cui" }
+        instance_descriptor_version: { type: string }
+        expirationDate:
               type: string
               format: date
               description: Scadenza concessa al presentatore per la conformazione
+        conformation_list:
+          type: array
+          items:
+            type: object
+            required: [ code, ref, conformation_request ]
+            properties:
+              code: { type: string }
+              ref:  { type: string }
+              conformation_request:
+                title: elenco conformazioni richieste da uno o più enti terzi
+                type: array
+                items:
+                  type: object
+                  properties:
+                    request: { type: string }
+                    requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+        conformation_document_list:
+          type: array
+          items:
+            type: object
+            properties:
+              requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+              resource_id: { type: string }
+              filename: { type: string }
+              file_size: { type: integer }
+              mime_type: { type: string }
+              hash: { type: string }
+              alg_hash: { type: string, enum: [ S256, S384, S512 ] }    
 
     SendConclusionsRequests:
       type: object
@@ -526,6 +560,8 @@ components:
         negative_outcome_motivation: { type: string }
         requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
         resource_id: { type: string }
+        filename: { type: string }
+        file_size: { type: integer }
         hash: { type: string }
         alg_hash: { type: string, enum: [ S256, S384, S512 ] }
 
@@ -539,6 +575,8 @@ components:
         positive_outcome: { type: string }
         requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
         resource_id: { type: string }
+        filename: { type: string }
+        file_size: { type: integer }
         hash: { type: string }
         alg_hash: { type: string, enum: [ S256, S384, S512 ] }
 
@@ -571,6 +609,7 @@ components:
             - end_by_negative_outcome
         resource_id: { type: string }
         filename: { type: string }
+        file_size: { type: integer }
         mime_type: { type: string, enum: [ application/pdf, application/pkcs7-mime ] }
         hash: { type: string }
         alg_hash: { type: string, enum: [ S256, S384, S512 ] }
@@ -583,6 +622,7 @@ components:
           properties:
             event: { type: string, enum: [ cdss_convened ] }
             filename: { type: string }
+            file_size: { type: integer }
             mime_type: { type: string }
             resource_id: { type: string }
             hash: { type: string }
