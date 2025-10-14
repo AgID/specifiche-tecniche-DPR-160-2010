@@ -3,6 +3,7 @@ sequenceDiagram
     participant SUAP as SUAP (BO)
     participant ET1 as ET₁ (Livello 1)
     participant ET2 as ET₂ (Livello 2 - ricorsivo)
+    participant C as Catalogo SSU
 
 
     %% --- AVVIO ---
@@ -14,11 +15,20 @@ sequenceDiagram
     ET1->>ET2: send_instance(chain_id=CH-123, depth=1, cui, parent_et=ET1)
     Note right of ET2: Riceve CUI + chain_id
     ET2 -->> ET1: ack
+    ET1 ->> SUAP: notify(cui, involved_et_<ET>)
+    SUAP -->> ET1: ack
+    SUAP ->> C: add_interested_administration(cui, interested_administration, use_case)
+    C -->> SUAP: InstanceDescriptor
 
     %% --- EVENTUALE RICORSIONE LIVELLO 3 ---
     opt ET₂ delega a un ET₃
         ET2->>ET2: send_instance(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET2)
         Note left of ET2: Avvio di un nuovo livello ricorsivo
+        ET2 -->> ET2: ack
+        ET2 ->> SUAP: notify(cui, involved_et_<ET>)
+        SUAP -->> ET2: ack
+        SUAP ->> C: add_interested_administration(cui, interested_administration, use_case)
+        C -->> SUAP: InstanceDescriptor
     end
 
     %% --- AUTORIZZAZIONE ---
