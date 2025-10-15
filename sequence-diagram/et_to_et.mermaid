@@ -2,7 +2,8 @@ sequenceDiagram
     autonumber
     participant SUAP as SUAP (BO)
     participant ET1 as ET₁ (Livello 1)
-    participant ET2 as ET₂ (Livello 2 - ricorsivo)
+    participant ET2 as ET₂ (Livello 2)
+    participant ETn as ETn (livello n - ricorsivo)
     participant C as Catalogo SSU
 
 
@@ -12,23 +13,30 @@ sequenceDiagram
     ET1 -->> SUAP: ack
 
     %% --- DELEGA RICORSIVA ---
-    ET1->>ET2: send_instance(chain_id=CH-123, depth=1, cui, parent_et=ET1)
-    Note right of ET2: Riceve CUI + chain_id
-    ET2 -->> ET1: ack
-    ET1 ->> SUAP: notify(cui, involved_et_<ET>)
-    SUAP -->> ET1: ack
-    SUAP ->> C: add_interested_administration(cui, interested_administration, use_case)
-    C -->> SUAP: InstanceDescriptor
-
-    %% --- EVENTUALE RICORSIONE LIVELLO 3 ---
-    opt ET₂ delega a un ET₃
-        ET2->>ET2: send_instance(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET2)
-        Note left of ET2: Avvio di un nuovo livello ricorsivo
-        ET2 -->> ET2: ack
-        ET2 ->> SUAP: notify(cui, involved_et_<ET>)
-        SUAP -->> ET2: ack
+    loop
+        ET1->>ET2: send_instance(chain_id=CH-123, depth=1, cui, parent_et=ET1)
+        Note right of ET2: Riceve CUI + chain_id
+        ET2 -->> ET1: ack
+        ET1 ->> SUAP: notify(cui, involved_et_<ET>)
+        SUAP -->> ET1: ack
         SUAP ->> C: add_interested_administration(cui, interested_administration, use_case)
         C -->> SUAP: InstanceDescriptor
+    end
+
+    %% --- EVENTUALE RICORSIONE LIVELLO 3 ---
+    opt ET₂ delega a uno o più ET₃
+        loop
+            ET2->>ETn: send_instance(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET2)
+            Note left of ET2: Avvio di un nuovo livello ricorsivo
+            ETn -->> ET2: ack
+            ET2 ->> SUAP: notify(cui, involved_et_<ET>)
+            SUAP -->> ET2: ack
+            SUAP ->> C: add_interested_administration(cui, interested_administration, use_case)
+            C -->> SUAP: InstanceDescriptor
+            Note left of ET1: il SUAP notifica l'ente terzo, che è stato aggiunto un ente interessato su richiesta di ET2
+            SUAP ->> ET1: notify(cui, involved_et_<ET>)
+            ET1 -->> SUAP: ack
+        end
     end
 
     %% --- AUTORIZZAZIONE ---
@@ -38,43 +46,46 @@ sequenceDiagram
             alt SUAP convoca la CDSS
                 SUAP->>ET1: notify(cdss_convened)
                 ET1-->>SUAP: ack
-                Note over SUAP: BO aggiorna tempi procedimentali
-                Note over ET1: invia la convocazione della CDSS agli altri Enti interessati
+                Note right of SUAP: BO aggiorna tempi procedimentali
+                Note right of ET1: invia la convocazione della CDSS agli altri Enti interessati
                 ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, cdss_convened)
                 ET2-->>ET1: ack
                 %% --- EVENTUALE RICORSIONE LIVELLO 3 ---
                 opt ET₂ delega a un ET₃
-                    ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, cdss_convened)
+                    ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, cdss_convened)
                     Note left of ET2: Avvio di un nuovo livello ricorsivo
+                    ETn -->> ET2: ack
                 end
-                Note over SUAP: SUAP invia l'esito della CDSS
+                Note right of SUAP: SUAP invia l'esito della CDSS
             else Ente Terzo procedente convoca la CDSS
                 ET1->>SUAP: notify(cdss_convened)
                 SUAP-->>ET1: ack
-                Note over ET1: invia la convocazione della CDSS agli altri Enti interessati
+                Note right of ET1: invia la convocazione della CDSS agli altri Enti interessati
                 ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, cdss_convened)
                 ET2-->>ET1: ack
                 %% --- EVENTUALE RICORSIONE LIVELLO 3 ---
                 opt ET₂ delega a un ET₃
-                    ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, cdss_convened)
-                    Note left of ET2: Avvio di un nuovo livello ricorsivo
+                    ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, cdss_convened)
+                    Note left of ETn: Avvio di un nuovo livello ricorsivo
+                    ETn -->> ET2: ack
                 end
-                Note over SUAP: SUAP invia l'esito della CDSS
+                Note right of SUAP: SUAP invia l'esito della CDSS
             else Ente Terzo competente (non procedente) chiede la CDSS al SUAP
                 ET1->>SUAP: request_cdss(cui, requester_administration)
                 SUAP-->>ET1: ack
                 SUAP->>ET1: notify(cdss_convened)
                 ET1-->>SUAP: ack
-                Note over SUAP: BO aggiorna tempi procedimentali
-                Note over ET1: invia la convocazione della CDSS agli altri Enti interessati
+                Note right of SUAP: BO aggiorna tempi procedimentali
+                Note right of ET1: invia la convocazione della CDSS agli altri Enti interessati
                 ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, cdss_convened)
                 ET2-->>ET1: ack
                 %% --- EVENTUALE RICORSIONE LIVELLO 3 ---
                 opt ET₂ delega a un ET₃
-                    ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, cdss_convened)
+                    ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, cdss_convened)
                     Note left of ET2: Avvio di un nuovo livello ricorsivo
+                    ETn -->> ET2: ack
                 end
-                Note over SUAP: SUAP invia l'esito della CDSS
+                Note right of SUAP: SUAP invia l'esito della CDSS
             else Ente Terzo interessato chiede la CDSS all'Ente che l'ha coinvolto
                 ET2->>ET1: request_cdss(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET1)
                 ET1-->>ET2: ack
@@ -82,16 +93,17 @@ sequenceDiagram
                 SUAP-->>ET1: ack
                 SUAP->>ET1: notify(cdss_convened)
                 ET1-->>SUAP: ack
-                Note over SUAP: BO aggiorna tempi procedimentali
-                Note over ET1: invia la convocazione della CDSS agli altri Enti interessati
+                Note right of SUAP: BO aggiorna tempi procedimentali
+                Note right of ET1: invia la convocazione della CDSS agli altri Enti interessati
                 ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, cdss_convened)
                 ET2-->>ET1: ack
                 %% --- EVENTUALE RICORSIONE LIVELLO 3 ---
                 opt ET₂ delega a un ET₃
-                    ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, cdss_convened)
+                    ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, cdss_convened)
                     Note left of ET2: Avvio di un nuovo livello ricorsivo
+                    ETn -->> ET2: ack
                 end
-                Note over SUAP: SUAP invia l'esito della CDSS
+                Note right of SUAP: SUAP invia l'esito della CDSS
             end
         end
 
@@ -108,7 +120,8 @@ sequenceDiagram
                 ET2 -->> ET1: ack
                 opt
                     loop per ogni ente nella chain
-                        ET2->>ET2: send_instance(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET2)
+                        ET2->>ETn: send_instance(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET2)
+                        ETn -->> ET2: ack
                     end
                 end
             else Timeout integrazione
@@ -118,28 +131,30 @@ sequenceDiagram
                 ET2-->>ET1: ack
                 opt 
                     loop per ogni ente nella chain
-                        ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, integration_request_time_expired)
+                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, integration_request_time_expired)
+                        ETn -->> ET2: ack
                     end
                 end
-                Note over ET1:ET₂ fine del tempo di integrazione da parte del presentatore
+                Note right of ET1:ET₂ fine del tempo di integrazione da parte del presentatore
                 ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, end_by_integration_request_time_expired)
                 ET2-->>ET1: ack
                 opt 
                     loop per ogni ente nella chain
-                        ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_integration_request_time_expired)
+                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_integration_request_time_expired)
+                        ETn -->> ET2: ack
                     end
                 end
-                Note over SUAP: SUAP chiude la pratica con esito negativo
+                Note right of SUAP: SUAP chiude la pratica con esito negativo
             end
         end
-        Note over SUAP: Invio esito  
+        Note right of SUAP: Invio esito  
             %% --- INVIO ESITO ---
             ET2->>ET1: send_conclusions (chain_id=CH-123, depth=2, cui, parent_et=ET1)
             Note left of ET1: ET₁ collega l'esito al caso padre grazie a cui e parent_et
 
             %% --- CHIUSURA ITER ---
             ET1->>SUAP: send_conclusions ()
-            Note over SUAP: SUAP riceve l'esito e chiude la pratica       
+            Note right of SUAP: SUAP riceve l'esito e chiude la pratica       
 
         
     else Regime Amministrativo SCIA
@@ -157,7 +172,8 @@ sequenceDiagram
                 ET2 -->> ET1: ack
                 opt
                     loop per ogni ente nella chain
-                        ET2->>ET2: send_instance(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET2)
+                        ET2->>ETn: send_instance(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET2)
+                        ETn -->> ET2: ack
                     end
                 end
 
@@ -168,29 +184,31 @@ sequenceDiagram
                 ET2-->>ET1: ack
                 opt 
                     loop per ogni ente nella chain
-                        ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, conformation_request_time_expired)
+                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, conformation_request_time_expired)
+                        ETn -->> ET2: ack
                     end
                 end
-                Note over ET1:ET₂ fine del tempo di conformazione da parte del presentatore
+                Note right of ET1:ET₂ fine del tempo di conformazione da parte del presentatore
                 ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, end_by_conformation_request_time_expired)
                 ET2-->>ET1: ack
                 opt 
                     loop per ogni ente nella chain
-                        ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_conformation_request_time_expired)
+                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_conformation_request_time_expired)
+                        ETn -->> ET2: ack
                     end
                 end
-                Note over SUAP: SUAP chiude la pratica con esito negativo
+                Note right of SUAP: SUAP chiude la pratica con esito negativo
             end
         end    
-        Note over SUAP: Invio esito  
+        Note right of SUAP: Invio esito  
             %% --- INVIO ESITO ---
             alt ET invia esito negativo
                 ET2 ->>ET1: send_conclusions(chain_id=CH-123, depth=2, cui, parent_et=ET1)
                 Note left of ET1: ET₁ collega l'esito al caso padre grazie a cui e parent_et
-            
+                ET1 -->> ET2: ack
                 %% --- CHIUSURA ITER ---
                 ET1->>SUAP: send_conclusions(NegativeOutcome)
-                Note over SUAP: SUAP riceve l'esito e chiude la pratica
+                Note right of SUAP: SUAP riceve l'esito e chiude la pratica
             else silenzio-assenso per esito positivo
                 %% --- CHIUSURA ITER ---
                 
@@ -200,10 +218,10 @@ sequenceDiagram
                 ET2-->>ET1: ack
                 opt 
                     loop per ogni ente nella chain
-                        
-                        ET2->>ET2: notify(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET2, end_by_proceeding_time_expired)
+                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=CUI_ET2, end_by_proceeding_time_expired)
+                        ETn -->> ET2: ack
                     end
                 end 
-                Note over SUAP: SUAP chiude la pratica per silenzio-assenso           
+                Note right of SUAP: SUAP chiude la pratica per silenzio-assenso           
             end
 end
