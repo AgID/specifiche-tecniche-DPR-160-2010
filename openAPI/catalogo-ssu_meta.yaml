@@ -2479,6 +2479,7 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+            
     ServerError:
       description: Errore processamento richiesta
       content:
