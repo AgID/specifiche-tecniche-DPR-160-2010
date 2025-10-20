@@ -21,6 +21,77 @@ servers:
       description: Catalogo SSU to Registro Imprese endpoint
 
 paths:
+    /request_cui/{context}/{sub_context}:
+        description: Richiesta del CUI
+
+        post:
+            parameters:
+              - in: path
+                name: context
+                description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context dell'OpenAPI catalogo-ssu_meta
+                required: true
+                schema:
+                    type: string
+                    default: "SUAP"
+              - in: path
+                name: sub_context
+                description: specificità del contesto (es. SUE Produttivo, SUE Residenziale). I valori ammissibili sono reperibili invocando il path /context dell'OpenAPI catalogo-ssu_meta
+                required: true
+                schema:
+                    type: string
+                    default: "SUAP"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/InstanceDescriptor"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKInstanceDescriptor"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+              - bearerAuth: []
+                Agid-JWT-Signature: []
+    
+    /audit:
+        description: Audit azioni realizzate dalle componenti
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AuditMessage"
+                required: true
+
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKAuditResponse"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+              - bearerAuth: []
+                Agid-JWT-Signature: []
+    
     /instance_descriptor/{cui_uuid}:
         description: Recupero descrittore istanza
         get:
@@ -92,6 +163,27 @@ components:
                 application/json:
                     schema:
                         $ref: "#/components/schemas/Error"
+        
+        NotFound:
+            description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        Conflict:
+            description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
         ServerError:
             description: Errore processamento richiesta
             content:
