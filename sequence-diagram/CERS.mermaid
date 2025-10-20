@@ -1,0 +1,73 @@
+sequenceDiagram
+
+    participant RI as Registro Imprese
+    participant C as Catalogo SSU    
+    participant B as BackOffice SUAP    
+    participant E as Enti Terzi    
+
+
+    note over RI,C: Metadati procedimenti recuperati
+    note over RI: Istanza autocomplilata e firmata
+    
+   
+    RI ->> C: request_cui(instanceDescriptor)
+    note right of C: instanceDescriptor senza cui
+    C -->> RI: instanceDescriptor
+    note right of C: InstanceDescriptor con cui
+
+    RI ->> B: send_instance(SendInstanceRequest)
+    B -->> RI: ack
+    RI ->> C: audit(cui,instance_to_<BO>_sended)
+    note right of RI: <BO> codice BackOffice
+    C -->> RI: ack
+
+    RI ->> C: audit(cui,receipt_sended)
+    C -->> RI: ack
+
+    RI ->> B: notify_receipt(cui, date)
+    B -->> RI: ack
+    
+    note over  B,C: BO imposta tempi procedimento<br/>a partire dalla data della ricevuta
+    B ->> C: request_update_times(cui,times)
+    C -->> B: instanceDescriptor
+
+    loop per ogni procedimento parte dell'istanza 
+    B ->> RI: request_instance_document(cui, resource_id)
+    note left of B: resource_id da instance_index
+    RI -->> B: instanceDocument
+    end
+    B ->> C: audit(cui,instance_retrived)
+    C -->> B: ack
+        
+    Note over B,RI: istanza procedibile       
+
+        par per ogni ente terzo interessato        
+        B ->> E: send_instance(SendInstanceRequest)
+        E -->> B: ack
+        B ->> C: audit(cui,instance_to_<ET>_sended)
+        note right of B: <ET> codice ente terzo 
+        C -->> B: ack
+        E ->> C: request_instance_descriptor(cui)
+        C -->> E: instanceDescriptor
+        loop per ogni procedimento di interesse parte dell'istanza 
+        E ->> B: request_instance_document(cui, resource_id)
+        note left of E: resource_id da instance_index
+        B -->> E: instanceDocument
+        end
+        E ->> C: audit(cui,instance_retrived)
+        C -->> E: ack
+    end
+ 
+    alt conclusione
+        alt concluso tempo istanza
+            par per ogni ente terzo interessato
+                B ->> E: notify(cui, instance_descriptor_version,end_by_positive_outcome,resource_id)
+                E -->> B: ack
+                E ->> B: request_instance_document(cui, resource_id)
+            note right of B: recupero documento 
+                B -->> E: instanceDocument 
+            end
+            B ->> C: audit(cui,end_by_positive_outcome)
+            C -->> B: ack
+        end
+    end
