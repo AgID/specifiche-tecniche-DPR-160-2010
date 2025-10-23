@@ -21,11 +21,11 @@ sequenceDiagram
     note right of RI: <BO> codice BackOffice
     C -->> RI: ack
 
-    RI ->> C: audit(cui,receipt_sended)
-    C -->> RI: ack
-
     RI ->> B: notify_receipt(cui, date)
     B -->> RI: ack
+
+    RI ->> C: audit(cui,receipt_sended)
+    C -->> RI: ack
     
     note over  B,C: BO imposta tempi procedimento<br/>a partire dalla data della ricevuta
     B ->> C: request_update_times(cui,times)

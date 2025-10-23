@@ -170,10 +170,9 @@ paths:
                                     description: operation per la quale si richiede la ritrasmissione
                                     type: string
                                     enum:
-                                        - request_correction
-                                        - request_integration
-                                        - request_conformation
+                                        - send_instance
                                         - notify
+                                        - instance-document
                                 error:
                                     $ref: "#/components/schemas/Error"
 

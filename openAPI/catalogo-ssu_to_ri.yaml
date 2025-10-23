@@ -226,6 +226,45 @@ components:
                 uuid:
                     title: UUID chiave del CUI
                     type: string
+        
+        AuditMessage:
+            type: object
+
+            required:
+                - cui
+                - message
+                - event_time
+
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+
+                message:
+                    type: string
+                    pattern: >-
+                        ^receipt_sended|instance_to_[0-9]{1,10}_sended$
+
+                event_time:
+                    title: timestamp del momento in cui si è verificato l'evento
+                    type: string
+                    format: date-time
+        
+        AuditResponse:
+            type: object
+            description: risposta audit
+            required:
+                - type
+            properties:
+                type:
+                    title: tipo messaggio
+                    type: string
+                    enum:
+                        - ok
+                        - out_of_flow
+                        - expected_time_exceeded
+                message:
+                    title: messaggio
+                    type: string
                     
         Error:
             type: object
