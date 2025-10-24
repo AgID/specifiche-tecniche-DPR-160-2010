@@ -129,6 +129,17 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
+
+        OKAuditResponse:
+            description: Richiesta di Audit completata con successo
+            headers:
+              Agid-JWT-Signature:
+                $ref: "#/components/headers/Agid-JWT-Signature"
+            content: 
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/AuditResponse"
+        
         OKRequest:
             description: Richiesta completata con successo
             headers:
