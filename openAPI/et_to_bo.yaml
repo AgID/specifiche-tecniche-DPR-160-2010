@@ -710,7 +710,7 @@ components:
                     title: amministrazione destinataria delle istanze
                     $ref: "#/components/schemas/AdministrationSchema"
                 purpose:
-                    title: motivo dell'invio dell'istanza (ad es: a fronte di una convocazione della Cdss o per via di una istruttoria ET)
+                    title: motivo dell'invio dell'istanza (ad es. a fronte di una convocazione della Cdss o per via di una istruttoria ET)
                     type: string
                     enum:
                         - Cdss
