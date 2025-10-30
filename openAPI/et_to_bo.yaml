@@ -40,6 +40,10 @@ paths:
                                         - request_cdss
                                         - request_integration
                                         - request_conformation
+                                usecase_proceeding:        
+                                    title: codice della fattispecie presente nel Catalogo
+                                    type: string
+                                    minLength: 1
                                 error:
                                     $ref: "#/components/schemas/Error"
 
