@@ -735,7 +735,6 @@ components:
                 - c_fiscale_impresa
                 - instance_index_fii
                 - general_index_fii
-                - receiver_administration
             type: object
             properties:
                 cui:
@@ -749,9 +748,6 @@ components:
                     $ref: "#/components/schemas/InstanceIndexFII"
                 general_index_fii:
                     $ref: "#/components/schemas/GeneralIndexFII"
-                receiver_administration:
-                    title: amministrazione destinataria delle istanze
-                    $ref: "#/components/schemas/AdministrationSchema"
         
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU

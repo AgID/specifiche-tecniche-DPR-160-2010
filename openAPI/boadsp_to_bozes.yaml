@@ -641,7 +641,6 @@ components:
                 - instance_descriptor_version
                 - instance_index
                 - general_index
-                - receiver_administration
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -651,9 +650,6 @@ components:
                     $ref: "#/components/schemas/InstanceIndex"
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
-                receiver_administration:
-                    title: amministrazione destinataria delle istanze
-                    $ref: "#/components/schemas/AdministrationSchema"
 
 
     headers:
