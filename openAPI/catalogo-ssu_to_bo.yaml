@@ -714,6 +714,7 @@ components:
                   - hash
                   - alg_hash
                   - mime_type
+                  - description
                   properties:
 
                     ref:                      
@@ -724,6 +725,10 @@ components:
                       title: filename dell'allegato
                       type: string
                       minLength: 1
+                    description:                      
+                      title: descrizione dell'allegato
+                      type: string
+                      minLength: 1                      
                     hash:                      
                       title: hash dell'allegato
                       type: string
