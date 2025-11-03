@@ -2907,6 +2907,9 @@ components:
             context:
               title: contesto di riferimento (SUAP, SUE, ZES)
               type: string
+            procedimento_cers:
+              title: flag per identificare i procedimenti per i quali sussiste l'obbligo di contestualità.
+              type: boolean              
             flag_competent_administration_special:
               title: il procedimento che gli enti competenti hanno funzioni suap
               type: boolean
