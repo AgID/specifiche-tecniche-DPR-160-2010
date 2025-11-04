@@ -43,7 +43,11 @@ sequenceDiagram
 
     alt istanza integrata o conformata (dopo step: 45 SCIA-001 o 65 DomandaAutorizzazione-001 o dopo step 65, 143 di SCIA Condizionata)
 
-        B ->> RI: send_instance(SendInstanceRequest)
+        alt:
+            B ->> RI: send_conformation_documents(SendUpdatedDocuments)
+        else:
+            B ->> RI: send_integration_documents(SendUpdatedDocuments)
+        end
         RI -->> B: ack
     
         RI ->> C: request_instance_descriptor(cui)
@@ -51,7 +55,7 @@ sequenceDiagram
         
         loop per ogni procedimento parte dell'istanza
             RI ->> B:  request_instance_document(cui, resource_id)
-            note right of RI: resource_id da instance_index
+            note right of RI: resource_id da updated_documents
             B -->> RI: instanceDocument
         end
 

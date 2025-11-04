@@ -268,6 +268,9 @@ properties:
                 title: filename dell'allegato
                 type: string
                 minLength: 1
+              file_size:
+                description: dimensione del file.
+                type: integer
               hash:
                 "$id": "#root/usecase_proceedings/attachments/hash"
                 title: hash dell'allegato
@@ -281,12 +284,12 @@ properties:
                 - S256
                 - S384
                 - S512
-              code:
+              attach_code:
                 "$id": "#root/usecase_proceedings/attachments/code"
                 title: identificativo dell'allegato presente nel Catalogo
                 type: string
                 minLength: 1
-              version:
+              attach_version:
                 "$id": "#root/usecase_proceedings/attachments/version"
                 title: versione dell'allegato presente nel Catalogo
                 type: string
@@ -343,6 +346,47 @@ properties:
                           type: string
               mime_type:
                 type: string
+
+        free_attachments:
+          title: allegati liberi non mappati sul Catalogo, relativi alla fattispecie
+          type: array
+          items:
+            type: object
+            required:
+            - ref
+            - hash
+            - alg_hash
+            - mime_type
+            properties:
+              ref:
+                "$id": "#root/usecase_proceedings/attachments/ref"
+                title: riferimento dell'allegato
+                type: string
+                minLength: 1
+              filename:
+                "$id": "#root/usecase_proceedings/attachments/filename"
+                title: filename dell'allegato
+                type: string
+                minLength: 1
+              file_size:
+                description: dimensione del file
+                type: integer
+              hash:
+                "$id": "#root/usecase_proceedings/attachments/hash"
+                title: hash dell'allegato
+                type: string
+                minLength: 1
+              alg_hash:
+                "$id": "#root/usecase_proceedings/attachments/alg_hash"
+                title: algoritmo hash dell'allegato 
+                type: string
+                enum:
+                - S256
+                - S384
+                - S512
+              mime_type:
+                type: string
+
   InterestedAdministrationSchema:
     description: Un array di amministrazioni competenti.
     type: array

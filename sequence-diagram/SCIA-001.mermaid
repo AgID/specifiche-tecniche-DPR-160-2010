@@ -84,30 +84,30 @@ sequenceDiagram
             F -) P: notification(cui,end_by_conformation_times_expired)
         else entro il tempo di conformazione del presentatore 
             P --) F: instanceConformated
-            F ->> B: send_instance(SendInstanceRequest)
+            F ->> B: send_conformation_documents(SendUpdatedDocuments)
             B -->> F: ack
             F ->> C: audit(cui,instance_conformated_to_<BO>_sended)
             note right of F: <BO> codice BackOffice
             C -->> F: ack
             loop per ogni procedimento parte dell'istanza 
                 B ->> F: request_instance_document(cui, resource_id)
-                note left of B: resource_id da instance_index
+                note left of B: resource_id da updated_documents
                 F -->> B: instanceDocument
             end
             B ->> C: audit(cui,instance_conformated_retrived)
             C -->> B: ack
-            B ->> C: request_update_times(cui,times)
+            B ->> C: update_attachments_and_times(cui,times,attachments,free_attachments)
             Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per la conformazione e i giorni passati dall'invio della richiesta
             C -->> B: instanceDescriptor
             par per ogni ente terzo interessato                
-                B ->> E: send_instance(SendInstanceRequest)
+                B ->> E: send_conformation_documents(SendUpdatedDocuments)
                 E -->> B: ack
                 B ->> C: audit(cui,instance_conformated_to_<ET>_sended)
                 note right of B: <ET> codice ente terzo
                 C -->> B: ack
                 loop per ogni procedimento di interesse parte dell'istanza 
                     E ->> B: request_instance_document(cui, resource_id)
-                    note left of E: resource_id da instance_index
+                    note left of E: resource_id da updated_documents
                     B -->> E: instanceDocument
                 end
                 E ->> C: audit(cui,instance_conformated_retrived)
