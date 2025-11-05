@@ -112,7 +112,7 @@ sequenceDiagram
                     F -) P: notification(cui,end_by_integration_times_expired)
                 else entro il tempo di integrazione del presentatore 
                     P --) F: instanceIntegrated
-                    F ->> B: send_integration_documents(SendUpdatedDocuments)
+                    F ->> B: send_instance_updated_documents(SendUpdatedDocuments)
                     B -->> F: ack
                     F ->> C: audit(cui,instance_integrated_to_<BO>_sended)
                     note right of F: <BO> codice BackOffice
@@ -128,7 +128,7 @@ sequenceDiagram
                     Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per l'integrazione e i giorni passati dall'invio della richiesta
                     C -->> B: instanceDescriptor
                     par per ogni ente terzo interessato                
-                        B ->> E: send_integration_documents(SendUpdatedDocuments)
+                        B ->> E: send_instance_updated_documents(SendUpdatedDocuments)
                         E -->> B: ack
                         B ->> C: audit(cui,instance_integrated_to_<ET>_sended)
                         note right of B: <ET> codice ente terzo
@@ -246,7 +246,7 @@ sequenceDiagram
                     F -) P: notification(cui,end_by_conformation_times_expired)
                 else entro il tempo di conformazione del presentatore 
                     P --) F: instanceConformated
-                    F ->> B: send_conformation_documents(SendUpdatedDocuments)
+                    F ->> B: send_instance_updated_documents(SendUpdatedDocuments)
                     B -->> F: ack
                     F ->> C: audit(cui,instance_conformated_to_<BO>_sended)
                     note right of F: <BO> codice BackOffice
@@ -262,7 +262,7 @@ sequenceDiagram
                     Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per la conformazione e i giorni passati dall'invio della richiesta
                     C -->> B: instanceDescriptor
                     par per ogni ente terzo interessato                
-                        B ->> E: send_conformation_documents(SendUpdatedDocuments)
+                        B ->> E: send_instance_updated_documents(SendUpdatedDocuments)
                         E -->> B: ack
                         B ->> C: audit(cui,instance_conformated_to_<ET>_sended)
                         note right of B: <ET> codice ente terzo

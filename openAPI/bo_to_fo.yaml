@@ -169,7 +169,7 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
       
-    /send_integration_documents:
+    /send_instance_updated_documents:
       description: Inoltro dei riferimenti con i documenti integrati
       post:
           requestBody:
@@ -193,29 +193,6 @@ paths:
               - bearerAuth: []
                 Agid-JWT-Signature: []
 
-    /send_conformation_documents:
-      description: Inoltro dei riferimenti con i documenti conformati
-      post:
-          requestBody:
-              content:
-                  application/json:
-                      schema:
-                          $ref: "#/components/schemas/SendUpdatedDocuments"
-              required: true
-          responses:
-              "200":
-                  $ref: "#/components/responses/OKRequest"
-              "400":
-                  $ref: "#/components/responses/BadRequest"
-              "401":
-                  $ref: "#/components/responses/Unauthorized"
-              "500":
-                  $ref: "#/components/responses/ServerError"
-              "503":
-                  $ref: "#/components/responses/ServiceUnavaliable"
-          security:
-              - bearerAuth: []
-                Agid-JWT-Signature: []
 
     /delete_instance:
         description: Eliminazione di sistema di una istanza
