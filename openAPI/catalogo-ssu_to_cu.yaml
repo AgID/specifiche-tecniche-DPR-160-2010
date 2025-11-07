@@ -509,6 +509,7 @@ components:
                                     - hash
                                     - alg_hash
                                     - mime_type
+                                    - description
                                     properties:
                                         ref:                      
                                             title: riferimento all'allegato dell'istanza relativo al procedimento
@@ -535,6 +536,10 @@ components:
                                           minLength: 1
                                         version:
                                           title: versione dell'allegato presente nel Catalogo
+                                          type: string
+                                          minLength: 1                                            
+                                        description:
+                                          title: descrizione dell'allegato
                                           type: string
                                           minLength: 1                                            
                                         form:                      

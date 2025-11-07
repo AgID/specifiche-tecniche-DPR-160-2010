@@ -647,6 +647,7 @@ components:
                   - hash
                   - alg_hash
                   - mime_type
+                  - description
                   properties:
 
                     ref:                      
@@ -676,6 +677,10 @@ components:
                       title: versione dell'allegato presente nel Catalogo
                       type: string
                       minLength: 1                      
+                    description:                      
+                      title: descrizione dell'allegato
+                      type: string
+                      minLength: 1  
                     form:                      
                       title: riferimento agli oggetti per la validazione
                       type: object
