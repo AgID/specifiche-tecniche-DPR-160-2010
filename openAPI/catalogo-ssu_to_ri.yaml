@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-    title: SUAP_CatalogoSSU to Registro Imprese
+    title: CatalogoSSU to Registro Imprese
 
     version: 1.0.0
 
@@ -21,6 +21,77 @@ servers:
       description: Catalogo SSU to Registro Imprese endpoint
 
 paths:
+    /request_cui/{context}/{sub_context}:
+        description: Richiesta del CUI
+
+        post:
+            parameters:
+              - in: path
+                name: context
+                description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context dell'OpenAPI catalogo-ssu_meta
+                required: true
+                schema:
+                    type: string
+                    default: "SUAP"
+              - in: path
+                name: sub_context
+                description: specificità del contesto (es. SUE Produttivo, SUE Residenziale). I valori ammissibili sono reperibili invocando il path /context dell'OpenAPI catalogo-ssu_meta
+                required: true
+                schema:
+                    type: string
+                    default: "SUAP"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/InstanceDescriptor"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKInstanceDescriptor"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+              - bearerAuth: []
+                Agid-JWT-Signature: []
+    
+    /audit:
+        description: Audit azioni realizzate dalle componenti
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AuditMessage"
+                required: true
+
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKAuditResponse"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+              - bearerAuth: []
+                Agid-JWT-Signature: []
+    
     /instance_descriptor/{cui_uuid}:
         description: Recupero descrittore istanza
         get:
@@ -58,6 +129,17 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
+
+        OKAuditResponse:
+            description: Richiesta di Audit completata con successo
+            headers:
+              Agid-JWT-Signature:
+                $ref: "#/components/headers/Agid-JWT-Signature"
+            content: 
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/AuditResponse"
+        
         OKRequest:
             description: Richiesta completata con successo
             headers:
@@ -92,6 +174,27 @@ components:
                 application/json:
                     schema:
                         $ref: "#/components/schemas/Error"
+        
+        NotFound:
+            description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        Conflict:
+            description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
         ServerError:
             description: Errore processamento richiesta
             content:
@@ -109,6 +212,7 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
                 - progressive
                 - uuid
@@ -116,6 +220,11 @@ components:
                 context:
                     title: contesto dell'istanza
                     type: string
+                
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+                    type: string
+
                 data:
                     title: data emissione cui
                     type: string
@@ -127,6 +236,45 @@ components:
 
                 uuid:
                     title: UUID chiave del CUI
+                    type: string
+        
+        AuditMessage:
+            type: object
+
+            required:
+                - cui
+                - message
+                - event_time
+
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+
+                message:
+                    type: string
+                    pattern: >-
+                        ^receipt_sended|instance_to_[0-9]{1,10}_sended$
+
+                event_time:
+                    title: timestamp del momento in cui si è verificato l'evento
+                    type: string
+                    format: date-time
+        
+        AuditResponse:
+            type: object
+            description: risposta audit
+            required:
+                - type
+            properties:
+                type:
+                    title: tipo messaggio
+                    type: string
+                    enum:
+                        - ok
+                        - out_of_flow
+                        - expected_time_exceeded
+                message:
+                    title: messaggio
                     type: string
                     
         Error:
@@ -200,7 +348,6 @@ components:
                 title: data evetuale conferenza di servizi sincrona
                 type: string
                 format: date
-
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
             type: object
@@ -225,7 +372,55 @@ components:
                 description:
                     title: descrizione dell'amministrazione
                     type: string
-
+        InterestedAdministrationSchema:
+          description: Un array di amministrazioni competenti.
+          type: array
+          items:
+            type: object
+            description: Amministrazione competente censita nel Catalogo SSU
+            required:
+              - description
+              - ipacode
+              - officecode
+              - id
+            properties:
+              ipacode:
+                title: codice IPA dell'amministrazione
+                type: string
+                minLength: 1
+              officecode:
+                title: codice dell'ufficio dell'amministrazione
+                type: string
+                minLength: 1
+              description:
+                title: descrizione dell'amministrazione
+                type: string
+              id:
+                title: identificativo dell'amministrazione
+                type: string
+                minLength: 1                        
+              version:
+                title: versione dell'ufficio dell'amministrazione 
+                type: string
+                pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+        InterestedAdministrationCFSchema:
+          description: Un array di amministrazioni competenti non censite su ipa.
+          type: array
+          items:
+            type: object
+            description: Amministrazione competente censita nel Catalogo SSU
+            properties:
+              fiscal_code:
+                title: codice fiscale  dell'amministrazione non presente su IPA
+                type: string
+                minLength: 1
+              description:
+                title: descrizione dell'amministrazione
+                type: string
+              id:
+                title: identificativo dell'amministrazione
+                type: string
+                minLength: 1                        
         InstanceDescriptor:
             description: descrittore istanza
             type: object
@@ -264,7 +459,7 @@ components:
                         - timestamp
                         properties:
                             state:                
-                                title: stato dell'istanza
+                                title: stato dell'istanza, stato iniziale da impostare in started
                                 type: string
                                 enum:
                                 - started
@@ -279,6 +474,7 @@ components:
                                 - ended_by_conformation_times_expired
                                 - conformated
                                 - cdss_convened
+                                - instance_transferred
                                 - ended_by_suspension_requested
                                 - ended_by_proceeding_time_expired
                                 - ended_by_positive_outcome
@@ -295,22 +491,23 @@ components:
                 
                 workflow:          
                     type: object
-                    title: regime amministrativo dell'istanza          
+                    title: workflow del regime amministrativo dell'istanza          
                     
                     required:
                         - id
                         - version
                     properties:
                         id:              
-                            title: identificativo univo del regime amministrativo
+                            title: identificativo univoco del workflow del regime amministrativo
                             type: string
                             enum:
                                  - SCIA
                                  - AUTORIZZAZIONE
                                  - PROVVEDIMENTO-CONDIZIONATO
+                                 - SCIA-CONDIZIONATA
                                  
                         version:              
-                            title: version del regime amministrativo
+                            title: version del workflow del regime amministrativo
                             type: string
                             pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
                 
@@ -336,6 +533,12 @@ components:
                             competent_administration:                
                                 title: amministrazione competente del procedimento
                                 $ref: "#/components/schemas/AdministrationSchema"
+                            interested_administration:                
+                                title: amministrazione interessata al procedimento
+                                $ref: "#/components/schemas/InterestedAdministrationSchema"
+                            interested_administration_fiscal_code:                
+                              title: amministrazione ghost interessata al procedimento
+                              $ref: "#/components/schemas/InterestedAdministrationCFSchema"
                             form:                
                                 title: riferimento agli oggetti per la validazione
                                 type: object
@@ -405,6 +608,14 @@ components:
                                         - S256
                                         - S384
                                         - S512
+                                    code:
+                                      title: identificativo dell'allegato presente nel Catalogo
+                                      type: string
+                                      minLength: 1
+                                    version:
+                                      title: versione dell'allegato presente nel Catalogo
+                                      type: string
+                                      minLength: 1
                                     mime_type:
                                         type: string
                                         enum: 
@@ -448,6 +659,7 @@ components:
                                     - hash
                                     - alg_hash
                                     - mime_type
+                                    - description
                                     properties:
                                         ref:                      
                                             title: riferimento all'allegato dell'istanza relativo al procedimento
@@ -457,6 +669,10 @@ components:
                                             title: filename dell'allegato
                                             type: string
                                             minLength: 1
+                                        description:
+                                          title: descrizione dell'allegato
+                                          type: string
+                                          minLength: 1                                            
                                         hash:                      
                                             title: hash dell'allegato
                                             type: string

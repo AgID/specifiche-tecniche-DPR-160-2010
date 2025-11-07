@@ -41,7 +41,7 @@ properties:
       properties:
         state:
           "$id": "#root/instance_status/state"
-          title: stato dell'istanza, stato inziiale da impostare in started
+          title: stato dell'istanza, stato iniziale da impostare in started
           type: string
           enum:
           - started
@@ -61,6 +61,7 @@ properties:
           - ended_by_positive_outcome
           - ended_by_negative_outcome
           - ended_by_submitter_cancel_requested
+          - instance_transferred
           
         timestamp:
           "$id": "#root/instance_status/timestamp"
@@ -73,7 +74,7 @@ properties:
     
   workflow:
     "$id": "#root/workflow"
-    title: regime amministrativo dell'istanza
+    title: workflow del regime amministrativo dell'istanza
     type: object
     
     required:
@@ -83,15 +84,16 @@ properties:
     properties:
       id:
         "$id": "#root/workflow/id"
-        title: identificativo univoco del regime amministrativo
+        title: identificativo univoco del workflow del regime amministrativo
         type: string
         enum:
              - SCIA
              - AUTORIZZAZIONE
              - PROVVEDIMENTO-CONDIZIONATO
+             - SCIA-CONDIZIONATA
       version:
         "$id": "#root/workflow/version"
-        title: version del regime amministrativo
+        title: version del workflow del regime amministrativo
         type: string
         pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
     
@@ -121,6 +123,13 @@ properties:
           "$id": "#root/usecase_proceedings/competent_administration"
           title: amministrazione competente del procedimento
           $ref: https://raw.githubusercontent.com/AgID/specifiche-tecniche-DPR-160-2010/refs/heads/approved02/json-schema/administration-schema.yaml
+        interested_administration:                
+          title: amministrazione interessata al procedimento
+          $ref: "#/components/schemas/InterestedAdministrationSchema"
+        interested_administration_fiscal_code:                
+          title: amministrazione ghost interessata al procedimento
+          $ref: "#/components/schemas/InterestedAdministrationCFSchema"
+
         form:
           "$id": "#root/usecase_proceedings/form"
           title: riferimento agli oggetti per la validazione
@@ -247,6 +256,7 @@ properties:
             - hash
             - alg_hash
             - mime_type
+            - description
             properties:
 
               ref:
@@ -257,6 +267,11 @@ properties:
               filename:
                 "$id": "#root/usecase_proceedings/attachments/filename"
                 title: filename dell'allegato
+                type: string
+                minLength: 1
+              description:
+                "$id": "#root/usecase_proceedings/attachments/description"
+                title: descrizione dell'allegato
                 type: string
                 minLength: 1
               hash:
@@ -334,3 +349,52 @@ properties:
                           type: string
               mime_type:
                 type: string
+  InterestedAdministrationSchema:
+    description: Un array di amministrazioni competenti.
+    type: array
+    items:
+      type: object
+      description: Amministrazione competente censita nel Catalogo SSU
+      required:
+        - description
+        - ipacode
+        - officecode
+        - id
+      properties:
+        ipacode:
+          title: codice IPA dell'amministrazione
+          type: string
+          minLength: 1
+        officecode:
+          title: codice dell'ufficio dell'amministrazione
+          type: string
+          minLength: 1
+        version:
+          title: versione dell'ufficio dell'amministrazione valorizzata solo se non è un amministrazione GHOST
+          type: string
+          pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"      
+        description:
+          title: descrizione dell'amministrazione
+          type: string
+        id:
+          title: identificativo dell'amministrazione
+          type: string
+          minLength: 1                                            
+  InterestedAdministrationCFSchema:
+    description: Un array di amministrazioni competenti non censite su ipa.
+    type: array
+    items:
+      type: object
+      description: Amministrazione competente censita nel Catalogo SSU
+      properties:
+        fiscal_code:
+          title: codice fiscale  dell'amministrazione non presente su IPA
+          type: string
+          minLength: 1
+        description:
+          title: descrizione dell'amministrazione
+          type: string
+        id:
+          title: identificativo dell'amministrazione
+          type: string
+          minLength: 1                                  

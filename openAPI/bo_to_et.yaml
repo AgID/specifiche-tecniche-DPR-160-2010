@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: BackOffice SUAP to Ente Terzo SUAP
+    title: BackOffice to Ente Terzo
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili da BackOffice SUAP a Ente Terzo SUAP
+        API rese disponibili da BackOffice a Ente Terzo
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: Ente Terzo SUAP to BackOffice SUAP endpoint
+      description: BackOffice to Ente Terzo endpoint
 
 paths:
     /retry:
@@ -55,6 +55,8 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -80,6 +82,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -104,6 +110,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -128,6 +138,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -161,6 +175,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -185,6 +203,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -209,6 +231,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -249,8 +275,6 @@ paths:
                   required: true
                   schema:
                       type: string
-                
-
             responses:
                 "200":
                     description: risorsa richiesta, codificata in base64, il mime type relativo è specificato nel descrittore dell'istanza
@@ -284,30 +308,13 @@ paths:
                 "401":
                     $ref: "#/components/responses/Unauthorized"
                 "404":
-                    description: risorsa non trovata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/NotFound"
                 "412":
-                    description: precondizione fallita, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionFailed"
                 "416":
-                    description: richiesta di range non soddisfacibile
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
-                        Content-Range:
-                            description: espressione del range non soddisfacibile
-                            schema:
-                                type: string
-                                example: bytes 21010-47021/47022
+                    $ref: "#/components/responses/RangeNotSatisfiable"
                 "428":
-                    description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionRequired"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -326,6 +333,7 @@ paths:
                         schema:
                             oneOf:
                                 - $ref: "#/components/schemas/CdssNotifyMessage"
+                                - $ref: "#/components/schemas/NotifyMessage"
                 required: true
             responses:
                 "200":
@@ -342,6 +350,74 @@ paths:
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
+
+    /send_generic_communication:
+      post:
+        description: Comunicazione generica tra enti terzi e backoffice
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - cui
+                  - requester_administration
+                  - resource_id
+                  - filename
+                  - mime_type
+                  - hash
+                  - alg_hash
+                properties:
+                  cui:
+                    $ref: "#/components/schemas/cui"
+                  requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                  resource_id:
+                    title: id della risorsa documento correlata alla comunicazione spontanea
+                    type: string
+                    minLength: 1
+                  filename:
+                    title: filename della risorsa documento correlata alla comunicazione spontanea
+                    type: string
+                    minLength: 1
+                  mime_type:
+                    type: string
+                    enum:
+                      - application/pdf
+                      - application/pkcs7-mime
+                  hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                  alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                      - S256
+                      - S384
+                      - S512
+          required: true
+        responses:
+            "200":
+                $ref: "#/components/responses/OKRequest"
+            "400":
+                $ref: "#/components/responses/BadRequest"
+            "401":
+                $ref: "#/components/responses/Unauthorized"
+            "404":
+                $ref: "#/components/responses/NotFound"
+            "409":
+                $ref: "#/components/responses/Conflict"
+            "500":
+                $ref: "#/components/responses/ServerError"
+            "503":
+                $ref: "#/components/responses/ServiceUnavaliable"
+
+        security:
+          - bearerAuth: [ ]
+            Agid-JWT-Signature: [ ]
+
 components:    
     responses:
         OKRequest:
@@ -359,6 +435,62 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        NotFound:
+            description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+        Conflict:
+            description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                
+        PreconditionFailed:
+            description: precondizione fallita, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        RangeNotSatisfiable:
+            description: richiesta di range non soddisfacibile
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                Content-Range:
+                    description: lunghezza attuale della rappresentazione selezionata
+                    schema:
+                        type: string
+                        example: bytes */47022
+
+        PreconditionRequired:
+            description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
         ServiceUnavaliable:
             description: Servizio non disponibile
             content:
@@ -394,6 +526,7 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
                 - progressive
                 - uuid
@@ -401,6 +534,11 @@ components:
                 context:
                     title: contesto dell'istanza
                     type: string
+
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+                    type: string
+
                 data:
                     title: data emissione cui
                     type: string
@@ -416,28 +554,46 @@ components:
 
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
-            type: object
-            required:
-                - ipacode
-                - officecode
-                - version
-                - description
-            properties:
-                ipacode:
-                    title: codice IPA dell'amministrazione
-                    type: string
-                    minLength: 1
-                officecode:
-                    title: codice dell'ufficio dell'amministrazione 
-                    type: string
-                    minLength: 1
-                version:
-                    title: versione dell'ufficio dell'amministrazione 
-                    type: string
-                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
-                description:
-                    title: descrizione dell'amministrazione
-                    type: string
+            oneOf:
+                - type: object
+                  required:
+                    - ipacode
+                    - officecode
+                    - description
+                  properties:
+                    ipacode:
+                        title: codice IPA dell'amministrazione
+                        type: string
+                        minLength: 1
+                    officecode:
+                        title: codice dell'ufficio dell'amministrazione 
+                        type: string
+                        minLength: 1
+                    version:
+                        title: versione dell'ufficio dell'amministrazione, necessaria quando non è un ente ghost
+                        type: string
+                        pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+                    description:
+                        title: descrizione dell'amministrazione
+                        type: string
+                - type: object
+                  required:
+                    - fiscal_code
+                    - description
+                    - id
+                  properties:
+                    fiscal_code:
+                        title: codice fiscale dell'amministrazione
+                        type: string
+                        minLength: 1
+                    description:
+                        title: descrizione dell'amministrazione
+                        type: string
+                        minLength: 1
+                    id:
+                        title: id univoco dell'amministrazione
+                        type: string
+                        minLength: 1
                     
         Error:
             type: object
@@ -588,6 +744,9 @@ components:
                                 title: filename della risorsa "documento di richiesta conformazione"
                                 type: string
                                 minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta conformazione"
                                 type: string
@@ -635,6 +794,9 @@ components:
                     title: filename della risorsa "documento di motivi ostativi"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     title: "indica il formato dei dati previsto per il documento di motivi ostativi"
                     type: string
@@ -653,22 +815,86 @@ components:
 
         SendConclusionRequests:
             type: object
-            oneOf:
-                - $ref: "#/components/schemas/NegativeOutcome"
-                - $ref: "#/components/schemas/PositiveOutcome"
-                - $ref: "#/components/schemas/DefinitiveProvision"
-                - $ref: "#/components/schemas/ConditionalProvisionRescinded"
-                - $ref: "#/components/schemas/ConditionalProvisionDenied"
+            required:
+                - cui
+                - instance_descriptor_version
+                - usecase_proceeding_list
+                - conclusion_document
+                - requester_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                usecase_proceeding_list:
+                    type: array
+                    items:
+                        type: string
+                        title: codice della fattispecie presente nel Catalogo
+                        minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                conclusion_document:
+                    oneOf:
+                        - $ref: "#/components/schemas/NegativeOutcome"
+                        - $ref: "#/components/schemas/PositiveOutcome"
+                        - $ref: "#/components/schemas/DefinitiveProvision"
+                        - $ref: "#/components/schemas/ConditionalProvisionRescinded"
+                        - $ref: "#/components/schemas/ConditionalProvisionDenied"
+                additional_document_list:  
+                    type: array
+                    items:
+                        type: object
+                        required:
+                            - resource_id
+                            - filename
+                            - description
+                            - mime_type
+                            - hash
+                            - alg_hash
+                        properties:
+                            resource_id:
+                                title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
+                                type: string
+                                minLength: 1
+                            description:                            
+                                title: descrizione della risorsa
+                                type: string
+                                minLength: 1
+                            filename:                      
+                                title: filename della risorsa "documento di parere negativo"
+                                type: string
+                                minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
+                            mime_type:
+                                title: "indica il formato dei dati previsto per il documento di parere negativo"
+                                type: string
+                            hash:
+                                title: hash risorsa
+                                type: string
+                                minLength: 1
+                            alg_hash:
+                                title: algoritmo hash applicato
+                                type: string
+                                enum:
+                                - S256
+                                - S384
+                                - S512
 
         NegativeOutcome:
             type: object
             required:
-                - cui
-                - instance_descriptor_version
                 - negative_outcome_motivation
                 - conclusions_type
-                - requester_administration
-                - usecase_proceeding_list
+                - resource_id
+                - filename
+                - description
+                - mime_type
+                - hash
+                - alg_hash
             properties:
                 conclusions_type:
                     type: string
@@ -676,16 +902,9 @@ components:
                     - suspension_requested
                     - suspension_requested_for_impediments
                     - negative_outcome
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
                 negative_outcome_motivation:
                     type: string
                     minLength: 1
-                requester_administration:
-                    title: amministrazione richiedente
-                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
                     type: string
@@ -711,27 +930,10 @@ components:
                     - S256
                     - S384
                     - S512
-                usecase_proceeding_list:
-                    type: array
-                    items:
-                        type: string
-                        title: codice della fattispecie presente nel Catalogo
-                        minLength: 1
 
             example:
                 conclusions_type: "negative_outcome"
-                cui: 
-                    context: "string"
-                    data: "2024-07-10"
-                    progressive: "string"
-                    uuid: "string"
-                instance_descriptor_version: "string"
                 negative_outcome_motivation: "string"
-                requester_administration: 
-                    ipacode: "string"
-                    officecode: "string"
-                    version: "00.00.00"
-                    description: "string"
                 resource_id: "string"
                 filename: "string"
                 file_size: 1234
@@ -742,27 +944,22 @@ components:
 
         PositiveOutcome:
             required:
-                - cui
-                - instance_descriptor_version
                 - positive_outcome
                 - conclusions_type
-                - requester_administration
-                - usecase_proceeding_list
+                - resource_id
+                - filename
+                - description
+                - mime_type
+                - hash
+                - alg_hash
             properties:
                 conclusions_type:
                     type: string
                     enum: 
                     - positive_outcome
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
                 positive_outcome:
                     type: string
                     minLength: 1
-                requester_administration:
-                    title: amministrazione richiedente
-                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
                     type: string
@@ -788,12 +985,6 @@ components:
                     - S256
                     - S384
                     - S512
-                usecase_proceeding_list:
-                    type: array
-                    items:
-                        type: string
-                        title: codice della fattispecie presente nel Catalogo
-                        minLength: 1
         
         ConditionalProvision:
             type: object
@@ -828,6 +1019,9 @@ components:
                     title: filename dell'esito del Provvedimento Condizionato"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     type: string
                     enum: 
@@ -877,6 +1071,9 @@ components:
                     title: filename dell'esito del Provvedimento Definitivo"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     type: string
                     enum: 
@@ -924,7 +1121,6 @@ components:
                         enum: 
                             - conditional_provision_rescinded
 
-
         NotifyMessage:
             type: object
             required:
@@ -939,8 +1135,8 @@ components:
                     type: string
                 event:
                     type: string
-                    enum:
-                        - cdss_convened
+                    pattern: >-
+                        ^cdss_convened|involved_et_[0-9]{1,10}$
         
         CdssNotifyMessage:
             allOf:

@@ -1,13 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: BackOffice to FrontOffice
+    title: BackOffice AdSP to BackOffice ZES
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili da BackOffice a FrontOffice
-
+        API rese disponibili dal BackOffice AdSP a BackOffice ZES
     contact:
         name: AgID - Agenzia per l'Italia Digitale
         url: https://www.agid.gov.it/
@@ -18,106 +17,9 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: BackOffice to FrontOffice endpoint
+      description: BackOffice AdSP to BackOffice ZES endpoint
 
 paths:
-
-    /notify_receipt:
-        description: notifica dell'avvenuto rilascio della ricevuta al Soggetto Presentatore
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - cui
-                                - date
-                            properties:
-                                cui:
-                                    $ref: "#/components/schemas/cui"
-                                date:
-                                    type: string
-                                    format: date
-                                general_index: 
-                                    $ref: "#/components/schemas/GeneralIndex"
-                               
-                required: true
-            responses:
-                "200":
-                    $ref: "#/components/responses/OKRequest"
-                "400":
-                    $ref: "#/components/responses/BadRequest"
-                "401":
-                    $ref: "#/components/responses/Unauthorized"
-                "404":
-                    $ref: "#/components/responses/NotFound"
-                "409":
-                    $ref: "#/components/responses/Conflict"
-                "500":
-                    $ref: "#/components/responses/ServerError"
-                "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
-            security:
-                - bearerAuth: []
-                  Agid-JWT-Signature: []
-
-    /notify:
-      post:
-        description: Notifica eventi di processo
-        requestBody:
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransferNotifyMessage"
-          required: true
-        responses:
-          "200":
-            $ref: "#/components/responses/OKRequest"
-          "400":
-            $ref: "#/components/responses/BadRequest"
-          "401":
-            $ref: "#/components/responses/Unauthorized"
-          "404":
-            $ref: "#/components/responses/NotFound"
-          "409":
-            $ref: "#/components/responses/Conflict"
-          "500":
-            $ref: "#/components/responses/ServerError"
-          "503":
-            $ref: "#/components/responses/ServiceUnavaliable"
-
-        security:
-          - bearerAuth: [ ]
-            Agid-JWT-Signature: [ ]
-
-    /cancel_instance:
-        description: richiesta di cancellazione di una data istanza di procedimento da parte del Soggetto Presentatore
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/cui"
-                required: true
-            responses:
-                "200":
-                    $ref: "#/components/responses/OKRequest"
-                "400":
-                    $ref: "#/components/responses/BadRequest"
-                "401":
-                    $ref: "#/components/responses/Unauthorized"
-                "404":
-                    $ref: "#/components/responses/NotFound"
-                "409":
-                    $ref: "#/components/responses/Conflict"
-                "500":
-                    $ref: "#/components/responses/ServerError"
-                "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
-            security:
-                - bearerAuth: []
-                  Agid-JWT-Signature: []
 
     /retry:
         post:
@@ -134,9 +36,6 @@ paths:
                                     description: operation per la quale si richiede la ritrasmissione
                                     type: string
                                     enum:
-                                        - request_correction
-                                        - request_integration
-                                        - request_conformation
                                         - notify
                                 error:
                                     $ref: "#/components/schemas/Error"
@@ -159,7 +58,7 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
-    /send_instance:
+    /transfer_instance:
         description: Inoltro dei riferimenti a un' istanza di procedimento
         post:
             requestBody:
@@ -183,47 +82,12 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
-    /delete_instance:
-        description: Eliminazione di sistema di una istanza
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/DeleteInstanceRequest"
-                required: true
-            responses:
-                "200":
-                    $ref: "#/components/responses/OKRequest"
-                "400":
-                    $ref: "#/components/responses/BadRequest"
-                "401":
-                    $ref: "#/components/responses/Unauthorized"
-                "404":
-                    $ref: "#/components/responses/NotFound"
-                "409":
-                    $ref: "#/components/responses/Conflict"
-                "500":
-                    $ref: "#/components/responses/ServerError"
-                "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
-            security:
-                - bearerAuth: []
-                  Agid-JWT-Signature: []
-
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
                 Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
                 Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
             parameters:
-                - in: header
-                  name: Range
-                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
-                  required: false
-                  schema:
-                    type: string
-                    example: bytes=0-999
                 - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
@@ -276,13 +140,30 @@ paths:
                 "401":
                     $ref: "#/components/responses/Unauthorized"
                 "404":
-                    $ref: "#/components/responses/NotFound"
+                    description: risorsa non trovata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
                 "412":
-                    $ref: "#/components/responses/PreconditionFailed"
+                    description: precondizione fallita, rappresentazione risorsa non correttamente individuata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
                 "416":
-                    $ref: "#/components/responses/RangeNotSatisfiable"
+                    description: richiesta di range non soddisfacibile
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
+                        Content-Range:
+                            description: espressione del range non soddisfacibile
+                            schema:
+                                type: string
+                                example: bytes 21010-47021/47022
                 "428":
-                    $ref: "#/components/responses/PreconditionRequired"
+                    description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
+                    headers:
+                        Agid-JWT-Signature:
+                            $ref: "#/components/headers/Agid-JWT-Signature"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -309,62 +190,6 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
-        
-        NotFound:
-            description: risorsa non trovata
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/Error"
-            headers:
-                Agid-JWT-Signature:
-                    $ref: "#/components/headers/Agid-JWT-Signature"
-
-        Conflict:
-            description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/Error"
-            headers:
-                Agid-JWT-Signature:
-                    $ref: "#/components/headers/Agid-JWT-Signature"
-                
-        PreconditionFailed:
-            description: precondizione fallita, rappresentazione risorsa non correttamente individuata
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/Error"
-            headers:
-                Agid-JWT-Signature:
-                    $ref: "#/components/headers/Agid-JWT-Signature"
-        
-        RangeNotSatisfiable:
-            description: richiesta di range non soddisfacibile
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/Error"
-            headers:
-                Agid-JWT-Signature:
-                    $ref: "#/components/headers/Agid-JWT-Signature"
-                Content-Range:
-                    description: lunghezza attuale della rappresentazione selezionata
-                    schema:
-                        type: string
-                        example: bytes */47022
-
-        PreconditionRequired:
-            description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
-            content:
-                application/json:
-                    schema:
-                        $ref: "#/components/schemas/Error"
-            headers:
-                Agid-JWT-Signature:
-                    $ref: "#/components/headers/Agid-JWT-Signature"
-
         ServiceUnavaliable:
             description: Servizio non disponibile
             content:
@@ -384,6 +209,17 @@ components:
                 application/json:
                     schema:
                         $ref: "#/components/schemas/Error"
+        
+        NotFound:
+            description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                    
         ServerError:
             description: Errore processamento richiesta
             content:
@@ -408,137 +244,20 @@ components:
                 context:
                     title: contesto dell'istanza
                     type: string
-                
                 sub_context:
                     title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
                     type: string
-                    
                 data:
                     title: data emissione cui
                     type: string
                     format: date
-                
                 progressive:
                     title: numero progressivo a rotazione annuale
                     type: string
-
                 uuid:
                     title: UUID chiave del CUI
                     type: string
 
-        TransferNotifyMessage:
-            type: object
-            oneOf:
-                - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
-                - $ref: "#/components/schemas/GenericCommunication"
-
-        TransferMessage:
-            allOf:
-                - $ref: "#/components/schemas/BaseTransferMessage"
-                - type: object
-                  required: [event]
-                  properties:
-                      cui:
-                          $ref: "#/components/schemas/cui"
-                      instance_descriptor_version:
-                          type: string
-                      event:
-                          type: string
-                          enum:
-                              - observations_to_impediments_provided
-                      resource_id:
-                          title: se presente, id della risorsa documento correlata all'evento notificato
-                          type: string
-                          minLength: 1
-                      filename:                      
-                          title: filename della risorsa documento correlata all'evento notificato
-                          type: string
-                          minLength: 1
-                      mime_type:
-                          type: string
-                          enum: 
-                              - application/pdf
-                              - application/pkcs7-mime
-                      hash:
-                          title: hash risorsa
-                          type: string
-                          minLength: 1
-                      alg_hash:
-                          title: algoritmo hash applicato
-                          type: string
-                          enum:
-                          - S256
-                          - S384
-                          - S512
-        
-        BaseTransferMessage:
-            type: object
-            required:
-               - cui
-               - instance_descriptor_version
-            properties:
-                cui:
-                  $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
-
-        ObservationsToImpedimentsMessage:
-            type: object
-            allOf:
-                - $ref: "#/components/schemas/TransferMessage"
-            properties:
-                event:
-                    type: string
-                    enum:
-                        - observations_to_impediments_provided
-        
-        GenericCommunication:
-            type: object
-            allOf:
-                - $ref: "#/components/schemas/BaseTransferMessage"
-                - type: object
-                  required: [
-                    event, 
-                    resource_id, 
-                    filename, 
-                    file_size,
-                    mime_type
-                    hash,
-                    alg_hash
-                    ]
-                  properties:
-                    event:
-                        type: string
-                        enum:
-                            - generic_communication
-                    resource_id:
-                        title: se presente, id della risorsa documento correlata all'evento notificato
-                        type: string
-                        minLength: 1
-                    filename:                      
-                        title: filename della risorsa documento correlata all'evento notificato
-                        type: string
-                        minLength: 1
-                    file_size:
-                        description: Dimensione del file.
-                        type: integer
-                    mime_type:
-                        type: string
-                        enum: 
-                            - application/pdf
-                            - application/pkcs7-mime
-                    hash:
-                        title: hash risorsa
-                        type: string
-                        minLength: 1
-                    alg_hash:
-                        title: algoritmo hash applicato
-                        type: string
-                        enum:
-                        - S256
-                        - S384
-                        - S512
-                    
         InstanceIndex:
                     type: array
                     description: indice istanza
@@ -568,16 +287,6 @@ components:
                                 title: id della risorsa, univoco per erogatore e CUI.UUID
                                 type: string
                                 minLength: 1
-                            filename:                      
-                                title: filename della risorsa 
-                                type: string
-                                minLength: 1
-                            file_size:
-                                description: Dimensione del file.
-                                type: integer
-                            mime_type:
-                                title: "indica il formato dei dati previsto per la risorsa"
-                                type: string
                             hash:                            
                                 title: hash dell'elemento dell'istanza relativo al procedimento
                                 type: string
@@ -901,6 +610,31 @@ components:
                             - S384
                             - S512
 
+        AdministrationSchema:
+            description: Amministrazione compentente censita nel Catalogo SSU
+            type: object
+            required:
+                - ipacode
+                - officecode
+                - version
+                - description
+            properties:
+                ipacode:
+                    title: codice IPA dell'amministrazione
+                    type: string
+                    minLength: 1
+                officecode:
+                    title: codice dell'ufficio dell'amministrazione 
+                    type: string
+                    minLength: 1
+                version:
+                    title: versione dell'ufficio dell'amministrazione 
+                    type: string
+                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+                description:
+                    title: descrizione dell'amministrazione
+                    type: string
+                    
         Error:
             type: object
             description: codice e descrizione condizione di errore
@@ -929,40 +663,8 @@ components:
                     $ref: "#/components/schemas/InstanceIndex"
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
-        
-        AdministrationSchema:
-            description: Amministrazione compentente censita nel Catalogo SSU
-            type: object
-            required:
-                - ipacode
-                - officecode
-                - version
-                - description
-            properties:
-                ipacode:
-                    title: codice IPA dell'amministrazione
-                    type: string
-                    minLength: 1
-                officecode:
-                    title: codice dell'ufficio dell'amministrazione 
-                    type: string
-                    minLength: 1
-                version:
-                    title: versione dell'ufficio dell'amministrazione 
-                    type: string
-                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
-                description:
-                    title: descrizione dell'amministrazione
-                    type: string
 
-        DeleteInstanceRequest:
-            type: object
-            required:
-                - cui
-            properties:
-                cui:
-                    $ref: "#/components/schemas/cui"
-     
+
     headers:
         Agid-JWT-Signature:
             schema:
@@ -972,9 +674,7 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
-                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
-
+                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
     securitySchemes:
         bearerAuth:
             scheme: bearer
@@ -986,7 +686,6 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
-                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
+                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
             name: Agid-JWT-Signature
             in: header

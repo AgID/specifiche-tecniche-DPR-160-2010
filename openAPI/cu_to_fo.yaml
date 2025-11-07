@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: ComUnica to FrontOffice SUAP
+    title: ComUnica to FrontOffice
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili da ComUnica a FrontOffice SUAP
+        API rese disponibili da ComUnica a FrontOffice
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: ComUnica to FrontOffice SUAP endpoint
+      description: ComUnica to FrontOffice endpoint
 
 paths:
     /retry:
@@ -48,6 +48,8 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -73,6 +75,8 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -117,6 +121,17 @@ components:
                 application/json:
                     schema:
                         $ref: "#/components/schemas/Error"
+        
+        NotFound:
+            description: risorsa non trovata
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+
         ServerError:
             description: Errore processamento richiesta
             content:
@@ -531,7 +546,6 @@ components:
                 - instance_code_comunica
                 - instance_index
                 - general_index
-                - receiver_administration
             type: object
             properties:
                 cui:
@@ -544,9 +558,6 @@ components:
                     $ref: "#/components/schemas/InstanceIndex"
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
-                receiver_administration:
-                    title: amministrazione destinataria delle istanze
-                    $ref: "#/components/schemas/AdministrationSchema"
         
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
