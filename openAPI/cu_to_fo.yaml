@@ -531,7 +531,6 @@ components:
                 - instance_code_comunica
                 - instance_index
                 - general_index
-                - receiver_administration
             type: object
             properties:
                 cui:
@@ -544,9 +543,6 @@ components:
                     $ref: "#/components/schemas/InstanceIndex"
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
-                receiver_administration:
-                    title: amministrazione destinataria delle istanze
-                    $ref: "#/components/schemas/AdministrationSchema"
         
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
