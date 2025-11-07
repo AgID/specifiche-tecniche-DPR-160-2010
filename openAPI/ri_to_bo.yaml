@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: RegistroImprese to BackOffice SUAP
+    title: RegistroImprese to BackOffice
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili dal Registro Imprese a BackOffice SUAP
+        API rese disponibili dal Registro Imprese a BackOffice
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: RegistroImprese to BackOffice SUAP endpoint
+      description: RegistroImprese to BackOffice endpoint
 
 paths:
 
@@ -137,6 +137,7 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
                 - progressive
                 - uuid
@@ -144,6 +145,11 @@ components:
                 context:
                     title: contesto dell'istanza
                     type: string
+                
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+                    type: string
+                    
                 data:
                     title: data emissione cui
                     type: string

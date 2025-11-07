@@ -23,6 +23,13 @@ sequenceDiagram
     note right of F: <BO> codice BackOffice
     C -->> F: ack
     alt via ComUnica
+        CU ->> F: fo-portal-ref(municipality, c_fiscale, instance_code_comunica)
+        F -->> CU: FOPortal
+        F -) P: Condivisione url
+        P -) F: accesso al FO tramite url ricevuto da CU
+        F ->> F: marchia la pratica comunica
+        F -) P: mostra procedimenti contestuali
+        P -) F: compila la pratica e invia 
 	    F ->> CU: send_instance(SendInstanceRequest)
 		CU -->> F: ack
 		CU ->> C: request_instance_descriptor(cui)

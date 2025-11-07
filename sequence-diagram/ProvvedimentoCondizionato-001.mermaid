@@ -62,7 +62,11 @@ sequenceDiagram
             B -->> F: instanceDocument    
             end
         end
-        F -) P: notification(cui,conformation_requested)    
+        F -) P: notification(cui,conformation_requested) 
+        loop per ogni ente terzo interessato
+            B -->> E: notify(conformation_requested)
+            E -->> B: ack
+        end   
         alt oltre il tempo di conformazione del presentatore
             B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
             F -->> B: ack
