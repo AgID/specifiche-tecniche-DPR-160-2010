@@ -298,6 +298,34 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+
+    /notify:
+        post:
+            description: Notifica eventi di processo di una data istanza di procedimento.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            oneOf:
+                                - $ref: "#/components/schemas/NotifyMessage"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+
     /send_generic_communication:
       post:
         description: Comunicazione generica tra enti terzi e backoffice
@@ -360,6 +388,7 @@ paths:
         security:
           - bearerAuth: [ ]
             Agid-JWT-Signature: [ ]
+
 
 components:    
     responses:
@@ -677,6 +706,9 @@ components:
                                 title: filename della risorsa "documento di richiesta conformazione"
                                 type: string
                                 minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta conformazione"
                                 type: string
@@ -724,6 +756,9 @@ components:
                     title: filename della risorsa "documento di motivi ostativi"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     title: "indica il formato dei dati previsto per il documento di motivi ostativi"
                     type: string
@@ -921,6 +956,9 @@ components:
                     title: filename dell'esito del Provvedimento Condizionato"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     type: string
                     enum: 
@@ -970,6 +1008,9 @@ components:
                     title: filename dell'esito del Provvedimento Definitivo"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     type: string
                     enum: 
@@ -1016,6 +1057,23 @@ components:
                         type: string
                         enum: 
                             - conditional_provision_rescinded
+
+        NotifyMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    pattern: >-
+                        ^involved_et_[0-9]{1,10}$
 
     headers:
         Agid-JWT-Signature:
