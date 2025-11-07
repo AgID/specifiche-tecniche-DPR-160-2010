@@ -777,22 +777,86 @@ components:
 
         SendConclusionRequests:
             type: object
-            oneOf:
-                - $ref: "#/components/schemas/NegativeOutcome"
-                - $ref: "#/components/schemas/PositiveOutcome"
-                - $ref: "#/components/schemas/DefinitiveProvision"
-                - $ref: "#/components/schemas/ConditionalProvisionRescinded"
-                - $ref: "#/components/schemas/ConditionalProvisionDenied"
+            required:
+                - cui
+                - instance_descriptor_version
+                - usecase_proceeding_list
+                - conclusion_document
+                - requester_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                usecase_proceeding_list:
+                    type: array
+                    items:
+                        type: string
+                        title: codice della fattispecie presente nel Catalogo
+                        minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                conclusion_document:
+                    oneOf:
+                        - $ref: "#/components/schemas/NegativeOutcome"
+                        - $ref: "#/components/schemas/PositiveOutcome"
+                        - $ref: "#/components/schemas/DefinitiveProvision"
+                        - $ref: "#/components/schemas/ConditionalProvisionRescinded"
+                        - $ref: "#/components/schemas/ConditionalProvisionDenied"
+                additional_document_list:  
+                    type: array
+                    items:
+                        type: object
+                        required:
+                            - resource_id
+                            - filename
+                            - description
+                            - mime_type
+                            - hash
+                            - alg_hash
+                        properties:
+                            resource_id:
+                                title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
+                                type: string
+                                minLength: 1
+                            description:                            
+                                title: descrizione della risorsa
+                                type: string
+                                minLength: 1
+                            filename:                      
+                                title: filename della risorsa "documento di parere negativo"
+                                type: string
+                                minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
+                            mime_type:
+                                title: "indica il formato dei dati previsto per il documento di parere negativo"
+                                type: string
+                            hash:
+                                title: hash risorsa
+                                type: string
+                                minLength: 1
+                            alg_hash:
+                                title: algoritmo hash applicato
+                                type: string
+                                enum:
+                                - S256
+                                - S384
+                                - S512
 
         NegativeOutcome:
             type: object
             required:
-                - cui
-                - instance_descriptor_version
                 - negative_outcome_motivation
                 - conclusions_type
-                - requester_administration
-                - usecase_proceeding_list
+                - resource_id
+                - filename
+                - description
+                - mime_type
+                - hash
+                - alg_hash
             properties:
                 conclusions_type:
                     type: string
@@ -800,16 +864,9 @@ components:
                     - suspension_requested
                     - suspension_requested_for_impediments
                     - negative_outcome
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
                 negative_outcome_motivation:
                     type: string
                     minLength: 1
-                requester_administration:
-                    title: amministrazione richiedente
-                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
                     type: string
@@ -835,62 +892,36 @@ components:
                     - S256
                     - S384
                     - S512
-                usecase_proceeding_list:
-                    type: array
-                    items:
-                        type: string
-                        title: codice della fattispecie presente nel Catalogo
-                        minLength: 1
 
             example:
                 conclusions_type: "negative_outcome"
-                cui: 
-                    context: "string"
-                    sub_context: "string"
-                    data: "2024-07-10"
-                    progressive: "string"
-                    uuid: "string"
-                instance_descriptor_version: "string"
                 negative_outcome_motivation: "string"
-                requester_administration: 
-                    ipacode: "string"
-                    officecode: "string"
-                    version: "00.00.00"
-                    description: "string"
                 resource_id: "string"
                 filename: "string"
                 file_size: 1234
                 mime_type: "string"
                 hash: "string"
                 alg_hash: "S256"
-                usecase_proceeding_list: [
-                    {title: "string"}
-                ]
                 
 
         PositiveOutcome:
             required:
-                - cui
-                - instance_descriptor_version
                 - positive_outcome
                 - conclusions_type
-                - requester_administration
-                - usecase_proceeding_list
+                - resource_id
+                - filename
+                - description
+                - mime_type
+                - hash
+                - alg_hash
             properties:
                 conclusions_type:
                     type: string
                     enum: 
                     - positive_outcome
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
                 positive_outcome:
                     type: string
                     minLength: 1
-                requester_administration:
-                    title: amministrazione richiedente
-                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
                     type: string
@@ -916,12 +947,6 @@ components:
                     - S256
                     - S384
                     - S512
-                usecase_proceeding_list:
-                    type: array
-                    items:
-                        type: string
-                        title: codice della fattispecie presente nel Catalogo
-                        minLength: 1
         
         ConditionalProvision:
             type: object
