@@ -458,6 +458,14 @@ components:
                                         - S256
                                         - S384
                                         - S512
+                                    code:
+                                      title: identificativo dell'allegato presente nel Catalogo
+                                      type: string
+                                      minLength: 1
+                                    version:
+                                      title: versione dell'allegato presente nel Catalogo
+                                      type: string
+                                      minLength: 1
                                     mime_type:
                                         type: string
                                         enum: 
