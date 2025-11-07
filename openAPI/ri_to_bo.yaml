@@ -65,6 +65,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -221,6 +225,16 @@ components:
               application/json:
                 schema:
                   $ref: "#/components/schemas/Error"
+        
+        Conflict:
+            description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
 
         ServiceUnavaliable:
             description: Servizio non disponibile

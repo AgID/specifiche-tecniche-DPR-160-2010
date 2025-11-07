@@ -98,6 +98,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
@@ -172,6 +174,17 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+    
+    NotFound:
+      description: risorsa non trovata
+      headers:
+        Agid-JWT-Signature:
+          $ref: "#/components/headers/Agid-JWT-Signature"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+            
     ServerError:
       description: Errore processamento richiesta
       content:
