@@ -776,7 +776,7 @@ components:
                 event:
                     type: string
                     pattern: >-
-                        ^end_by_proceeding_time_expired|end_by_integration_times_expired|end_by_conformation_times_expired|end_by_submitter_cancel_requested|integration_request_time_expired|end_by_definitive_provision_granted|end_by_conditional_provision_rescinded|end_by_conditional_provision_denied|conditional_provision_extended|conformation_request_times_expired|end_by_observations_times_expired|integration_requested|conformation_requested|involved_et_[0-9]{1,10}$
+                        ^end_by_proceeding_time_expired|integration_response_time_expired|conformation_response_time_expired|end_by_submitter_cancel_requested|integration_request_time_expired|end_by_definitive_provision_granted|end_by_conditional_provision_rescinded|end_by_conditional_provision_denied|conditional_provision_extended|conformation_request_times_expired|end_by_observations_times_expired|integration_requested|conformation_requested|involved_et_[0-9]{1,10}$
 
         
         TransferNotifyMessage:
@@ -804,7 +804,8 @@ components:
                         - end_by_positive_outcome
                         - end_by_negative_outcome
                         - response_to_impediments_provided
-                        - end_by_integration_times_expired
+                        - integration_response_time_expired
+                        - conformation_response_time_expired
                 resource_id:
                     title: se presente, id della risorsa documento correlata all'evento notificato
                     type: string
