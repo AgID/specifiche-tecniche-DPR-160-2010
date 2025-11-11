@@ -38,7 +38,7 @@
     <bpmn:messageFlow id="Flow_0xfr1h2" sourceRef="Event_0klo9d5" targetRef="Participant_1har0bp" />
     <bpmn:messageFlow id="Flow_0w42mrr" name="Invio proroga provvedimento condizionato" sourceRef="Participant_0l0guf4" targetRef="Activity_1sr14f4" />
     <bpmn:messageFlow id="Flow_1t4jhj2" name="concluso tempo per ricevere conformazione dal presentatore" sourceRef="Activity_1ufd3aq" targetRef="Participant_0l0guf4" />
-    <bpmn:messageFlow id="Flow_1ei7u4a" name="invio esito negativo per mancata conformazione" sourceRef="Participant_0l0guf4" targetRef="Activity_1b5fvsx" />
+    <bpmn:messageFlow id="Flow_1ei7u4a" name="invio esito negativo per mancata conformazione&#10;(opzionale)" sourceRef="Participant_0l0guf4" targetRef="Activity_1b5fvsx" />
     <bpmn:textAnnotation id="TextAnnotation_0b1qudf">
       <bpmn:text>può essere fatto una sola volta</bpmn:text>
     </bpmn:textAnnotation>
@@ -644,6 +644,7 @@
     <bpmn:sequenceFlow id="Flow_1ejyrx1" sourceRef="Gateway_115gayh" targetRef="Task_0lbnso8" />
     <bpmn:sendTask id="Activity_1ufd3aq" name="segnalazione scadenza termini">
       <bpmn:incoming>Flow_02ofjtm</bpmn:incoming>
+      <bpmn:outgoing>Flow_09iv571</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics />
     </bpmn:sendTask>
     <bpmn:sequenceFlow id="Flow_02ofjtm" sourceRef="Gateway_115gayh" targetRef="Activity_1ufd3aq" />
@@ -659,6 +660,7 @@
       <bpmn:multiInstanceLoopCharacteristics isSequential="true" />
     </bpmn:receiveTask>
     <bpmn:receiveTask id="Activity_1b5fvsx" name="ricezione conclusione (scadenza T conformazione)">
+      <bpmn:incoming>Flow_09iv571</bpmn:incoming>
       <bpmn:outgoing>Flow_0u8i4kg</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics isSequential="true" />
     </bpmn:receiveTask>
@@ -668,6 +670,7 @@
       <bpmn:outgoing>Flow_1ejyrx1</bpmn:outgoing>
       <bpmn:outgoing>Flow_02ofjtm</bpmn:outgoing>
     </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_09iv571" sourceRef="Activity_1ufd3aq" targetRef="Activity_1b5fvsx" />
   </bpmn:process>
   <bpmn:process id="Process_02wpvkj" isExecutable="false" />
   <bpmn:process id="Process_0vedp0t" isExecutable="false">
@@ -1630,6 +1633,10 @@
         <di:waypoint x="2560" y="1920" />
         <di:waypoint x="2640" y="1920" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09iv571_di" bpmnElement="Flow_09iv571">
+        <di:waypoint x="2490" y="2240" />
+        <di:waypoint x="2510" y="2240" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0l0guf4_di" bpmnElement="Participant_0l0guf4" isHorizontal="true">
         <dc:Bounds x="364" y="2508" width="4536" height="262" />
       </bpmndi:BPMNShape>
@@ -1734,17 +1741,21 @@
         <di:waypoint x="2174" y="3120" />
         <di:waypoint x="2305" y="3120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1i7bwgq_di" bpmnElement="Association_1i7bwgq">
-        <di:waypoint x="2592" y="2200" />
-        <di:waypoint x="2608" y="2180" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_0b1qudf_di" bpmnElement="TextAnnotation_0b1qudf">
         <dc:Bounds x="3610" y="2160" width="99.99274099883856" height="54.587688734030195" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0gh0m9f_di" bpmnElement="TextAnnotation_0gh0m9f">
+        <dc:Bounds x="2570" y="2150" width="99.99305040770942" height="29.99907338769459" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1q8w1h1_di" bpmnElement="Association_1q8w1h1">
         <di:waypoint x="3602" y="2230" />
         <di:waypoint x="3610" y="2187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1i7bwgq_di" bpmnElement="Association_1i7bwgq">
+        <di:waypoint x="2592" y="2200" />
+        <di:waypoint x="2608" y="2180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_0xd19k7_di" bpmnElement="MessageFlow_0xd19k7" bioc:stroke="#e53935" color:border-color="#e53935">
         <di:waypoint x="440" y="1120" />
@@ -1940,13 +1951,9 @@
         <di:waypoint x="2560" y="2508" />
         <di:waypoint x="2560" y="2280" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2523" y="2511" width="73" height="53" />
+          <dc:Bounds x="2523" y="2511" width="73" height="66" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="TextAnnotation_0gh0m9f_di" bpmnElement="TextAnnotation_0gh0m9f">
-        <dc:Bounds x="2570" y="2150" width="99.99305040770942" height="29.99907338769459" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
