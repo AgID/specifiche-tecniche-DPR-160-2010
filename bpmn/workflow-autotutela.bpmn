@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1ugnoig" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.0.0" camunda:diagramRelationId="346ab264-979b-49d7-9258-c2200a0d37ce">
   <bpmn:collaboration id="Collaboration_16qexx3">
-    <bpmn:participant id="Participant_11x4iaz" name="SUAP/Front-office" processRef="Process_1" />
+    <bpmn:participant id="Participant_11x4iaz" name="SUAP" processRef="Process_1" />
     <bpmn:participant id="Participant_1har0bp" name="Registro Imprese" processRef="Process_0vxkrl1" />
     <bpmn:participant id="Participant_0otk1tz" name="Amministrazione Procedente" processRef="Process_0cfu63d" />
     <bpmn:participant id="Participant_0l0guf4" name="Ente Terzo" processRef="Process_02wpvkj" />
@@ -197,6 +197,7 @@
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_16qexx3">
       <bpmndi:BPMNShape id="Participant_11x4iaz_di" bpmnElement="Participant_11x4iaz" isHorizontal="true">
         <dc:Bounds x="364" y="452" width="2806" height="779" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_0o80d8v_di" bpmnElement="Lane_0o80d8v" isHorizontal="true">
         <dc:Bounds x="394" y="452" width="2776" height="779" />
