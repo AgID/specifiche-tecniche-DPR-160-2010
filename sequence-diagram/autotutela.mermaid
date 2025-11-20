@@ -1,0 +1,253 @@
+sequenceDiagram
+
+    participant I as Istante
+    participant S as SUAP    
+    participant AP as Amministrazione Procedente 
+    participant E as Enti Terzi   
+    participant C as Catalogo SSU 
+
+    note over AP: Amministrazione Procedente = Back-office SUAP || Autorità Competente (d. lgs. 3 aprile 2006, n. 152)
+    
+    alt annullamento di un provvedimento amministrativo adottato in violazione di legge o viziato da eccesso di potere o da incompetenza
+        note over AP: Riapertura d'ufficio o per istanza di parte
+        AP ->> S: notify(cui, instance_descriptor_version, reopen_definitive_provision, resource_id)
+        S -->> AP: ack
+        AP ->> C: audit(cui, reopen_definitive_provision)
+        C -->> AP: ack
+
+        AP ->> C: request_instance_descriptor(cui)
+        C -->> AP: instanceDescriptor
+
+        par per ogni Ente Terzo coinvolto sul procedimento
+            AP ->> E: notify(cui, instance_descriptor_version, reopen_definitive_provision, resource_id)
+            E -->> AP: ack
+            AP ->> C: audit(cui, reopen_definitive_provision_notification_to_<ET>_sended)
+            note right of AP: <ET> codice ente terzo
+            C -->> AP: ack
+            AP ->> E: send_instance(SendInstanceRequest)
+            E -->> AP: ack
+            AP ->> C: audit(cui,instance_to_<ET>_sended)
+            note right of AP: <ET> codice ente terzo 
+            C -->> AP: ack
+            opt
+                E ->> C: request_instance_descriptor(cui)
+                C -->> E: instanceDescriptor
+                loop per ogni procedimento di interesse parte dell'istanza 
+                    E ->> AP: request_instance_document(cui, resource_id)
+                    note left of E: resource_id da instance_index
+                    AP -->> E: instanceDocument
+                end
+            end
+            E ->> C: audit(cui,instance_retrived)
+            C -->> E: ack
+        end
+
+        par per ogni Ente interessato che vuole richiedere una integrazione
+            loop per ogni richiesta
+                E ->> AP: request_integration(cui, instance_descriptor_version, integration_list, resource_id)
+                AP -->> E: ack 
+                opt
+                    AP ->> E: request_instance_document(cui, resource_id)
+                    note right of AP: recupero documento di richiesta integrazione
+                    E -->> AP: instanceDocument    
+                end
+                E ->> C: audit(cui, second_provision_integration_requested_from_<ET>)
+                C -->> E: ack           
+                
+                AP ->> S: request_integration(cui, instance_descriptor_version,list_of_integration_list,integration_document_list)
+                S -->> AP: ack
+                AP ->> C: audit(cui, second_provision_integration_forwarded_from_<ET>)
+                C -->> AP: ack  
+                opt
+                    loop recupero documenti di richiesta integrazione degli ET
+                    S ->> AP: request_instance_document(cui, resource_id)
+                    note right of S: resource_id in integration_document_list
+                    AP -->> S: instanceDocument    
+                    end
+                end
+                AP -->> E: notify(second_provision_integration_requested)
+                E -->> AP: ack 
+
+                S -) I: notification(cui, second_provision_integration_requested_from_<ET>)  
+            end
+        and per ogni richiesta di integrazione gestita dal presentatore
+            loop per ogni risposta
+                I --) S: instanceIntegrated
+                S ->> AP: send_instance_updated_documents(SendUpdatedDocuments)
+                AP -->> S: ack
+                S ->> C: audit(cui, second_provision_instance_integrated_to_<AP>_sended)
+                note right of S: <AP> codice Amministrazione Procedente
+                C -->> S: ack
+                
+                loop per ogni procedimento parte dell'istanza 
+                    AP ->> S: request_instance_document(cui, resource_id)
+                    note left of AP: resource_id da instance_index
+                    S -->> AP: instanceDocument
+                end
+                AP ->> C: audit(cui, second_provision_instance_integrated_retrived)
+                C -->> AP: ack
+
+                par per ogni ente terzo interessato                
+                    AP ->> E: send_instance_updated_documents(SendUpdatedDocuments)
+                    E -->> AP: ack
+                    AP ->> C: audit(cui, second_provision_instance_integrated_to_<ET>_sended)
+                    note right of AP: <ET> codice ente terzo
+                    C -->> AP: ack
+                    loop per ogni procedimento di interesse parte dell'istanza 
+                        E ->> AP: request_instance_document(cui, resource_id)
+                        note left of E: resource_id da instance_index
+                        AP -->> E: instanceDocument
+                    end
+                    E ->> C: audit(cui, second_provision_instance_integrated_retrived)
+                    C -->> E: ack
+                end
+            end
+        end
+
+        par monitoggio della scadenza del secondo provvedimento
+            alt oltre i 12 mesi dal rilascio del primo provvedimento
+                AP ->> C: audit(cui, second_provision_time_expired)
+                C -->> AP: ack
+                par per ogni ente terzo coinvolto sul procedimento
+                    AP ->> E: notify(second_provision_time_expired)
+                    E -->> AP: ack
+                end
+            end
+        and raccolta esiti degli enti terzi
+            par per ogni ente terzo coinvolto sul procedimento
+                AP ->> E: send_conclusions(SecondProvisionOutcome)
+                E -->> AP: ack
+                opt recupero del secondo provvedimento da parte degli enti terzi
+                    E ->> AP: request_instance_document(cui, resource_id)
+                    note left of E: recupero documento del secondo provvedimento
+                    AP -->> E: instanceDocument    
+                end
+            end
+        end 
+        AP ->> S: send_conclusions(SecondProvisionOutcome)
+        S -->> AP: ack
+        opt recupero del secondo provvedimento da parte degli enti terzi
+            S ->> AP: request_instance_document(cui, resource_id)
+            note right of S: recupero documento del secondo provvedimento
+            AP -->> S: instanceDocument    
+        end
+        S -) I: SecondProvisionOutcome
+
+        alt esito positivo
+            AP ->> C: audit(cui, second_provision_positive_outcome)
+            C -->> AP: ack  
+        else esito negativo
+            AP ->> C: audit(cui, second_provision_negative_outcome)
+            C -->> AP: ack
+        end        
+
+    else annullamento di un provvedimento finale in virtù di una sentenza passata in giudicato
+        note over AP: Riapertura d'ufficio o per istanza di parte
+        alt non sono necessarie modifiche al progetto
+            alt vizi inerenti ad atti endoprocedimentali
+                note over AP: Riapertura d'ufficio o per istanza di parte
+                AP ->> S: notify(cui, instance_descriptor_version, reopen_definitive_provision, resource_id)
+                S -->> AP: ack
+                AP ->> C: audit(cui, reopen_definitive_provision)
+                C -->> AP: ack
+
+                AP ->> C: request_instance_descriptor(cui)
+                C -->> AP: instanceDescriptor
+
+                par per ogni Ente Terzo coinvolto sul procedimento
+                    AP ->> E: notify(cui, instance_descriptor_version, reopen_definitive_provision, resource_id)
+                    E -->> AP: ack
+                    AP ->> C: audit(cui, reopen_definitive_provision_notification_to_<ET>_sended)
+                    note right of AP: <ET> codice ente terzo
+                    C -->> AP: ack
+                    AP ->> E: send_instance(SendInstanceRequest)
+                    E -->> AP: ack
+                    AP ->> C: audit(cui,instance_to_<ET>_sended)
+                    note right of AP: <ET> codice ente terzo 
+                    C -->> AP: ack
+                    opt recupero delle istanze
+                        E ->> C: request_instance_descriptor(cui)
+                        C -->> E: instanceDescriptor
+                        loop per ogni procedimento di interesse parte dell'istanza 
+                            E ->> AP: request_instance_document(cui, resource_id)
+                            note left of E: resource_id da instance_index
+                            AP -->> E: instanceDocument
+                        end
+                    end
+                    E ->> C: audit(cui,instance_retrived)
+                    C -->> E: ack
+                end
+
+                par per ogni ente terzo che deve colmare i vizi endoprocedimentali
+                    AP ->> E: request_integration(cui, instance_descriptor_version, integration_list, resource_id)
+                    E -->> AP: ack 
+                    opt recupero documenti di integrazione
+                        E ->> AP: request_instance_document(cui, resource_id)
+                        note left of E: recupero documento di richiesta integrazione
+                        AP -->> E: instanceDocument    
+                    end
+                    AP ->> C: audit(cui, second_provision_integration_requested_to_<ET>)
+                    C -->> AP: ack           
+                end
+
+                alt entro i tempi concessi per provvedere alle integrazioni
+                    par per ogni ente terzo che ha gestito la richiesta di integrazione
+                        E ->> AP: send_instance_updated_documents(SendUpdatedDocuments)
+                        AP -->> E: ack
+                        E ->> C: audit(cui, second_provision_instance_integrated_to_<AP>_sended)
+                        note right of E: <AP> codice Amministrazione Procedente
+                        C -->> E: ack
+                        
+                        loop per ogni procedimento parte dell'istanza 
+                            AP ->> E: request_instance_document(cui, resource_id)
+                            note right of AP: resource_id da instance_index
+                            E -->> AP: instanceDocument
+                        end
+                        AP ->> C: audit(cui, second_provision_instance_integrated_retrived_from_<ET>)
+                        C -->> AP: ack
+                    end
+                else oltre i tempi per provvedere alle integrazioni
+                    par per ogni ente terzo che deve colmare i vizi endoprocedimentali
+                        AP ->> E: notify(second_provision_integration_response_time_expired)
+                        E -->> AP: ack
+                        AP ->> C: audit(cui, second_provision_integration_response_time_expired)
+                        C -->> AP: ack
+                    end
+                end
+
+                AP ->> S: send_conclusions(SecondProvisionOutcome)
+                S -->> AP: ack
+                opt recupero del secondo provvedimento da parte degli enti terzi
+                    S ->> AP: request_instance_document(cui, resource_id)
+                    note right of S: recupero documento del secondo provvedimento
+                    AP -->> S: instanceDocument    
+                end
+                S -) I: SecondProvisionOutcome
+
+                alt esito positivo
+                    AP ->> C: audit(cui, second_provision_positive_outcome)
+                    C -->> AP: ack  
+                else esito negativo
+                    AP ->> C: audit(cui, second_provision_negative_outcome)
+                    C -->> AP: ack
+                end        
+
+            else false rappresentazione dei fatti inoltrati dall'Istante
+                AP ->> S: send_conclusions(SecondProvisionOutcome)
+                Note left of AP: Annullamento d'ufficio
+                S -->> AP: ack
+                opt recupero del secondo provvedimento da parte degli enti terzi
+                    S ->> AP: request_instance_document(cui, resource_id)
+                    note right of S: recupero documento del secondo provvedimento
+                    AP -->> S: instanceDocument    
+                end
+                S -) I: SecondProvisionOutcome
+                AP ->> C: audit(cui, second_provision_negative_outcome)
+                C -->> AP: ack
+            end
+
+        else sono necessarie modifiche al progetto
+            note over I, E: procedimento non annullabile
+        end
+
+    end
