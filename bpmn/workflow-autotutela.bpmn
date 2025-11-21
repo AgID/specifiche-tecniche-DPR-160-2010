@@ -32,6 +32,10 @@
     </bpmn:textAnnotation>
     <bpmn:association id="Association_09d09m1" associationDirection="None" sourceRef="Activity_0ajzy2w" targetRef="TextAnnotation_01toslq" />
     <bpmn:association id="Association_19msytm" associationDirection="None" sourceRef="Activity_1dut90k" targetRef="TextAnnotation_1ptdfw9" />
+    <bpmn:textAnnotation id="TextAnnotation_14c89r2">
+      <bpmn:text>vengono presentate le motivazioni di riapertura del procedimento</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0fpb651" associationDirection="None" sourceRef="Activity_0bbxexw" targetRef="TextAnnotation_14c89r2" />
   </bpmn:collaboration>
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:laneSet id="LaneSet_1wdnd0m">
@@ -51,6 +55,7 @@
       <bpmn:incoming>Flow_0yliqe7</bpmn:incoming>
       <bpmn:outgoing>Flow_10tykf1</bpmn:outgoing>
       <bpmn:outgoing>Flow_09keetw</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0qkir5f</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:receiveTask id="Activity_0et3c7d" name="Ricezione notifica di riapertura">
       <bpmn:outgoing>Flow_0yliqe7</bpmn:outgoing>
@@ -62,6 +67,7 @@
     </bpmn:intermediateCatchEvent>
     <bpmn:callActivity id="Activity_0mdbroi" name="Fornitura dati richiesti">
       <bpmn:incoming>Flow_1e1fp6g</bpmn:incoming>
+      <bpmn:incoming>Flow_0qkir5f</bpmn:incoming>
       <bpmn:outgoing>Flow_0hai7sx</bpmn:outgoing>
     </bpmn:callActivity>
     <bpmn:intermediateThrowEvent id="Event_1v6rmk5" name="Inoltro integrazioni">
@@ -73,6 +79,7 @@
     <bpmn:task id="Activity_0pbe6px" name="Ricezione secondo provvedimento">
       <bpmn:incoming>Flow_09keetw</bpmn:incoming>
     </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0qkir5f" sourceRef="Gateway_0faxwkg" targetRef="Activity_0mdbroi" />
   </bpmn:process>
   <bpmn:process id="Process_0vxkrl1" isExecutable="false" />
   <bpmn:process id="Process_0cfu63d" isExecutable="false">
@@ -110,7 +117,6 @@
         <bpmn:flowNodeRef>Gateway_1j06qnb</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_09aao5u</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_15qmhva</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_1umt86z</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:sequenceFlow id="Flow_0xu4n7e" sourceRef="Activity_0negs4x" targetRef="Activity_0bbxexw" />
@@ -219,12 +225,14 @@
       <bpmn:outgoing>Flow_05fvylf</bpmn:outgoing>
       <bpmn:outgoing>Flow_0kru9vi</bpmn:outgoing>
       <bpmn:outgoing>Flow_14fdod0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ldup21</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:intermediateThrowEvent id="Event_0vr22ra" name="Invio richiesta di integrazioni">
-      <bpmn:incoming>Flow_0ywi4tr</bpmn:incoming>
+      <bpmn:incoming>Flow_1fmyfqu</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0j82ktq" />
     </bpmn:intermediateThrowEvent>
     <bpmn:intermediateCatchEvent id="Event_0cymk1e" name="Ricezione integrazioni">
+      <bpmn:incoming>Flow_0ldup21</bpmn:incoming>
       <bpmn:outgoing>Flow_0dvm28m</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_18ikrs9" />
     </bpmn:intermediateCatchEvent>
@@ -245,7 +253,7 @@
       <bpmn:incoming>Flow_0dvm28m</bpmn:incoming>
       <bpmn:outgoing>Flow_0bvcx8v</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_1fmyfqu" sourceRef="Activity_0bd8jp6" targetRef="Gateway_1umt86z" />
+    <bpmn:sequenceFlow id="Flow_1fmyfqu" sourceRef="Activity_0bd8jp6" targetRef="Event_0vr22ra" />
     <bpmn:sequenceFlow id="Flow_0dvm28m" sourceRef="Event_0cymk1e" targetRef="Activity_1xpn14t" />
     <bpmn:sequenceFlow id="Flow_004xssx" sourceRef="Event_12b09h8" targetRef="Activity_0bd8jp6" />
     <bpmn:sequenceFlow id="Flow_0bvcx8v" sourceRef="Activity_1xpn14t" targetRef="Event_00vaxlm" />
@@ -296,11 +304,7 @@
       <bpmn:incoming>Flow_0t8psgu</bpmn:incoming>
       <bpmn:terminateEventDefinition id="TerminateEventDefinition_1naknfl" />
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0ywi4tr" sourceRef="Gateway_1umt86z" targetRef="Event_0vr22ra" />
-    <bpmn:parallelGateway id="Gateway_1umt86z">
-      <bpmn:incoming>Flow_1fmyfqu</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ywi4tr</bpmn:outgoing>
-    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_0ldup21" sourceRef="Gateway_0rzjruo" targetRef="Event_0cymk1e" />
   </bpmn:process>
   <bpmn:process id="Process_02wpvkj" isExecutable="false" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -359,6 +363,12 @@
       <bpmndi:BPMNEdge id="Flow_0hai7sx_di" bpmnElement="Flow_0hai7sx">
         <di:waypoint x="2040" y="1030" />
         <di:waypoint x="2102" y="1030" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qkir5f_di" bpmnElement="Flow_0qkir5f">
+        <di:waypoint x="1370" y="875" />
+        <di:waypoint x="1370" y="920" />
+        <di:waypoint x="2000" y="920" />
+        <di:waypoint x="2000" y="990" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_1har0bp_di" bpmnElement="Participant_1har0bp" isHorizontal="true">
         <dc:Bounds x="364" y="86" width="1869" height="243" />
@@ -512,9 +522,6 @@
           <dc:Bounds x="2820" y="2010" width="70" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_18rktdm_di" bpmnElement="Gateway_1umt86z">
-        <dc:Bounds x="1851" y="1575" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0xu4n7e_di" bpmnElement="Flow_0xu4n7e">
         <di:waypoint x="1250" y="1920" />
         <di:waypoint x="1370" y="1920" />
@@ -630,7 +637,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fmyfqu_di" bpmnElement="Flow_1fmyfqu">
         <di:waypoint x="1876" y="1680" />
-        <di:waypoint x="1876" y="1625" />
+        <di:waypoint x="1876" y="1518" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0dvm28m_di" bpmnElement="Flow_0dvm28m">
         <di:waypoint x="2120" y="1518" />
@@ -672,9 +679,12 @@
         <di:waypoint x="2430" y="2102" />
         <di:waypoint x="2430" y="2055" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ywi4tr_di" bpmnElement="Flow_0ywi4tr">
-        <di:waypoint x="1876" y="1575" />
-        <di:waypoint x="1876" y="1518" />
+      <bpmndi:BPMNEdge id="Flow_0ldup21_di" bpmnElement="Flow_0ldup21">
+        <di:waypoint x="1590" y="1945" />
+        <di:waypoint x="1590" y="1980" />
+        <di:waypoint x="2010" y="1980" />
+        <di:waypoint x="2010" y="1500" />
+        <di:waypoint x="2102" y="1500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0l0guf4_di" bpmnElement="Participant_0l0guf4" isHorizontal="true">
         <dc:Bounds x="364" y="2760" width="2566" height="200" />
@@ -686,6 +696,10 @@
       <bpmndi:BPMNEdge id="Association_09d09m1_di" bpmnElement="Association_09d09m1">
         <di:waypoint x="820" y="2450" />
         <di:waypoint x="860" y="2410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0fpb651_di" bpmnElement="Association_0fpb651">
+        <di:waypoint x="1390" y="1880" />
+        <di:waypoint x="1430" y="1835" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1b5qryb_di" bpmnElement="Flow_1b5qryb">
         <di:waypoint x="1200" y="1880" />
@@ -780,6 +794,10 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_01toslq_di" bpmnElement="TextAnnotation_01toslq">
         <dc:Bounds x="860" y="2380" width="200" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_14c89r2_di" bpmnElement="TextAnnotation_14c89r2">
+        <dc:Bounds x="1430" y="1808" width="220" height="44" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

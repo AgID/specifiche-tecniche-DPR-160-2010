@@ -1,6 +1,6 @@
 sequenceDiagram
 
-    participant I as Istante
+    participant P as Presentatore
     participant S as SUAP    
     participant AP as Amministrazione Procedente 
     participant E as Enti Terzi   
@@ -18,16 +18,29 @@ sequenceDiagram
         AP ->> C: request_instance_descriptor(cui)
         C -->> AP: instanceDescriptor
 
+        opt
+            P --) S: instanceIntegrated
+            S ->> AP: send_instance_updated_documents(SendUpdatedDocuments)
+            AP -->> S: ack
+            S ->> C: audit(cui, second_provision_instance_integrated_to_<AP>_sended)
+            note right of S: <AP> codice Amministrazione Procedente
+            C -->> S: ack
+            
+            loop per ogni procedimento parte dell'istanza 
+                AP ->> S: request_instance_document(cui, resource_id)
+                note left of AP: resource_id da instance_index
+                S -->> AP: instanceDocument
+            end
+            AP ->> C: audit(cui, second_provision_instance_integrated_retrived)
+            C -->> AP: ack
+        end
+
         par per ogni Ente Terzo coinvolto sul procedimento
-            AP ->> E: notify(cui, instance_descriptor_version, reopen_definitive_provision, resource_id)
+            AP ->> E: reopen_proceeding(cui, ReopenProceedingDocument, SendUpdatedDocuments)
+            note right of AP: ReopenProceedingDocument = documento che attesta le motivazioni di riapertura del procedimento || SendUpdatedDocuments = integrazioni spontanee dell'Istante
             E -->> AP: ack
             AP ->> C: audit(cui, reopen_definitive_provision_notification_to_<ET>_sended)
             note right of AP: <ET> codice ente terzo
-            C -->> AP: ack
-            AP ->> E: send_instance(SendInstanceRequest)
-            E -->> AP: ack
-            AP ->> C: audit(cui,instance_to_<ET>_sended)
-            note right of AP: <ET> codice ente terzo 
             C -->> AP: ack
             opt
                 E ->> C: request_instance_descriptor(cui)
@@ -68,11 +81,11 @@ sequenceDiagram
                 AP -->> E: notify(second_provision_integration_requested)
                 E -->> AP: ack 
 
-                S -) I: notification(cui, second_provision_integration_requested_from_<ET>)  
+                S --) P: notification(cui, second_provision_integration_requested_from_<ET>)  
             end
         and per ogni richiesta di integrazione gestita dal presentatore
             loop per ogni risposta
-                I --) S: instanceIntegrated
+                P --) S: instanceIntegrated
                 S ->> AP: send_instance_updated_documents(SendUpdatedDocuments)
                 AP -->> S: ack
                 S ->> C: audit(cui, second_provision_instance_integrated_to_<AP>_sended)
@@ -122,6 +135,9 @@ sequenceDiagram
                     note left of E: recupero documento del secondo provvedimento
                     AP -->> E: instanceDocument    
                 end
+                AP ->> C: audit(cui, outcome_received_from_<ET>)
+                note right of AP: <ET> codice ente terzo
+                C -->> AP: ack
             end
         end 
         AP ->> S: send_conclusions(SecondProvisionOutcome)
@@ -131,7 +147,7 @@ sequenceDiagram
             note right of S: recupero documento del secondo provvedimento
             AP -->> S: instanceDocument    
         end
-        S -) I: SecondProvisionOutcome
+        S --) P: SecondProvisionOutcome
 
         alt esito positivo
             AP ->> C: audit(cui, second_provision_positive_outcome)
@@ -222,7 +238,7 @@ sequenceDiagram
                     note right of S: recupero documento del secondo provvedimento
                     AP -->> S: instanceDocument    
                 end
-                S -) I: SecondProvisionOutcome
+                S --) P: SecondProvisionOutcome
 
                 alt esito positivo
                     AP ->> C: audit(cui, second_provision_positive_outcome)
@@ -241,7 +257,7 @@ sequenceDiagram
                     note right of S: recupero documento del secondo provvedimento
                     AP -->> S: instanceDocument    
                 end
-                S -) I: SecondProvisionOutcome
+                S --) P: SecondProvisionOutcome
                 AP ->> C: audit(cui, second_provision_negative_outcome)
                 C -->> AP: ack
             end
