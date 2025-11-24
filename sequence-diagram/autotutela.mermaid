@@ -18,7 +18,7 @@ sequenceDiagram
         AP ->> C: request_instance_descriptor(cui)
         C -->> AP: instanceDescriptor
 
-        opt
+        opt 
             P --) S: instanceIntegrated
             S ->> AP: send_instance_updated_documents(SendUpdatedDocuments)
             AP -->> S: ack
@@ -33,11 +33,12 @@ sequenceDiagram
             end
             AP ->> C: audit(cui, second_provision_instance_integrated_retrived)
             C -->> AP: ack
-        end
+            note over P, AP: Concedere un tempo congruo per presentare le integrazioni spontanee
+        end  
 
         par per ogni Ente Terzo coinvolto sul procedimento
             AP ->> E: reopen_proceeding(cui, ReopenProceedingDocument, SendUpdatedDocuments)
-            note right of AP: ReopenProceedingDocument = documento che attesta le motivazioni di riapertura del procedimento || SendUpdatedDocuments = integrazioni spontanee dell'Istante
+            note right of AP: ReopenProceedingDocument = documento che attesta le motivazioni di riapertura del procedimento || SendUpdatedDocuments = integrazioni spontanee del Presentatore
             E -->> AP: ack
             AP ->> C: audit(cui, reopen_definitive_provision_notification_to_<ET>_sended)
             note right of AP: <ET> codice ente terzo
