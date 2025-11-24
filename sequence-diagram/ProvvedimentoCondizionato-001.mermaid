@@ -52,8 +52,6 @@ sequenceDiagram
         F -->> B: ack
         B ->> C: audit(cui,conformation_requested)
         C -->> B: ack
-        B ->> C: request_update_times(cui,times)
-        Note right of B: Aggiorna i tempi procedimentali incrementandoli di X giorni, dove X è max_gg_conf_resp dell'oggetto Times
         C -->> B: instanceDescriptor
         opt
             loop recupero documenti di richiesta di conformazione degli ET
@@ -92,7 +90,7 @@ sequenceDiagram
             B ->> C: audit(cui,instance_conformated_retrived)
             C -->> B: ack
             B ->> C: request_update_times(cui,times)
-            Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per la conformazione e i giorni passati dall'invio della richiesta
+            Note right of B: Ricominciano a decorrere i tempi procedimentali, facendoli ripartire da zero, dalla data in cui il privato comunica le conformazioni richieste
             C -->> B: instanceDescriptor
             par per ogni ente terzo interessato                
                 B ->> E: send_instance(SendInstanceRequest)
