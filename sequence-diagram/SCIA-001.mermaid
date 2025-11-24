@@ -55,6 +55,8 @@ sequenceDiagram
         F -->> B: ack
         B ->> C: audit(cui,conformation_requested)
         C -->> B: ack
+        B ->> C: request_update_times(cui,times)
+        Note right of B: Aggiorna i tempi procedimentali incrementandoli di X giorni, dove X è max_gg_conf_resp dell'oggetto Times
         C -->> B: instanceDescriptor
         opt
             loop recupero documenti di richiesta di conformazione degli ET
