@@ -1,0 +1,41 @@
+sequenceDiagram 
+    autonumber
+    actor P as Presentatore    
+    participant F as FrontOffice SUAP
+    participant B as BackOffice SUAP
+    participant C as Catalogo SSU        
+    participant E as Enti Terzi
+
+    note over B,E: Indizione CdSS
+    E ->> B: request_conference(xyz)    
+    B -->> E: ack
+    E ->> C: audit
+    C -->> E: ack
+    loop per ogni conferenza necessaria 
+        opt se non sono già state trasmesse le istanze
+            B ->> E: send_instance(SendInstanceRequest)
+            E -->> B: ack    
+            loop per ogni documento di interesse parte dell'istanza 
+                E ->> B: request_instance_document(cui, resource_id)
+                note left of E: resource_id da instance_index
+                B -->> E: instanceDocument
+            end
+        end
+        B ->> E: conference_convocation(xyz)
+        E -->> B: ack
+        B ->> C: audit(cdss_convened)
+        C -->> B: ack
+    end
+    B ->> E: inoltro_determinazione(xyz)
+    E -->> B: ack
+    opt
+        E ->> B: request_instance_document(cui, resource_id)
+        B -->> E: instanceDocument
+    end
+    B ->> F: inoltro_determinazione(xyz)
+    F -->> B: ack
+    opt
+        F ->> B: request_instance_document(cui, resource_id)
+        B -->> F: instanceDocument
+    end
+    F ->> P: notify(provvedimento_cdss)

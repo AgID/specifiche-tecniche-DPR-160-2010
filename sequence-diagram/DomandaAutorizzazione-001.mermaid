@@ -39,6 +39,20 @@ sequenceDiagram
         
         B ->> C: audit(cui,cdss_convened)
         C -->> B: ack
+    else CdS Semplificata da SUAP AND SUAP ente procedente
+        opt 
+            B ->> C: request_update_times(cui,times)
+            C -->> B: instanceDescriptor
+        end 
+        B ->> F: notify(cui, instance_descriptor_version,cds_async_convened)
+        F -->> B: ack    
+        par per ogni ente terzo interessato
+            B ->> E: notify(cui, instance_descriptor_version,cds_async_convened)
+            E -->> B: ack
+        end
+        
+        B ->> C: audit(cui,cds_async_convened)
+        C -->> B: ack
     else No CdSS da SUAP
         alt ET non è ente procedente e almeno un ET richiede CdSS entro i tempi
             par almeno un ente terzo
