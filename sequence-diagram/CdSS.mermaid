@@ -1,18 +1,14 @@
 sequenceDiagram 
     autonumber
-    actor P as Presentatore    
     participant F as FrontOffice SUAP
     participant B as BackOffice SUAP
-    participant C as Catalogo SSU        
     participant E as Enti Terzi
+    participant C as Catalogo SSU   
 
     note over B,E: Indizione CdSS
-    E ->> B: request_conference(xyz)    
-    B -->> E: ack
-    E ->> C: audit
-    C -->> E: ack
-    loop per ogni conferenza necessaria 
-        opt se non sono già state trasmesse le istanze
+
+    opt se non sono state ancora inoltrate le istanze
+        par per ogni ente terzo coinvolto sul procedimento
             B ->> E: send_instance(SendInstanceRequest)
             E -->> B: ack    
             loop per ogni documento di interesse parte dell'istanza 
@@ -21,21 +17,58 @@ sequenceDiagram
                 B -->> E: instanceDocument
             end
         end
-        B ->> E: conference_convocation(xyz)
+    end
+    
+    par per ogni ente terzo coinvolto sul procedimento
+        B ->> E: convocation_cdss(cui, resource_id)    
         E -->> B: ack
-        B ->> C: audit(cdss_convened)
+
+        B ->> C: audit(cdss_convocation_sent_to_<ET>)
         C -->> B: ack
-    end
-    B ->> E: inoltro_determinazione(xyz)
-    E -->> B: ack
-    opt
+
         E ->> B: request_instance_document(cui, resource_id)
+        note left of E: recupero del documento di convocazione CDSS
         B -->> E: instanceDocument
+
+        E ->> C: audit(cdss_convocation_received)
+        
+        C -->> E: ack
     end
-    B ->> F: inoltro_determinazione(xyz)
+
+    opt se non sono state risolte le criticità legate alla determinazione del provvedimento
+        loop per ogni altra conferenza necessaria 
+            B ->> E: convocation_cdss(cui, resource_id)    
+            E -->> B: ack
+
+            E ->> B: request_instance_document(cui, resource_id)
+            note left of E: recupero del documento di convocazione CDSS
+            B -->> E: instanceDocument
+        end
+    end
+
+    note over B,E: CDSS conclusa
+    par per ogni ente terzo coinvolto sul procedimento
+        B ->> E: cdss_resolution_forward(cui, resource_id)
+        E -->> B: ack
+        B ->> C: audit(cdss_resolution_sent_to_<ET>)
+        C -->> B: ack
+        opt
+            E ->> B: request_instance_document(cui, resource_id)
+            note left of E: recupero del documento di determinazione conclusiva CDSS
+            B -->> E: instanceDocument
+            E ->> C: audit(cdss_resolution_retrieved)
+            C -->> E: ack
+        end
+    end
+
+    B ->> F: cdss_resolution_forward(cui, resource_id)
     F -->> B: ack
+    B ->> C: audit(cdss_resolution_sent)
+    C -->> B: ack
     opt
         F ->> B: request_instance_document(cui, resource_id)
+        note right of F: recupero del documento di determinazione conclusiva CDSS
         B -->> F: instanceDocument
     end
-    F ->> P: notify(provvedimento_cdss)
+    F ->> C: audit(cdss_resolution_retrieved)
+    C -->> F: ack
