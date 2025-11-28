@@ -2,8 +2,8 @@ sequenceDiagram
 
     participant P as Presentatore
     participant F as Front-office SUAP    
-    participant B as Back-office SUAP
-    participant E as Enti Terzi   
+    participant B as Back-office SUAP    
+    participant E as Enti Terzi
     participant C as Catalogo SSU 
 
     
@@ -12,31 +12,39 @@ sequenceDiagram
         B ->> F: notify(NotifyMessage)
         note left of B: NotifyMessage.event = reopen_definitive_provision
         F -->> B: ack
-        loop per ogni documento presente
-            F ->> B: request_instance_document(cui, resource_id)
-            B -->> F: instanceDocument
-        end
+
         B ->> C: audit(cui, reopen_definitive_provision)
         C -->> F: ack
+
+        opt
+            loop per ogni documento presente
+                F ->> B: request_instance_document(cui, resource_id)
+                B -->> F: instanceDocument
+            end
+        end
 
         B ->> C: request_instance_descriptor(cui)
         C -->> B: instanceDescriptor
 
         opt 
+            note over P, B: Concedere un tempo congruo per presentare le integrazioni spontanee
             P --) F: instanceIntegrated
             F ->> B: send_instance_updated_documents(SendUpdatedDocuments)
             B -->> F: ack
+
             F ->> C: audit(cui, second_provision_instance_integrated_to_<BO>_sended)
             note right of F: <BO> codice Back-office SUAP
             C -->> F: ack
             
-            loop per ogni integrazione ricevuta 
-                B ->> F: request_instance_document(cui, resource_id)
-                F -->> B: instanceDocument
+            opt 
+                loop per ogni integrazione ricevuta 
+                    B ->> F: request_instance_document(cui, resource_id)
+                    F -->> B: instanceDocument
+                end
             end
+
             F ->> C: audit(cui, second_provision_instance_integrated_retrived)
             C -->> F: ack
-            note over P, B: Concedere un tempo congruo per presentare le integrazioni spontanee
         end  
 
         par per ogni Ente Terzo coinvolto sul procedimento
@@ -47,23 +55,22 @@ sequenceDiagram
             B ->> C: audit(cui, reopen_definitive_provision_notification_to_<ET>_sended)
             note right of B: <ET> codice ente terzo
             C -->> B: ack
+
             opt recupero del documento di riapertura
-                E ->> C: request_instance_descriptor(cui)
-                C -->> E: instanceDescriptor
                 loop per ogni documento presente
                     E ->> B: request_instance_document(cui, resource_id)
                     B -->> E: instanceDocument
                 end
             end
+
             E ->> C: audit(cui,reopen_proceeding_documents_received)
             C -->> E: ack
         end
 
-        
         alt il procedimento deve essere gestito tramite AUTORIZZAZIONE
-            note over F, E: avvio del sotto-processo per gestire il workflow AUTORIZZAZIONE per gestire le istruttorie degli Enti Terzi (a partire dalla ricezione delle istanze)
+            note over F, E: avvio del sotto-processo per gestire per gestire le istruttorie degli Enti Terzi secondo quanto definito dal workflow AUTORIZZAZIONE (a partire dalla ricezione delle istanze fino all'inoltro del parere)
         else il procedimento deve essere gestito tramite SCIA
-            note over F, E: avvio del sotto-processo per gestire il workflow SCIA per gestire le istruttorie degli Enti Terzi (a partire dalla ricezione delle istanze)
+            note over F, E: avvio del sotto-processo per gestire per gestire le istruttorie degli Enti Terzi secondo quanto definito dal workflow SCIA (a partire dalla ricezione delle istanze fino all'inoltro del parere)
         end
 
         par monitoggio della scadenza del secondo provvedimento
@@ -79,11 +86,13 @@ sequenceDiagram
             par per ogni ente terzo coinvolto sul procedimento
                 E ->> B: send_conclusions(SecondProvisionOutcome)
                 B -->> E: ack
+
                 opt recupero del secondo provvedimento degli enti terzi
                     B ->> E: request_instance_document(cui, resource_id)
                     note right of B: recupero documento del secondo provvedimento
                     E -->> B: instanceDocument    
                 end
+
                 B ->> C: audit(cui, outcome_received_from_<ET>)
                 note right of B: <ET> codice ente terzo
                 C -->> B: ack
@@ -92,6 +101,7 @@ sequenceDiagram
 
         B ->> F: send_conclusions(SecondProvisionOutcome)
         F -->> B: ack
+
         opt recupero del secondo provvedimento
             F ->> B: request_instance_document(cui, resource_id)
             note right of F: recupero documento del secondo provvedimento
@@ -115,10 +125,14 @@ sequenceDiagram
                 B ->> F: notify(NotifyMessage)
                 note left of B: NotifyMessage.event = reopen_definitive_provision
                 F -->> B: ack
-                loop per ogni documento presente
-                    F ->> B: request_instance_document(cui, resource_id)
-                    B -->> F: instanceDocument
+
+                opt
+                    loop per ogni documento presente
+                        F ->> B: request_instance_document(cui, resource_id)
+                        B -->> F: instanceDocument
+                    end
                 end
+
                 B ->> C: audit(cui, reopen_definitive_provision)
                 C -->> B: ack
 
@@ -130,19 +144,17 @@ sequenceDiagram
                     note right of B: ReopenProceedingNotification = include il documento che attesta le motivazioni di riapertura del procedimento e le integrazioni richieste per colmare i vizi endoprocedimentali
                     E -->> B: ack
                     
-
                     B ->> C: audit(cui, reopen_definitive_provision_notification_to_<ET>_sended)
                     note right of B: <ET> codice ente terzo
                     C -->> B: ack
                     
                     opt recupero del documento di riapertura
-                        E ->> C: request_instance_descriptor(cui)
-                        C -->> E: instanceDescriptor
                         loop per ogni documento presente
                             E ->> B: request_instance_document(cui, resource_id)
                             B -->> E: instanceDocument
                         end
                     end
+
                     E ->> C: audit(cui,reopen_proceeding_documents_received)
                     C -->> E: ack
                 end
@@ -151,11 +163,13 @@ sequenceDiagram
                     par per ogni ente terzo che deve colmare i vizi endoprocedimentali
                         E ->> B: send_conclusions(SecondProvisionOutcome)
                         B -->> E: ack
+
                         opt recupero del secondo provvedimento degli enti terzi
                             B ->> E: request_instance_document(cui, resource_id)
                             note right of B: recupero documento del secondo provvedimento
                             E -->> B: instanceDocument    
                         end
+
                         B ->> C: audit(cui, outcome_received_from_<ET>)
                         note right of B: <ET> codice ente terzo
                         C -->> B: ack
@@ -164,6 +178,7 @@ sequenceDiagram
                     par per ogni ente terzo che deve colmare i vizi endoprocedimentali
                         B ->> E: notify(second_provision_response_time_expired)
                         E -->> B: ack
+
                         B ->> C: audit(cui, second_provision_response_time_expired)
                         C -->> B: ack
                     end
@@ -171,11 +186,11 @@ sequenceDiagram
 
                 B ->> F: send_conclusions(SecondProvisionOutcome)
                 F -->> B: ack
-                opt recupero del secondo provvedimento da parte degli enti terzi
-                    F ->> B: request_instance_document(cui, resource_id)
-                    note right of S: recupero documento del secondo provvedimento
-                    B -->> F: instanceDocument    
-                end
+
+                F ->> B: request_instance_document(cui, resource_id)
+                note right of F: recupero documento del secondo provvedimento
+                B -->> F: instanceDocument    
+
                 F --) P: SecondProvisionOutcome
 
                 alt esito positivo
@@ -194,14 +209,14 @@ sequenceDiagram
                 B ->> C: audit(cui, reopen_definitive_provision_notification_to_<ET>_sended)
                 note right of B: <ET> codice ente terzo
                 C -->> B: ack
+
                 opt
-                    E ->> C: request_instance_descriptor(cui)
-                    C -->> E: instanceDescriptor
                     E ->> B: request_instance_document(cui, resource_id)
                     note left of E: recupero del documento di annullamento d'ufficio
                     B -->> E: instanceDocument
                     
                 end
+                
                 E ->> C: audit(cui,instance_retrived)
                 C -->> E: ack
 
@@ -209,11 +224,13 @@ sequenceDiagram
                     par per ogni ente terzo coinvolto sul procedimento
                         E ->> B: send_conclusions(SecondProvisionOutcome)
                         B -->> E: ack
+
                         opt recupero del secondo provvedimento degli enti terzi
                             B ->> E: request_instance_document(cui, resource_id)
                             note right of B: recupero documento del secondo provvedimento
                             E -->> B: instanceDocument    
                         end
+
                         B ->> C: audit(cui, outcome_received_from_<ET>)
                         note right of B: <ET> codice ente terzo
                         C -->> B: ack
@@ -230,12 +247,13 @@ sequenceDiagram
                 B ->> F: send_conclusions(SecondProvisionOutcome)
                 Note left of B: Annullamento d'ufficio
                 F -->> B: ack
-                opt recupero del secondo provvedimento da parte degli enti terzi
-                    F ->> B: request_instance_document(cui, resource_id)
-                    note right of F: recupero documento del secondo provvedimento
-                    B -->> F: instanceDocument    
-                end
+
+                F ->> B: request_instance_document(cui, resource_id)
+                note right of F: recupero documento del secondo provvedimento
+                B -->> F: instanceDocument    
+
                 F --) P: SecondProvisionOutcome
+
                 B ->> C: audit(cui, second_provision_negative_outcome)
                 C -->> F: ack
             end
