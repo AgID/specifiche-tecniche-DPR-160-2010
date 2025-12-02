@@ -67,7 +67,53 @@ paths:
 
       tags:
         - Context
+  /tags:
+    get:
+      description: Recupero dei possibili valori del contesto di riferimento
 
+      responses:
+        "200":
+          description: Elenco dei possibili valori dei tag dei procedimenti
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - tag
+                    - description
+                  properties:
+                    tag:
+                      title: id del tag
+                      type: string
+                    description:
+                      title: descrizione del tag
+                      type: string
+
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Tags
+        
   /typologies-lifeevents/{context}:
     get:
       description: Recupero elenco tipologie ed eventi della vita dei procedimenti
@@ -1516,6 +1562,71 @@ paths:
 
       tags:
         - Bulk
+        
+  /proceedings-by-municipality/{municipality_list}/{context}/{tags}:
+    get:
+      description: |
+        Recupero bulk elenco procedimenti(tutte le versioni) per una lista di comuni
+      parameters:
+        - in: path
+          name: municipality_list
+          description: elenco dei comuni per le quali la risorsa è richiesta
+          required: true
+          schema: 
+            type: array
+            items:
+              type: string
+            maxItems: 50
+          style: simple
+        - in: path
+          name: context
+          description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
+        - in: path
+          name: tags
+          description: elenco dei tag per i quali la risorsa è richiesta
+          required: true
+          schema: 
+            type: array
+            items:
+              type: string
+            maxItems: 50
+          style: simple            
+
+      responses:
+        "200":
+          description: Elenco dei procedimenti richiesti
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Proceeding"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - Bulk        
 
   /proceedings-by-id/{id_proceeding_list}:
     get:
@@ -2907,9 +3018,11 @@ components:
             context:
               title: contesto di riferimento (SUAP, SUE, ZES)
               type: string
-            procedimento_cers:
-              title: flag per identificare i procedimenti per i quali sussiste l'obbligo di contestualità.
-              type: boolean              
+            tags:
+              title: id dei tags che caratterizzano i procedimenti
+              type: array
+              items:
+                type: string            
             flag_competent_administration_special:
               title: il procedimento che gli enti competenti hanno funzioni suap
               type: boolean
