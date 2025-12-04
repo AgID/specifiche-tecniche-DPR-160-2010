@@ -637,7 +637,7 @@
       <bpmn:outgoing>Flow_0xd8aer</bpmn:outgoing>
       <bpmn:outgoing>Flow_1pai6as</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_09a97gf" name="CdS (pareri almeno da due amministrazioni)" sourceRef="Gateway_1szibkb" targetRef="Gateway_09bfsn6" />
+    <bpmn:sequenceFlow id="Flow_09a97gf" name="ho necessità di indire una CdS e devo ricevere i pareri almeno da due amministrazioni" sourceRef="Gateway_1szibkb" targetRef="Gateway_09bfsn6" />
     <bpmn:sequenceFlow id="SequenceFlow_0pa0bzc" name="OK" sourceRef="ExclusiveGateway_0f7kx2r" targetRef="Task_17mf4pa" />
     <bpmn:sendTask id="Task_17mf4pa" name="richiesta parere">
       <bpmn:incoming>SequenceFlow_0pa0bzc</bpmn:incoming>
@@ -1043,9 +1043,6 @@
       <bpmndi:BPMNShape id="ExclusiveGateway_0kxukle_di" bpmnElement="ExclusiveGateway_0kxukle" isMarkerVisible="true">
         <dc:Bounds x="3323" y="1824" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0bu330y_di" bpmnElement="Activity_0q2rp1a">
-        <dc:Bounds x="510" y="2250" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_04z4fsu_di" bpmnElement="Activity_0d2kf8p">
         <dc:Bounds x="3440" y="1640" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -1251,6 +1248,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1oxxn9k_di" bpmnElement="Gateway_1oxxn9k" isMarkerVisible="true">
         <dc:Bounds x="2915" y="2165" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bu330y_di" bpmnElement="Activity_0q2rp1a">
+        <dc:Bounds x="510" y="2250" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0uirvm3_di" bpmnElement="TextAnnotation_0uirvm3">
         <dc:Bounds x="355" y="1942" width="149" height="75" />
@@ -1626,7 +1626,7 @@
         <di:waypoint x="696" y="2050" />
         <di:waypoint x="585" y="2050" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="600" y="2000" width="81" height="40" />
+          <dc:Bounds x="599" y="1960" width="83" height="80" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0pa0bzc_di" bpmnElement="SequenceFlow_0pa0bzc">
@@ -1662,7 +1662,7 @@
         <di:waypoint x="3110" y="2340" />
         <di:waypoint x="3168" y="2340" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2859" y="2230" width="81" height="40" />
+          <dc:Bounds x="2839" y="2210" width="81" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1yeyzty_di" bpmnElement="Flow_1yeyzty">

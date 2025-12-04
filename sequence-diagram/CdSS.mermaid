@@ -20,7 +20,7 @@ sequenceDiagram
     end
     
     par per ogni ente terzo coinvolto sul procedimento
-        B ->> E: convocation_cdss(cui, resource_id)    
+        B ->> E: notify(cui, instance_descriptor_version,cdss_convened)    
         E -->> B: ack
 
         B ->> C: audit(cdss_convocation_sent_to_<ET>)
@@ -34,11 +34,13 @@ sequenceDiagram
         
         C -->> E: ack
     end
+    B ->> C: audit(cui,cdss_convened)
+    C -->> B: ack
 
     opt se non sono state risolte le criticità legate alla determinazione del provvedimento
         loop per ogni altra conferenza necessaria 
             par per ogni ente terzo coinvolto sul procedimento
-                B ->> E: convocation_cdss(cui, resource_id)    
+                B ->> E: notify(cui, instance_descriptor_version,cdss_convened)   
                 E -->> B: ack
                 opt
                     E ->> B: request_instance_document(cui, resource_id)
@@ -71,7 +73,7 @@ sequenceDiagram
         
         note over B, E: le obiezioni vengono ricevute e gestite mediante canali esterni all'SSU <br> secondo quanto definito dalla norma (Legge 241/90 Art.14-quinquies)
         
-        B ->> E: cdss_resolution_update(cui, resource_id)
+        B ->> E: cdss_resolution_forward(cui, resource_id)
         note right of B: resource_id = determinazione conclusiva aggiornata
         E -->> B: ack
         B ->> C: audit(cdss_resolution_update_sent_to_<ET>)

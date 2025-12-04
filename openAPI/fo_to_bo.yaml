@@ -259,6 +259,55 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /cdss_resolution_forward:
+        post:
+            description: Trasferimento della determinazione conclusiva della Conferenza dei servizi sincrona.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:	
+                                - cui
+                                - instance_descriptor_version
+                                - cdss_resolution
+                            properties:
+                              cui:
+                                  $ref: "#/components/schemas/cui"
+                              instance_descriptor_version:
+                                  type: string
+                              cdss_resolution:  	
+                                  $ref: "#/components/schemas/CdssResolution"
+                              outcome:  
+                                  type: string
+                                  enum: 
+                                    - positive_outcome
+                                    - negative_outcome
+                              date:
+                                  title: data di trasferimento della determinazione conclusiva
+                                  type: string
+                                  format: date
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
 components:
     responses:
         OKRequest:
@@ -673,6 +722,8 @@ components:
                         - transferred_instance
                         - end_by_instance_deleted_for_cu_fail_link
                         - end_by_instance_deleted_for_cu_fail_check
+                        - cds_istruttoria_convened
+                        - cds_decisoria_convened
 
         TransferNotifyMessage:
             type: object
@@ -896,6 +947,45 @@ components:
                     - S256
                     - S384
                     - S512
+
+        CdssResolution:
+            type: object
+            required:
+                - resource_id
+                - mime_type
+                - hash
+                - alg_hash
+            properties:
+                resource_id:
+                    title: id della risorsa del documento della determinazione conclusiva della cdss
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename della risorsa del documento della determinazione conclusiva della cdss
+                    type: string
+                    minLength: 1
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                file_size:
+                    description: dimensione del file
+                    type: integer
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+                unanimous_decision:
+                    title: dichiara se la determinazione è stata approvata all'unanimità o sulla base delle posizioni prevalenti.
+                    type: boolean
                     
     headers:
         Agid-JWT-Signature:

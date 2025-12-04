@@ -180,8 +180,61 @@ paths:
                         schema:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
+                                - $ref: "#/components/schemas/CdsNotifyMessage"
                                 - $ref: "#/components/schemas/CdssNotifyMessage"
                                 - $ref: "#/components/schemas/TransferNotifyMessage"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+    /cdss_resolution_forward:
+        post:
+            description: Trasferimento della determinazione conclusiva della Conferenza dei servizi sincrona.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:	
+                                - cui
+                                - instance_descriptor_version
+                                - cdss_resolution
+                            properties:
+                              cui:
+                                  $ref: "#/components/schemas/cui"
+                              instance_descriptor_version:
+                                  type: string
+                              cdss_resolution:  	
+                                  $ref: "#/components/schemas/CdssResolution"
+                              outcome:  
+                                  type: string
+                                  enum: 
+                                    - positive_outcome
+                                    - negative_outcome
+                              resolution_update:
+                                  description: definisce se si tratta del primo trasferimento della determinazione conclusiva o del suo aggiornamento (Art. 14-quinquies)
+                                  type: boolean
+                              date:
+                                  title: data di trasferimento della determinazione conclusiva
+                                  type: string
+                                  format: date
                 required: true
             responses:
                 "200":
@@ -736,6 +789,45 @@ components:
                         - Cdss
                         - Istruttoria 
         
+        CdssResolution:
+            type: object
+            required:
+                - resource_id
+                - mime_type
+                - hash
+                - alg_hash
+            properties:
+                resource_id:
+                    title: id della risorsa del documento della determinazione conclusiva della cdss
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename della risorsa del documento della determinazione conclusiva della cdss
+                    type: string
+                    minLength: 1
+                mime_type:
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                file_size:
+                    description: dimensione del file
+                    type: integer
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+                unanimous_decision:
+                    title: dichiara se la determinazione è stata approvata all'unanimità o sulla base delle posizioni prevalenti.
+                    type: boolean
+        
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
             type: object
@@ -875,33 +967,33 @@ components:
               requester_administration:
                 title: amministrazione richiedente
                 $ref: "#/components/schemas/AdministrationSchema"
-
-        CdssNotifyMessage:
+    
+        CdsNotifyMessage:
             allOf:
               - $ref: "#/components/schemas/NotifyMessage"
               - type: object
                 required:
-                    - cdss_channel
-                    - cdss_convocation
+                    - event
                 properties:
                     event:
                         type: string
                         enum:
-                            - cdss_convened
+                            - cds_istruttoria_convened
+                            - cds_decisoria_convened
                     filename:                      
-                        title: filename dell'atto amministrativo
+                        title: filename dell'atto amministrativo di indizione della conferenza
                         type: string
                         minLength: 1
                     mime_type:
-                        title: "indica il formato dei dati previsto per l'atto amministrativo"
+                        title: indica il formato dei dati previsto per l'atto amministrativo
                         type: string
                         minLength: 1
                     resource_id:
-                        title: se presente, id della risorsa documento correlata all'evento notificato
+                        title: id della risorsa documento di indizione della conferenza
                         type: string
                         minLength: 1
                     file_size:
-                        description: Dimensione del file.
+                        description: dimensione del file
                         type: integer
                     hash:
                         title: hash risorsa
@@ -914,6 +1006,19 @@ components:
                         - S256
                         - S384
                         - S512
+
+        CdssNotifyMessage:
+            allOf:
+              - $ref: "#/components/schemas/CdsNotifyMessage"
+              - type: object
+                required:
+                    - cdss_channel
+                    - cdss_convocation
+                properties:
+                    event:
+                        type: string
+                        enum:
+                            - cdss_convened
                     cdss_channel:
                         type: string
                         title: "canale utilizzato per la convocazione della Conferenza dei Servizi Sincrona"
