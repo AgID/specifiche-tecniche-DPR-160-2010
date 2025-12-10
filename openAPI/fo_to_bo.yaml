@@ -724,6 +724,7 @@ components:
                         - end_by_instance_deleted_for_cu_fail_check
                         - cds_istruttoria_convened
                         - cds_decisoria_convened
+                        - cds_preliminare_convened
 
         TransferNotifyMessage:
             type: object

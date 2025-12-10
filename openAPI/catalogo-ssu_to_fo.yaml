@@ -255,7 +255,7 @@ components:
         message:
           type: string
           pattern: >-
-            ^receipt_sended|instance_to_[0-9]{1,10}_sended|corrected_instance_to_[0-9]{1,10}_sended|instance_integrated_to_[0-9]{1,10}_sended|submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_request_correction|retry_requested_for_request_integration|retry_requested_for_request_conformation|retry_requested_for_notify|instance_conformated_to_[0-9]{1,10}_sended|cu_fail_link|cu_fail_check|communication_fo_to_bo|cdss_resolution_retrieved$
+            ^receipt_sended|instance_to_[0-9]{1,10}_sended|corrected_instance_to_[0-9]{1,10}_sended|instance_integrated_to_[0-9]{1,10}_sended|submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_request_correction|retry_requested_for_request_integration|retry_requested_for_request_conformation|retry_requested_for_notify|instance_conformated_to_[0-9]{1,10}_sended|cu_fail_link|cu_fail_check|communication_fo_to_bo|cdss_resolution_retrieved|preliminary_resolution_observations_forwarded$
     
         event_time:
           title: timestamp del momento in cui si è verificato l'evento
@@ -320,6 +320,18 @@ components:
           format: int32
         max_gg_concl_send:          
           title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
+          type: integer
+          format: int32
+        max_gg_cds_pre_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi preliminare
+          type: integer
+          format: int32
+        max_gg_cds_istr_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi istruttoria
+          type: integer
+          format: int32
+        max_gg_cds_dec_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi decisoria
           type: integer
           format: int32
         max_gg_cdss_req:          

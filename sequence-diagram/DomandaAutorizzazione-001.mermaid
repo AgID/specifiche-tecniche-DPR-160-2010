@@ -25,7 +25,73 @@ sequenceDiagram
         C -->> E: ack
     end
 
-    alt CdSS da SUAP AND SUAP ente procedente
+    alt CdS Preliminare da SUAP su richiesta motivata del Presentatore
+        opt i termini possono essere abbreviati fino alla metà
+            B ->> C: request_update_times(cui,times)
+            C -->> B: instanceDescriptor
+        end
+        B ->> F: notify(cui, instance_descriptor_version,cds_preliminare_convened)
+        F -->> B: ack    
+        par per ogni ente terzo interessato
+            B ->> E: notify(cui, instance_descriptor_version,cds_preliminare_convened)
+            E -->> B: ack
+        end
+        
+        B ->> C: audit(cui,cds_preliminare_convened)
+        C -->> B: ack
+
+        note over B, E: entro il termine entro il quale le amministrazioni devono rendere le proprie determinazioni
+        par per ogni ente terzo coinvolto
+            opt se non si applica silenzio assenso
+                E ->> B: notify(PreliminaryResolutionMessage)
+                B -->> E: ack
+                opt
+                    B ->> E: request_instance_document(cui, resource_id)
+                    note right of B: recupero documento di determinazione preliminare
+                    E -->> B: instanceDocument    
+                end
+                alt parere esplicito positivo
+                    E ->> C: audit(cui,positive_cds_preliminary_resolution_sent_from_<ET>)
+                    C -->> E: ack
+                else parere esplicito negativo
+                    E ->> C: audit(cui,negative_cds_preliminary_resolution_sent_from_<ET>)
+                    C -->> E: ack
+                end
+            end       
+        end
+
+        B ->> F: notify(PreliminaryResolutionMessage)
+        F -->> B: ack  
+        F ->> B: request_instance_document(cui, resource_id)
+        B ->> F: instanceDocument
+
+        alt determinazione positiva
+            B ->> C: audit(cui,positive_cds_preliminary_resolution)
+            C -->> B: ack
+        else determinazione negativa
+            B ->> C: audit(cui,negative_cds_preliminary_resolution)
+            C -->> B: ack
+        end
+
+        opt se ci sono osservazioni dal Presentatore
+            P --) F: observations_to_preliminary_resolution
+            F ->> B: notify(PreliminaryResolutionObservationMessage)
+            B -->> F: ack  
+            B ->> F: request_instance_document(cui, resource_id)
+            F ->> B: instanceDocument
+            F ->> C: audit(cui,preliminary_resolution_observations_forwarded)
+            C -->> F: ack
+        end
+
+        opt 
+            B ->> C: request_update_times(cui,times)
+            C -->> B: instanceDescriptor
+        end 
+        B ->> F: notify(cui, instance_descriptor_version,cdss_convened)
+        F -->> B: ack    
+        note over B, E: gestione della CDSS mediante sequence-diagram CdSS-mermaid
+    
+    else CdSS da SUAP AND SUAP ente procedente
         opt 
             B ->> C: request_update_times(cui,times)
             C -->> B: instanceDescriptor

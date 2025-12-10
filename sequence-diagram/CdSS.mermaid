@@ -7,7 +7,7 @@ sequenceDiagram
 
     note over B,E: Indizione CdSS
 
-    opt se non sono state ancora inoltrate le istanze
+    opt se non sono state ancora inoltrate le istanze o ci sono aggiornamenti
         par per ogni ente terzo coinvolto sul procedimento
             B ->> E: send_instance(SendInstanceRequest)
             E -->> B: ack    

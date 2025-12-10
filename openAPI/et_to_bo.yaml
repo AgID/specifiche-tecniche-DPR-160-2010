@@ -875,6 +875,7 @@ components:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
+                - $ref: "#/components/schemas/PreliminaryResolutionMessage"
                 - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
                 - $ref: "#/components/schemas/GenericCommunicationMessage"
                         
@@ -937,6 +938,17 @@ components:
                         - end_by_positive_outcome
                         - end_by_negative_outcome
         
+        PreliminaryResolutionMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - positive_cds_preliminary_resolution
+                        - negative_cds_preliminary_resolution
+        
         ObservationsToImpedimentsMessage:
             type: object
             allOf:
@@ -980,6 +992,7 @@ components:
                         enum:
                             - cds_istruttoria_convened
                             - cds_decisoria_convened
+                            - cds_preliminare_convened
                     filename:                      
                         title: filename dell'atto amministrativo di indizione della conferenza
                         type: string
