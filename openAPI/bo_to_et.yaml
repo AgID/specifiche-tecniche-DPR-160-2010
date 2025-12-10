@@ -334,6 +334,7 @@ paths:
                             oneOf:
                                 - $ref: "#/components/schemas/CdssNotifyMessage"
                                 - $ref: "#/components/schemas/NotifyMessage"
+                                - $ref: "#/components/schemas/PreliminaryResolutionMessage"
                 required: true
             responses:
                 "200":
@@ -1181,6 +1182,43 @@ components:
                         type: string
                         format: date
                         minLength: 1
+        
+        PreliminaryResolutionMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/NotifyMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - positive_cds_preliminary_resolution
+                        - negative_cds_preliminary_resolution
+                resource_id:
+                    title: id della risorsa del documento di determinazione della CdS Preliminare 
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename della risorsa del documento di determinazione della CdS Preliminare 
+                    type: string
+                    minLength: 1
+                mime_type:
+                    title: indica il formato dei dati previsto per il documento di determinazione
+                    type: string
+                    minLength: 1
+                file_size:
+                    description: dimensione del file
+                    type: integer
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
         
     headers:
         Agid-JWT-Signature:
