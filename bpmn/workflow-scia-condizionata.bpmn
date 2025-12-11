@@ -127,10 +127,11 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_06k8q8c" associationDirection="None" sourceRef="Task_0q3u43v" targetRef="TextAnnotation_1s2u1uu" />
     <bpmn:association id="Association_14p9351" associationDirection="None" sourceRef="TextAnnotation_1qqlbzd" targetRef="Activity_1fb8c87" />
-    <bpmn:textAnnotation id="TextAnnotation_0atf0k1">
-      <bpmn:text>opzionale</bpmn:text>
+    <bpmn:textAnnotation id="TextAnnotation_1kylzov">
+      <bpmn:text>Integrazione -&gt; Riavvio Tempi
+Conformazione -&gt; Reset Tempi</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_0jgux0x" associationDirection="None" sourceRef="Activity_1e4yr8u" targetRef="TextAnnotation_0atf0k1" />
+    <bpmn:association id="Association_188h8zn" associationDirection="None" sourceRef="Task_0rm2beb" targetRef="TextAnnotation_1kylzov" />
   </bpmn:collaboration>
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:laneSet id="LaneSet_1wdnd0m">
@@ -754,7 +755,7 @@ AUTORIZZAZIONE -&gt; integrazione</bpmn:text>
       <bpmn:incoming>Flow_0s4z7h2</bpmn:incoming>
       <bpmn:messageEventDefinition />
     </bpmn:intermediateThrowEvent>
-    <bpmn:serviceTask id="Task_0rm2beb" name="Riavvio tempi procedimento">
+    <bpmn:serviceTask id="Task_0rm2beb" name="Riavvio/Reset tempi procedimento">
       <bpmn:incoming>SequenceFlow_0ti1inq</bpmn:incoming>
       <bpmn:incoming>Flow_0mmxd45</bpmn:incoming>
       <bpmn:incoming>Flow_1ejlbeu</bpmn:incoming>

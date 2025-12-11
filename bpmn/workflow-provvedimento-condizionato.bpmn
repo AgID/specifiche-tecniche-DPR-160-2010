@@ -559,7 +559,7 @@
       <bpmn:outgoing>Flow_0um10f9</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_074ppzk" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:serviceTask id="Task_0rm2beb" name="Riavvio tempi procedimento">
+    <bpmn:serviceTask id="Task_0rm2beb" name="Reset tempi procedimento">
       <bpmn:incoming>SequenceFlow_0ti1inq</bpmn:incoming>
       <bpmn:outgoing>Flow_1f1wi88</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -1186,6 +1186,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0xisgyy_di" bpmnElement="Task_0rm2beb">
         <dc:Bounds x="2226" y="1580" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_19eo39h" bpmnElement="Event_0klo9d5">
         <dc:Bounds x="4602" y="1772" width="36" height="36" />
