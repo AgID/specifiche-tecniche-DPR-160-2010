@@ -112,15 +112,29 @@ sequenceDiagram
                     E -->> B: ack
                 end  
                 alt oltre il tempo di integrazione del presentatore
-                    B ->> F: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
+                    B ->> F: notify(cui, instance_descriptor_version, integration_response_time_expired)
                     F -->> B: ack
                     par per ogni ente terzo interessato
-                        B ->> E: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
+                        B ->> E: notify(cui, instance_descriptor_version, integration_response_time_expired)
                         E -->> B: ack
                     end
-                    B ->> C: audit(cui,end_by_integration_request_time_expired)
+                    B ->> C: audit(cui, integration_response_time_expired)
                     C -->> B: ack
-                    F -) P: notification(cui,end_by_integration_times_expired)
+
+                    opt invio provvedimento finale per mancata conformazione
+                        E ->> B: send_conclusions(NegativeOutcome)
+                        B -->> E: ack 
+                        E ->> C: audit(cui,negative_outcome_sended_from_<ET>)
+                        C -->> E: ack
+                        opt
+                            B ->> E: request_instance_document(cui, resource_id)
+                            note right of B: recupero documento di parere negativo
+                            E -->> B: instanceDocument    
+                        end 
+                    end  
+
+                    B ->> F: notify(cui, instance_descriptor_version, end_by_integration_time_expired)
+                    F -) P: notification(cui, end_by_integration_time_expired)
                 else entro il tempo di integrazione del presentatore 
                     P --) F: instanceIntegrated
                     F ->> B: send_instance_updated_documents(SendUpdatedDocuments)
