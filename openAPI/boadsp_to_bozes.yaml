@@ -264,17 +264,22 @@ components:
                     items:
                         type: object
                         required:
-                        - code
+                        - usec_code
+                        - usec_version
                         - ref
                         - description
                         - resource_id
                         - hash
                         - alg_hash
                         properties:
-                            code:                            
+                            usec_code:                            
                                 title: codice della fattispecie presente nel Catalogo
                                 type: string
                                 minLength: 1
+                            usec_version:
+                              title: versione della fattispecie presente nel Catalogo
+                              type: string
+                              minLength: 1
                             ref:                            
                                 title: riferimento all'elemento dell'istanza relativo al procedimento
                                 type: string

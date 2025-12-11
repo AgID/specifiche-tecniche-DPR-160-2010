@@ -41,6 +41,8 @@
     <bpmn:messageFlow id="Flow_11q4lz4" name="Convocazione CDSS (Se ET = Ente procedente)" sourceRef="Participant_0l0guf4" targetRef="Activity_0vbwtix" />
     <bpmn:messageFlow id="Flow_0c0pj76" sourceRef="Activity_088knrs" targetRef="Activity_01re19t" />
     <bpmn:messageFlow id="Flow_1yqh3jd" sourceRef="Activity_01re19t" targetRef="Task_0lbnso8" />
+    <bpmn:messageFlow id="Flow_0uzo5ik" name="concluso tempo per ricevere conformazione/integrazione dal presentatore" sourceRef="Activity_13x181b" targetRef="Participant_0l0guf4" />
+    <bpmn:messageFlow id="Flow_1o73xrb" name="invio esito negativo per mancata conformazione/integrazione&#10;(opzionale)" sourceRef="Participant_0l0guf4" targetRef="Activity_1e4yr8u" />
     <bpmn:textAnnotation id="TextAnnotation_1d1sdbt">
       <bpmn:text>Conferenza di Servizi Sincrona invocata da SUAP dopo raccolta pareri</bpmn:text>
     </bpmn:textAnnotation>
@@ -350,7 +352,6 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
         <bpmn:flowNodeRef>EndEvent_15gsz30</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_0kxukle</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_18yscom</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_19z3uek</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_13g52gj</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0by9fsr</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0a416nk</bpmn:flowNodeRef>
@@ -383,6 +384,10 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
         <bpmn:flowNodeRef>Event_0fos3r8</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0vbwtix</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_088knrs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_02wjeiv</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_13x181b</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1e4yr8u</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_19z3uek</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:intermediateThrowEvent id="Event_0cefuad" name="CdSS">
@@ -528,7 +533,7 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
     <bpmn:sequenceFlow id="Flow_1pvelvv" sourceRef="Task_1wksm3i" targetRef="Gateway_0gmzigr" />
     <bpmn:sequenceFlow id="SequenceFlow_1avk21c" name="KO" sourceRef="ExclusiveGateway_0f7kx2r" targetRef="IntermediateThrowEvent_095kpu7" />
     <bpmn:sequenceFlow id="SequenceFlow_1dlfx3c" sourceRef="IntermediateThrowEvent_095kpu7" targetRef="ExclusiveGateway_0kxukle" />
-    <bpmn:sequenceFlow id="Flow_1jrd0b8" name="scaduti i tempi e non ricevuti i documenti di integrazione/conformazione" sourceRef="Gateway_1m851z7" targetRef="ExclusiveGateway_0kxukle" />
+    <bpmn:sequenceFlow id="Flow_1jrd0b8" name="scaduti i tempi e non ricevuti i documenti di integrazione/conformazione" sourceRef="Gateway_1m851z7" targetRef="Gateway_02wjeiv" />
     <bpmn:sequenceFlow id="Flow_0ett40u" sourceRef="Gateway_0gmzigr" targetRef="ExclusiveGateway_0kxukle" />
     <bpmn:sequenceFlow id="SequenceFlow_09fsldm" sourceRef="IntermediateThrowEvent_0pyrek7" targetRef="Task_0lbnso8" />
     <bpmn:sequenceFlow id="Flow_0emv8o2" name="(t max richieste ET AND (rET1 OR rET2 OR  rETn)) OR (rET1 AND rET2 AND rETn)" sourceRef="Gateway_0gmzigr" targetRef="Task_0aowb4n" />
@@ -624,10 +629,11 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
       <bpmn:outgoing>Flow_03zgxwn</bpmn:outgoing>
     </bpmn:subProcess>
     <bpmn:exclusiveGateway id="ExclusiveGateway_0kxukle">
-      <bpmn:incoming>Flow_1jrd0b8</bpmn:incoming>
       <bpmn:incoming>Flow_0ett40u</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1dlfx3c</bpmn:incoming>
       <bpmn:incoming>Flow_0o0f82m</bpmn:incoming>
+      <bpmn:incoming>Flow_1iwncg8</bpmn:incoming>
+      <bpmn:incoming>Flow_1q2h73d</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0jsvis0</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:receiveTask id="Activity_18yscom" name="ricezione motivi ostativi">
@@ -635,12 +641,6 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
       <bpmn:outgoing>Flow_0y266u6</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics isSequential="true" />
     </bpmn:receiveTask>
-    <bpmn:exclusiveGateway id="Gateway_19z3uek">
-      <bpmn:incoming>Flow_17w75cz</bpmn:incoming>
-      <bpmn:incoming>Flow_13n9pc3</bpmn:incoming>
-      <bpmn:outgoing>Flow_1c0avk3</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0yy847y</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
     <bpmn:sendTask id="Task_13g52gj" name="inoltro conclusione">
       <bpmn:incoming>Flow_153tnf6</bpmn:incoming>
       <bpmn:multiInstanceLoopCharacteristics />
@@ -820,6 +820,31 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
     <bpmn:task id="Activity_088knrs" name="Fermo tempi del procedimento">
       <bpmn:incoming>Flow_1ku3jw7</bpmn:incoming>
     </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1iwncg8" sourceRef="Gateway_02wjeiv" targetRef="ExclusiveGateway_0kxukle" />
+    <bpmn:sequenceFlow id="Flow_1wechif" sourceRef="Gateway_02wjeiv" targetRef="Activity_13x181b" />
+    <bpmn:parallelGateway id="Gateway_02wjeiv">
+      <bpmn:incoming>Flow_1jrd0b8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1iwncg8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1wechif</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sendTask id="Activity_13x181b" name="segnalazione scadenza termini">
+      <bpmn:incoming>Flow_1wechif</bpmn:incoming>
+      <bpmn:outgoing>Flow_14cocz3</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics />
+    </bpmn:sendTask>
+    <bpmn:receiveTask id="Activity_1e4yr8u" name="ricezione conclusione (scadenza T conformazione/integrazione)">
+      <bpmn:incoming>Flow_14cocz3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q2h73d</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true" />
+    </bpmn:receiveTask>
+    <bpmn:sequenceFlow id="Flow_1q2h73d" sourceRef="Activity_1e4yr8u" targetRef="ExclusiveGateway_0kxukle" />
+    <bpmn:exclusiveGateway id="Gateway_19z3uek">
+      <bpmn:incoming>Flow_17w75cz</bpmn:incoming>
+      <bpmn:incoming>Flow_13n9pc3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1c0avk3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0yy847y</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_14cocz3" sourceRef="Activity_13x181b" targetRef="Activity_1e4yr8u" />
     <bpmn:textAnnotation id="TextAnnotation_12lg7a0">
       <bpmn:text>Conferenza di Servizi Sincrona richiesta  da almeno un ET</bpmn:text>
     </bpmn:textAnnotation>
@@ -1313,9 +1338,6 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
         <dc:Bounds x="3042" y="2170" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_19z3uek_di" bpmnElement="Gateway_19z3uek" isMarkerVisible="true">
-        <dc:Bounds x="3257" y="1755" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="SendTask_18tjwgs_di" bpmnElement="Task_13g52gj">
         <dc:Bounds x="3815" y="2150" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -1413,7 +1435,6 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0xisgyy_di" bpmnElement="Task_0rm2beb">
         <dc:Bounds x="2282" y="1570" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1tk2w3q_di" bpmnElement="Gateway_1m851z7" isMarkerVisible="true">
         <dc:Bounds x="2307" y="1705" width="50" height="50" />
@@ -1457,6 +1478,20 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
       <bpmndi:BPMNShape id="BPMNShape_1n280z4" bpmnElement="Activity_088knrs">
         <dc:Bounds x="3485" y="2330" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0jo1xj6_di" bpmnElement="Gateway_02wjeiv">
+        <dc:Bounds x="2725" y="1705" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_136v2qu" bpmnElement="Activity_13x181b">
+        <dc:Bounds x="2700" y="2160" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0wsxq8f" bpmnElement="Activity_1e4yr8u">
+        <dc:Bounds x="2820" y="2160" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_19z3uek_di" bpmnElement="Gateway_19z3uek" isMarkerVisible="true">
+        <dc:Bounds x="3257" y="1785" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_12lg7a0_di" bpmnElement="TextAnnotation_12lg7a0">
         <dc:Bounds x="1630" y="1630" width="130" height="59" />
@@ -1538,10 +1573,9 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jrd0b8_di" bpmnElement="Flow_1jrd0b8">
         <di:waypoint x="2357" y="1730" />
-        <di:waypoint x="3865" y="1730" />
-        <di:waypoint x="3865" y="1839" />
+        <di:waypoint x="2725" y="1730" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2691" y="1657" width="82" height="66" />
+          <dc:Bounds x="2574" y="1657" width="81" height="66" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ett40u_di" bpmnElement="Flow_0ett40u">
@@ -1726,12 +1760,12 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
         <di:waypoint x="3665" y="1889" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yy847y_di" bpmnElement="Flow_0yy847y">
-        <di:waypoint x="3307" y="1780" />
-        <di:waypoint x="3452" y="1780" />
+        <di:waypoint x="3307" y="1810" />
+        <di:waypoint x="3452" y="1810" />
         <di:waypoint x="3452" y="1840" />
         <di:waypoint x="3615" y="1840" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="3289" y="1750" width="89" height="27" />
+          <dc:Bounds x="3289" y="1780" width="89" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1muu81u_di" bpmnElement="SequenceFlow_1muu81u">
@@ -1778,18 +1812,18 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
       <bpmndi:BPMNEdge id="Flow_17w75cz_di" bpmnElement="Flow_17w75cz">
         <di:waypoint x="3312" y="1621" />
         <di:waypoint x="3282" y="1621" />
-        <di:waypoint x="3282" y="1755" />
+        <di:waypoint x="3282" y="1785" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13n9pc3_di" bpmnElement="Flow_13n9pc3">
         <di:waypoint x="3232" y="1608" />
-        <di:waypoint x="3232" y="1780" />
-        <di:waypoint x="3257" y="1780" />
+        <di:waypoint x="3232" y="1810" />
+        <di:waypoint x="3257" y="1810" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1c0avk3_di" bpmnElement="Flow_1c0avk3">
-        <di:waypoint x="3282" y="1805" />
+        <di:waypoint x="3282" y="1835" />
         <di:waypoint x="3282" y="2170" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="3211" y="2126" width="62" height="27" />
+          <dc:Bounds x="3211" y="2128" width="62" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0g4bvag_di" bpmnElement="Flow_0g4bvag">
@@ -1902,6 +1936,22 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
         <di:waypoint x="3460" y="2370" />
         <di:waypoint x="3485" y="2370" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1iwncg8_di" bpmnElement="Flow_1iwncg8">
+        <di:waypoint x="2775" y="1730" />
+        <di:waypoint x="3865" y="1730" />
+        <di:waypoint x="3865" y="1839" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wechif_di" bpmnElement="Flow_1wechif">
+        <di:waypoint x="2750" y="1755" />
+        <di:waypoint x="2750" y="2160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q2h73d_di" bpmnElement="Flow_1q2h73d">
+        <di:waypoint x="2870" y="2160" />
+        <di:waypoint x="2870" y="1750" />
+        <di:waypoint x="3830" y="1750" />
+        <di:waypoint x="3830" y="1849" />
+        <di:waypoint x="3855" y="1849" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_089mzkj_di" bpmnElement="Association_089mzkj">
         <di:waypoint x="1712" y="1714" />
         <di:waypoint x="1701" y="1689" />
@@ -1909,6 +1959,10 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
       <bpmndi:BPMNEdge id="Association_0b9c5h4_di" bpmnElement="Association_0b9c5h4">
         <di:waypoint x="419" y="2036" />
         <di:waypoint x="408" y="2017" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14cocz3_di" bpmnElement="Flow_14cocz3">
+        <di:waypoint x="2800" y="2200" />
+        <di:waypoint x="2820" y="2200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0l0guf4_di" bpmnElement="Participant_0l0guf4" isHorizontal="true">
         <dc:Bounds x="314" y="2508" width="3956" height="262" />
@@ -2016,10 +2070,6 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
         <di:waypoint x="2124" y="3030" />
         <di:waypoint x="2255" y="3030" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_188h8zn_di" bpmnElement="Association_188h8zn">
-        <di:waypoint x="2381" y="1643" />
-        <di:waypoint x="2420" y="1670" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1d1sdbt_di" bpmnElement="TextAnnotation_1d1sdbt">
         <dc:Bounds x="3695" y="1518" width="135" height="70" />
       </bpmndi:BPMNShape>
@@ -2048,7 +2098,7 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_15v4lct_di" bpmnElement="TextAnnotation_15v4lct">
-        <dc:Bounds x="2850" y="2120" width="140" height="30" />
+        <dc:Bounds x="2950" y="2120" width="140" height="30" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_150bdda_di" bpmnElement="TextAnnotation_150bdda">
@@ -2076,7 +2126,7 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1jb4cw0_di" bpmnElement="TextAnnotation_1jb4cw0">
-        <dc:Bounds x="2870" y="2000" width="120" height="30" />
+        <dc:Bounds x="2930" y="1930" width="120" height="30" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0bbqouu_di" bpmnElement="TextAnnotation_0bbqouu">
@@ -2102,6 +2152,10 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
       <bpmndi:BPMNShape id="TextAnnotation_1c5ocu9_di" bpmnElement="TextAnnotation_1c5ocu9">
         <dc:Bounds x="477" y="3083" width="534" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0atf0k1_di" bpmnElement="TextAnnotation_0atf0k1">
+        <dc:Bounds x="2800" y="2110" width="100" height="30" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0zcyjqi_di" bpmnElement="Association_0zcyjqi">
         <di:waypoint x="3677" y="1608" />
         <di:waypoint x="3696" y="1588" />
@@ -2115,8 +2169,8 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
         <di:waypoint x="1640" y="1739" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_01h9k3i_di" bpmnElement="Association_01h9k3i">
-        <di:waypoint x="3042" y="2185" />
-        <di:waypoint x="2971" y="2150" />
+        <di:waypoint x="3058" y="2170" />
+        <di:waypoint x="3041" y="2150" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0nmirvh_di" bpmnElement="Association_0nmirvh">
         <di:waypoint x="1856" y="1475" />
@@ -2135,8 +2189,8 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
         <di:waypoint x="4097" y="1393" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_06wuotf_di" bpmnElement="Association_06wuotf">
-        <di:waypoint x="3042" y="2032" />
-        <di:waypoint x="2990" y="2023" />
+        <di:waypoint x="3050" y="2001" />
+        <di:waypoint x="3008" y="1960" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1yg9ewu_di" bpmnElement="Association_1yg9ewu">
         <di:waypoint x="3332" y="2186" />
@@ -2177,6 +2231,10 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
       <bpmndi:BPMNEdge id="Association_14p9351_di" bpmnElement="Association_14p9351">
         <di:waypoint x="2678" y="1877" />
         <di:waypoint x="2636" y="1888" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0jgux0x_di" bpmnElement="Association_0jgux0x">
+        <di:waypoint x="2860" y="2160" />
+        <di:waypoint x="2830" y="2140" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_0xd19k7_di" bpmnElement="MessageFlow_0xd19k7" bioc:stroke="#e53935" color:border-color="#e53935">
         <di:waypoint x="409" y="895" />
@@ -2387,10 +2445,20 @@ Conformazione -&gt; Reset Tempi</bpmn:text>
         <di:waypoint x="3630" y="1960" />
         <di:waypoint x="3630" y="1889" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="TextAnnotation_1kylzov_di" bpmnElement="TextAnnotation_1kylzov">
-        <dc:Bounds x="2420" y="1650" width="219.9964103382259" height="40.8423739629866" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0uzo5ik_di" bpmnElement="Flow_0uzo5ik">
+        <di:waypoint x="2750" y="2240" />
+        <di:waypoint x="2750" y="2508" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2706" y="2517" width="88" height="66" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1o73xrb_di" bpmnElement="Flow_1o73xrb">
+        <di:waypoint x="2870" y="2508" />
+        <di:waypoint x="2870" y="2240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2828" y="2526" width="84" height="80" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1dyxsjx">
