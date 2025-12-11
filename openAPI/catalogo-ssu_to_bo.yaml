@@ -63,6 +63,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
@@ -113,6 +115,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
@@ -139,6 +143,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
@@ -202,6 +208,17 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+    
+    NotFound:
+      description: risorsa non trovata
+      headers:
+        Agid-JWT-Signature:
+          $ref: "#/components/headers/Agid-JWT-Signature"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      
     ServerError:
       description: Errore processamento richiesta
       content:
@@ -256,6 +273,10 @@ components:
           format: date
         max_gg_proc:          
           title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
+          type: integer
+          format: int32
+        max_gg_correction_req:
+          title: numero di giorni limite a partire da start per l'inoltro della richiesta di correzione a valle di un controllo formale
           type: integer
           format: int32
         max_gg_correction:
@@ -847,6 +868,14 @@ components:
                     - S256
                     - S384
                     - S512
+                  code:
+                    title: identificativo dell'allegato presente nel Catalogo
+                    type: string
+                    minLength: 1
+                  version:
+                    title: versione dell'allegato presente nel Catalogo
+                    type: string
+                    minLength: 1
                   mime_type:
                     type: string
                     enum: 
@@ -890,6 +919,7 @@ components:
                   - hash
                   - alg_hash
                   - mime_type
+                  - description
                   properties:
 
                     ref:                      
@@ -903,6 +933,10 @@ components:
                     file_size:
                       description: dimensione del file
                       type: integer
+                    description:                      
+                      title: descrizione dell'allegato
+                      type: string
+                      minLength: 1                      
                     hash:                      
                       title: hash dell'allegato
                       type: string
