@@ -89,6 +89,30 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /send_instance_updated_documents:
+      description: Inoltro dei riferimenti con i documenti integrati
+      post:
+          requestBody:
+              content:
+                  application/json:
+                      schema:
+                          $ref: "#/components/schemas/SendUpdatedDocuments"
+              required: true
+          responses:
+              "200":
+                  $ref: "#/components/responses/OKRequest"
+              "400":
+                  $ref: "#/components/responses/BadRequest"
+              "401":
+                  $ref: "#/components/responses/Unauthorized"
+              "500":
+                  $ref: "#/components/responses/ServerError"
+              "503":
+                  $ref: "#/components/responses/ServiceUnavaliable"
+          security:
+              - bearerAuth: []
+                Agid-JWT-Signature: []
+
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: |
@@ -343,15 +367,20 @@ components:
             items:
                 type: object
                 required: 
-                - code
+                - usec_code
+                - usec_version
                 - ref
                 - description
                 - resource_id
                 - hash
                 - alg_hash
                 properties:
-                    code:                            
+                    usec_code:                            
                         title: codice della fattispecie presente nel Catalogo
+                        type: string
+                        minLength: 1
+                    usec_version:
+                        title: versione della fattispecie presente nel Catalogo
                         type: string
                         minLength: 1
                     ref:                            
@@ -735,6 +764,24 @@ components:
                     enum:
                         - Cdss
                         - Istruttoria 
+        
+        SendUpdatedDocuments:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - updated_documents
+                - receiver_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                updated_documents:
+                    $ref: "#/components/schemas/InstanceIndex"
+                receiver_administration:
+                    title: amministrazione destinataria delle istanze
+                    $ref: "#/components/schemas/AdministrationSchema"
         
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU

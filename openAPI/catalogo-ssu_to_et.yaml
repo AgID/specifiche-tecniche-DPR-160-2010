@@ -539,11 +539,10 @@ components:
                 $ref: "#/components/schemas/AdministrationSchema"
               interested_administration:                
                 title: amministrazione interessata al procedimento
-                $ref: "#/components/schemas/InterestedAdministrationSchema"                
+                $ref: "#/components/schemas/InterestedAdministrationSchema"
               interested_administration_fiscal_code:                
                 title: amministrazione ghost interessata al procedimento
-                $ref: "#/components/schemas/InterestedAdministrationCFSchema"
-                
+                $ref: "#/components/schemas/InterestedAdministrationCFSchema"              
               form:                
                 title: riferimento agli oggetti per la validazione
                 type: object
@@ -631,7 +630,7 @@ components:
                      type: object
                      properties:
                         ref:                    
-                          title: distinta modello attivitÃ 
+                          title: distinta modello attivita
                           type: string
                           minLength: 1
                         filename:                      
@@ -675,6 +674,9 @@ components:
                       title: filename dell'allegato
                       type: string
                       minLength: 1
+                    file_size:
+                      description: dimensione del file
+                      type: integer
                     hash:                      
                       title: hash dell'allegato
                       type: string
@@ -686,11 +688,11 @@ components:
                       - S256
                       - S384
                       - S512
-                    code:
+                    attach_code:
                       title: identificativo dell'allegato presente nel Catalogo
                       type: string
                       minLength: 1
-                    version:
+                    attach_version:
                       title: versione dell'allegato presente nel Catalogo
                       type: string
                       minLength: 1                      
@@ -742,6 +744,42 @@ components:
                                 type: string
                     mime_type:
                       type: string
+
+              free_attachments:
+                title: allegati liberi non mappati sul Catalogo, relativi alla fattispecie
+                type: array
+                items:
+                  type: object
+                  required:
+                  - ref
+                  - hash
+                  - alg_hash
+                  - mime_type
+                  properties:
+                    ref:
+                      title: riferimento dell'allegato
+                      type: string
+                      minLength: 1
+                    filename:
+                      title: filename dell'allegato
+                      type: string
+                      minLength: 1
+                    file_size:
+                      description: dimensione del file.
+                      type: integer
+                    hash:
+                      title: hash dell'allegato
+                      type: string
+                      minLength: 1
+                    alg_hash:
+                      title: algoritmo hash dell'allegato 
+                      type: string
+                      enum:
+                      - S256
+                      - S384
+                      - S512
+                    mime_type:
+                      type: string    
 
   headers:
     Agid-JWT-Signature:

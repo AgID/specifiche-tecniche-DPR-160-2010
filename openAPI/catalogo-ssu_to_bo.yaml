@@ -73,6 +73,31 @@ paths:
       security:
         - bearerAuth: []
           Agid-JWT-Signature: []
+  
+  /update_attachments_and_times:
+    description: Inoltro dei nuovi allegati dell'istanza e aggiornamento dei tempi
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAttachmentsAndTimes"
+        required: true
+      responses:
+        "200":
+          $ref: "#/components/responses/OKInstanceDescriptor"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
           
   /add_interested_administration:
     description: Aggiunge una lista di amministrazioni interessate
@@ -504,7 +529,158 @@ components:
           required:
             - code
             - version
-           
+    
+    UpdateAttachmentsAndTimes:
+      type: object
+      required:
+        - cui
+        - times
+      properties:
+        cui:
+          $ref: "#/components/schemas/cui"
+        times:          
+          $ref: "#/components/schemas/Times"
+        attachments:
+          title: allegati all'istanza relativi al procedimento
+          type: array
+          items:
+            type: object
+            required:
+            - usec_code
+            - usec_version
+            - ref
+            - hash
+            - alg_hash
+            - mime_type
+            properties:
+              usec_code:                
+                title: codice della fattispecie presente nel Catalogo
+                type: string
+                minLength: 1
+              usec_version:                
+                title: versione della fattispecie presente nel Catalogo
+                type: string
+                minLength: 1
+              ref:
+                title: riferimento all'allegato dell'istanza relativo al procedimento
+                type: string
+                minLength: 1
+              filename:
+                title: filename dell'allegato
+                type: string
+                minLength: 1
+              file_size:
+                description: dimensione del file.
+                type: integer
+              hash:
+                title: hash dell'allegato
+                type: string
+                minLength: 1
+              alg_hash:
+                title: algoritmo hash dell'allegato 
+                type: string
+                enum:
+                - S256
+                - S384
+                - S512
+              attach_code:
+                title: identificativo dell'allegato presente nel Catalogo
+                type: string
+                minLength: 1
+              attach_version:
+                title: versione dell'allegato presente nel Catalogo
+                type: string
+                minLength: 1
+              form:
+                title: riferimento agli oggetti per la validazione
+                type: object
+                required:
+                - xsd                
+                properties:
+                  xsd:
+                    title: xsd per la validazione
+                    type: object
+                    required:
+                    - code
+                    - version
+                    properties:
+                      code:
+                        title: codice dell'XSD per la validazione
+                        type: string
+                        minLength: 1
+                      version:
+                        title: versione dell'XSD per la validazione
+                        type: string
+                        minLength: 1
+                  schematron:
+                    title: schematron per la validazione
+                    type: object
+                    required:
+                    - code
+                    - version
+                    - phase
+                    properties:
+                      code:
+                        title: codice dello schematron per la validazione
+                        type: string
+                        minLength: 1
+                      version:
+                        title: versione dello schematron per la validazione
+                        type: string
+                        minLength: 1
+                      phase:
+                        title: fasi dello schematron per la validazione
+                        type: array
+                        items:
+                          type: string
+              mime_type:
+                type: string              
+        free_attachments:
+          title: allegati liberi non mappati sul Catalogo, relativi alla fattispecie
+          type: array
+          items:
+            type: object
+            required:
+            - usec_code
+            - usec_version
+            - ref
+            - hash
+            - alg_hash
+            - mime_type
+            properties: 
+              usec_code:                
+                title: codice della fattispecie presente nel Catalogo
+                type: string
+                minLength: 1
+              usec_version:                
+                title: versione della fattispecie presente nel Catalogo
+                type: string
+                minLength: 1
+              ref:
+                title: riferimento dell'allegato
+                type: string
+                minLength: 1
+              filename:
+                title: filename dell'allegato
+                type: string
+                minLength: 1
+              file_size:
+                description: dimensione del file
+                type: integer
+              hash:
+                title: hash dell'allegato
+                type: string
+                minLength: 1
+              alg_hash:
+                title: algoritmo hash dell'allegato 
+                type: string
+                enum:
+                - S256
+                - S384
+                - S512
+              mime_type:
+                type: string
+    
     InstanceDescriptor:
       description: descrittore istanza
       type: object
@@ -754,6 +930,9 @@ components:
                       title: filename dell'allegato
                       type: string
                       minLength: 1
+                    file_size:
+                      description: dimensione del file
+                      type: integer
                     description:                      
                       title: descrizione dell'allegato
                       type: string
@@ -769,11 +948,11 @@ components:
                       - S256
                       - S384
                       - S512
-                    code:
+                    attach_code:
                       title: identificativo dell'allegato presente nel Catalogo
                       type: string
                       minLength: 1
-                    version:
+                    attach_version:
                       title: versione dell'allegato presente nel Catalogo
                       type: string
                       minLength: 1                      
@@ -821,6 +1000,42 @@ components:
                                 type: string
                     mime_type:
                       type: string
+              
+              free_attachments:
+                title: allegati liberi non mappati sul Catalogo, relativi alla fattispecie
+                type: array
+                items:
+                  type: object
+                  required:
+                  - ref
+                  - hash
+                  - alg_hash
+                  - mime_type
+                  properties:
+                    ref:
+                      title: riferimento dell'allegato
+                      type: string
+                      minLength: 1
+                    filename:
+                      title: filename dell'allegato
+                      type: string
+                      minLength: 1
+                    file_size:
+                      description: dimensione del file.
+                      type: integer
+                    hash:
+                      title: hash dell'allegato
+                      type: string
+                      minLength: 1
+                    alg_hash:
+                      title: algoritmo hash dell'allegato 
+                      type: string
+                      enum:
+                      - S256
+                      - S384
+                      - S512
+                    mime_type:
+                      type: string    
 
   headers:
     Agid-JWT-Signature:
