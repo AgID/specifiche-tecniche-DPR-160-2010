@@ -856,7 +856,7 @@ components:
                             - alg_hash
                         properties:
                             resource_id:
-                                title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
+                                title: id della risorsa, univoco per erogatore e CUI.UUID
                                 type: string
                                 minLength: 1
                             description:                            
@@ -864,15 +864,18 @@ components:
                                 type: string
                                 minLength: 1
                             filename:                      
-                                title: filename della risorsa "documento di parere negativo"
+                                title: filename della risorsa
                                 type: string
                                 minLength: 1
                             file_size:
-                                description: Dimensione del file.
+                                description: dimensione del file
                                 type: integer
                             mime_type:
-                                title: "indica il formato dei dati previsto per il documento di parere negativo"
+                                title: indica il formato dei dati previsto per il documento
                                 type: string
+                                enum: 
+                                - application/pdf
+                                - application/pkcs7-mime
                             hash:
                                 title: hash risorsa
                                 type: string
