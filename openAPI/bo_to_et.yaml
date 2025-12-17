@@ -1154,7 +1154,9 @@ components:
                     mime_type:
                         title: "indica il formato dei dati previsto per l'atto amministrativo"
                         type: string
-                        minLength: 1
+                        enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
                     resource_id:
                         title: se presente, id della risorsa documento correlata all'evento notificato
                         type: string
@@ -1204,7 +1206,9 @@ components:
                 mime_type:
                     title: indica il formato dei dati previsto per il documento di determinazione
                     type: string
-                    minLength: 1
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
                 file_size:
                     description: dimensione del file
                     type: integer

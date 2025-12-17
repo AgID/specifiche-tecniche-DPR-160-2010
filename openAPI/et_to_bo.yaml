@@ -1000,7 +1000,9 @@ components:
                     mime_type:
                         title: indica il formato dei dati previsto per l'atto amministrativo
                         type: string
-                        minLength: 1
+                        enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
                     resource_id:
                         title: id della risorsa documento di indizione della conferenza
                         type: string
