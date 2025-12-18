@@ -5,6 +5,7 @@ sequenceDiagram
     participant B as Back-office SUAP    
     participant E as Enti Terzi
     participant C as Catalogo SSU 
+    participant RI as Registro Imprese
 
     
     alt annullamento di un provvedimento amministrativo adottato in violazione di legge o viziato da eccesso di potere o da incompetenza
@@ -115,7 +116,14 @@ sequenceDiagram
         else esito negativo
             B ->> C: audit(cui, second_provision_negative_outcome)
             C -->> B: ack
-        end        
+        end      
+
+        B ->> RI: notify(SecondProvisionOutcome)
+        RI -->> B: ack 
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        note left of RI: recupero documento del secondo provvedimento
+        B -->> RI: instanceDocument  
 
     else annullamento di un provvedimento finale in virtù di una sentenza passata in giudicato
         note over B: Riapertura d'ufficio o per istanza di parte
@@ -199,7 +207,14 @@ sequenceDiagram
                 else esito negativo
                     B ->> C: audit(cui, second_provision_negative_outcome)
                     C -->> B: ack
-                end        
+                end
+
+                B ->> RI: notify(SecondProvisionOutcome)
+                RI -->> B: ack 
+
+                RI ->> B: request_instance_document(cui, resource_id)
+                note left of RI: recupero documento del secondo provvedimento
+                B -->> RI: instanceDocument      
 
             else false rappresentazione dei fatti inoltrati dall'Istante
                 B ->> E: notify(ReopenProceedingNotification)
@@ -256,6 +271,13 @@ sequenceDiagram
 
                 B ->> C: audit(cui, second_provision_negative_outcome)
                 C -->> F: ack
+
+                B ->> RI: notify(SecondProvisionOutcome)
+                RI -->> B: ack 
+
+                RI ->> B: request_instance_document(cui, resource_id)
+                note left of RI: recupero documento del secondo provvedimento
+                B -->> RI: instanceDocument
             end
 
         else sono necessarie modifiche al progetto
