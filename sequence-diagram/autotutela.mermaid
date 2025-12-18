@@ -68,11 +68,7 @@ sequenceDiagram
             C -->> E: ack
         end
 
-        alt il procedimento deve essere gestito tramite AUTORIZZAZIONE
-            note over F, E: avvio del sotto-processo per gestire per gestire le istruttorie degli Enti Terzi secondo quanto definito dal workflow AUTORIZZAZIONE (a partire dalla ricezione delle istanze fino all'inoltro del parere)
-        else il procedimento deve essere gestito tramite SCIA
-            note over F, E: avvio del sotto-processo per gestire per gestire le istruttorie degli Enti Terzi secondo quanto definito dal workflow SCIA (a partire dalla ricezione delle istanze fino all'inoltro del parere)
-        end
+        note over F, E: avvio del sotto-processo per gestire per gestire le istruttorie degli Enti Terzi (a partire dalla ricezione delle istanze fino all'inoltro del parere) adottando lo stesso workflow applicato durante il provvedimento di prima istanza 
 
         par monitoggio della scadenza del secondo provvedimento
             alt oltre i 12 mesi dal rilascio del primo provvedimento

@@ -1204,10 +1204,10 @@ components:
                         - negative_outcome
                 second_provision: 
                     $ref: "#/components/schemas/Provision"
-                instance_index_fii:
+                instance_index:
+                    description: Per gestire la riapertura del Fascocolo e il rilascio del secondo provvedimento, è necessario ritrasmettere tutti i documenti della pratica alla loro ultima versione
                     $ref: "#/components/schemas/InstanceIndexFII"
                 resource_rea_update:
-                    description: abc
                     $ref: "#/components/schemas/suap_rea_update_xml_fii" 
                 resource_rea_end:
                     $ref: "#/components/schemas/suap_rea_end_fii" 
