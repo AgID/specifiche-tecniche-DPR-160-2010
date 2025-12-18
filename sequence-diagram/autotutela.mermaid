@@ -99,7 +99,7 @@ sequenceDiagram
             end
         end 
 
-        B ->> F: send_conclusions(SecondProvisionOutcome)
+        B ->> F: notify(SecondProvisionOutcome)
         F -->> B: ack
 
         opt recupero del secondo provvedimento
@@ -184,7 +184,7 @@ sequenceDiagram
                     end
                 end
 
-                B ->> F: send_conclusions(SecondProvisionOutcome)
+                B ->> F: notify(SecondProvisionOutcome)
                 F -->> B: ack
 
                 F ->> B: request_instance_document(cui, resource_id)
