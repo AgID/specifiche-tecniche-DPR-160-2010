@@ -972,6 +972,7 @@ components:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ImpedimentsMessage"
                 - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/SecondProvisionOutcome"
                 - $ref: "#/components/schemas/ConditionalProvisionGranted"
                 - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                 - $ref: "#/components/schemas/ConditionalProvisionDenied" 
@@ -1123,6 +1124,23 @@ components:
                     - S256
                     - S384
                     - S512
+
+        SecondProvisionOutcome:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+            required:
+                - resource_rea_update
+                - resource_rea_end
+            properties:
+                outcome:
+                    type: string
+                    enum: 
+                        - positive_outcome
+                        - negative_outcome
+                resource_rea_update:
+                    $ref: "#/components/schemas/suap_rea_update_fii" 
+                resource_rea_end:
+                    $ref: "#/components/schemas/suap_rea_end_fii" 
 
     headers:
         Agid-JWT-Signature:
