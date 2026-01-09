@@ -24,7 +24,7 @@ sequenceDiagram
         note left of E: resource_id da instance_index
         B -->> E: instanceDocument
         end
-        E ->> C: audit(cui,instance_retrived)
+        E ->> C: audit(cui,instance_retrived_from_<ET>)
         C -->> E: ack
     end
     opt almeno una richiesta conformazione
@@ -119,7 +119,7 @@ sequenceDiagram
                     note left of E: resource_id da instance_index
                     B -->> E: instanceDocument
                 end
-                E ->> C: audit(cui,instance_conformated_retrived)
+                E ->> C: audit(cui,instance_conformated_retrived_from_<ET>)
                 C -->> E: ack
             end
         end
