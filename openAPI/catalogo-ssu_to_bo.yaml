@@ -154,6 +154,33 @@ paths:
         - bearerAuth: []
           Agid-JWT-Signature: []
 
+  /add_permit_document:
+    description: Aggiunge  il riferimento del titolo abilitiativo all'instance descriptor
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addPermitDocument"
+        required: true
+      responses:
+        "200":
+          $ref: "#/components/responses/OKInstanceDescriptor"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []          
+
 components:
   responses:
     OKInstanceDescriptor:
@@ -680,7 +707,49 @@ components:
                 - S512
               mime_type:
                 type: string
-    
+    addPermitDocument:
+      description: Richiesta per aggiungere un'amministrazione/ente interessato a un usecase
+      type: object
+      required:
+        - cui
+        - permit_document
+      properties:
+        cui:
+           $ref: "#/components/schemas/cui"
+        permit_document:
+            type: object
+            required:
+            - ref
+            - hash
+            - alg_hash
+            - mime_type
+            - filename
+            - file_size
+            properties:
+                ref:
+                    title: riferimento dell'allegato
+                    type: string
+                    minLength: 1
+                filename:
+                    title: filename dell'allegato
+                    type: string
+                    minLength: 1
+                file_size:
+                    description: dimensione del file.
+                    type: integer
+                hash:
+                    title: hash dell'allegato
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash dell'allegato 
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+                mime_type:
+                    type: string
     InstanceDescriptor:
       description: descrittore istanza
       type: object
@@ -1036,7 +1105,40 @@ components:
                       - S512
                     mime_type:
                       type: string    
-
+        permit_document:
+            type: object
+            required:
+            - ref
+            - hash
+            - alg_hash
+            - mime_type
+            - filename
+            - file_size
+            properties:
+                ref:
+                    title: riferimento dell'allegato
+                    type: string
+                    minLength: 1
+                filename:
+                    title: filename dell'allegato
+                    type: string
+                    minLength: 1
+                file_size:
+                    description: dimensione del file.
+                    type: integer
+                hash:
+                    title: hash dell'allegato
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash dell'allegato 
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+                mime_type:
+                    type: string
   headers:
     Agid-JWT-Signature:
       schema:
