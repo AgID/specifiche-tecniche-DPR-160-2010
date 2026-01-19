@@ -277,6 +277,8 @@ sequenceDiagram
                 B -->> E: instanceDocument 
             end
         end
+        B ->> C: add_permit_document(cui, permit_document)
+        C -->> B: ack
         B ->> C: audit(cui,end_by_positive_outcome)
         C -->> B: ack
     else autorizzazione negata OR osservazioni ai motivi ostativi non inviate dal presentatore nei tempi (10 giorni)
