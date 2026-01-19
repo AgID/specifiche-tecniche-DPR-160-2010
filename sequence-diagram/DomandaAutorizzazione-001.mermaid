@@ -262,6 +262,8 @@ sequenceDiagram
     end
     Note over F, E: azione realizzata in ogni circostanza, anche in caso di CdSS
     alt (concluso tempo istanza (eventuale silenzio assenso) o autorizzazione concessa) e integrazione del presentatore nei tempi 
+        B ->> C: add_permit_document(cui, permit_document)
+        C -->> B: ack
         B ->> F: notify(cui, instance_descriptor_version,end_by_positive_outcome,resource_id)
         F -->> B: ack
         F ->> B: request_instance_document(cui, resource_id)
@@ -277,8 +279,6 @@ sequenceDiagram
                 B -->> E: instanceDocument 
             end
         end
-        B ->> C: add_permit_document(cui, permit_document)
-        C -->> B: ack
         B ->> C: audit(cui,end_by_positive_outcome)
         C -->> B: ack
     else autorizzazione negata OR osservazioni ai motivi ostativi non inviate dal presentatore nei tempi (10 giorni)
