@@ -103,6 +103,10 @@ sequenceDiagram
     O -) B: admissibilityOK OR admissibilityKO
     
     alt admissibility KO
+        alt se Regime Amministrativo SCIA (workflow = SCIA | Provvedimento Condizionato)
+            B ->> C: revoke_permit_document(cui)
+            C -->> B: ack
+        end
         B ->> F: notify(cui, instance_descriptor_version, end_by_instance_refused)
         F -->> B: ack
         F -) P: instanceRefused            
