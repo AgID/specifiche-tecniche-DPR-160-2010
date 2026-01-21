@@ -426,6 +426,9 @@ properties:
                 - S512
             mime_type:
                 type: string  
+            revoked_document:
+                title: indica se il documento è stato revocato
+                type: boolean
   InterestedAdministrationSchema:
     description: Un array di amministrazioni competenti.
     type: array
