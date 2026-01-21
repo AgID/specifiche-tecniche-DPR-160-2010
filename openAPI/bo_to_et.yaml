@@ -628,7 +628,6 @@ components:
                         type: object
                         required:
                             - code
-                            - ref
                             - integration_request
                         properties:
                             code:
@@ -709,7 +708,6 @@ components:
                         type: object
                         required:
                             - code
-                            - ref
                             - conformation_request
                         properties:
                             code:
