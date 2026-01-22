@@ -285,7 +285,7 @@
       <bpmn:outgoing>Flow_0emv8o2</bpmn:outgoing>
       <bpmn:outgoing>Flow_1mlk1qx</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Task_0rm2beb" name="Riavvio tempi procedimento">
+    <bpmn:serviceTask id="Task_0rm2beb" name="Reset tempi procedimento">
       <bpmn:incoming>SequenceFlow_0ti1inq</bpmn:incoming>
       <bpmn:outgoing>Flow_1f1wi88</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -802,6 +802,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_0jegbxb_di" bpmnElement="Task_0sk5xsi">
         <dc:Bounds x="1250" y="1639" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_0cqpqez_di" bpmnElement="IntermediateThrowEvent_1sle98b">
         <dc:Bounds x="1282" y="1484" width="36" height="36" />
@@ -829,6 +830,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0xisgyy_di" bpmnElement="Task_0rm2beb">
         <dc:Bounds x="2226" y="1600" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0ilwvy5_di" bpmnElement="Event_1urb6wi">
         <dc:Bounds x="1432" y="2112" width="36" height="36" />

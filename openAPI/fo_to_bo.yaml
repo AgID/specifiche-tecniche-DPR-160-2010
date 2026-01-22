@@ -711,6 +711,7 @@ components:
                         - transferred_instance
                         - end_by_instance_deleted_for_cu_fail_link
                         - end_by_instance_deleted_for_cu_fail_check
+                        - reopen_definitive_provision
 
         TransferNotifyMessage:
             type: object
@@ -718,6 +719,7 @@ components:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ImpedimentsMessage"
                 - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/SecondProvisionOutcome"
                 - $ref: "#/components/schemas/ConditionalProvisionGranted"
                 - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                 - $ref: "#/components/schemas/ConditionalProvisionDenied"
@@ -934,6 +936,16 @@ components:
                     - S256
                     - S384
                     - S512
+
+        SecondProvisionOutcome:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+            properties:
+                outcome:
+                    type: string
+                    enum: 
+                        - positive_outcome
+                        - negative_outcome
                     
     headers:
         Agid-JWT-Signature:

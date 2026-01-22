@@ -972,6 +972,7 @@ components:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ImpedimentsMessage"
                 - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/SecondProvisionOutcome"
                 - $ref: "#/components/schemas/ConditionalProvisionGranted"
                 - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                 - $ref: "#/components/schemas/ConditionalProvisionDenied" 
@@ -1036,36 +1037,75 @@ components:
                     $ref: "#/components/schemas/suap_rea_end_fii"
                         
         ConditionalProvisionGranted:
-            allOf:
-                - $ref: "#/components/schemas/DefinitiveProvision"
-                - type: object
-                  properties:
-                    outcome:
-                        type: string
-                        enum: 
-                            - conditional_provision_granted
-        
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - c_fiscale_impresa
+                - outcome
+                - conditional_provision_granted
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                c_fiscale_impresa:
+                    description: Codice fiscale dell'impresa
+                    type: string
+                outcome:
+                    type: string
+                    enum: 
+                        - conditional_provision_granted
+                conditional_provision_granted:
+                    $ref: "#/components/schemas/Provision"
+    
         ConditionalProvisionDenied:
-            allOf:
-                - $ref: "#/components/schemas/DefinitiveProvision"
-                - type: object
-                  properties:
-                    outcome:
-                        type: string
-                        enum: 
-                            - conditional_provision_denied
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - c_fiscale_impresa
+                - outcome
+                - conditional_provision_denied
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                c_fiscale_impresa:
+                    description: Codice fiscale dell'impresa
+                    type: string
+                outcome:
+                    type: string
+                    enum: 
+                        - conditional_provision_denied
+                conditional_provision_denied:
+                    $ref: "#/components/schemas/Provision"
         
         ConditionalProvisionRescinded:
-            allOf:
-                - $ref: "#/components/schemas/DefinitiveProvision"
-                - type: object
-                  properties:
-                    outcome:
-                        type: string
-                        enum: 
-                            - conditional_provision_rescinded
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - c_fiscale_impresa
+                - outcome
+                - conditional_provision_rescinded
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                c_fiscale_impresa:
+                    description: Codice fiscale dell'impresa
+                    type: string
+                outcome:
+                    type: string
+                    enum: 
+                        - conditional_provision_rescinded
+                conditional_provision_rescinded:
+                    $ref: "#/components/schemas/Provision"
         
-        DefinitiveProvision:
+        Provision:
             type: object
             required:
                 - cui
@@ -1075,22 +1115,14 @@ components:
                 - document_classification_coding
                 - competent_administration
             properties:
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
                 date:
                     type: string
                     format: date
-                outcome:
-                    type: string
-                    enum: 
-                        - definitive_provision_granted
                 competent_administration:
                     title: amministrazione richiedente
                     $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
-                    title: id della risorsa associata all'esito del Provvedimento Definitivo, univoco per erogatore e CUI.UUID
+                    title: id della risorsa associata all'esito del Provvedimento, univoco per erogatore e CUI.UUID
                     type: string
                     minLength: 1
                 document_classification_coding:
@@ -1104,7 +1136,7 @@ components:
                     items:
                       $ref: '#/components/schemas/Tag'
                 filename:                      
-                    title: filename dell'esito del Provvedimento Definitivo"
+                    title: filename dell'esito del Provvedimento"
                     type: string
                     minLength: 1
                 mime_type:
@@ -1123,6 +1155,62 @@ components:
                     - S256
                     - S384
                     - S512
+
+        DefinitiveProvision:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - c_fiscale_impresa
+                - outcome
+                - definitive_provision
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                c_fiscale_impresa:
+                    description: Codice fiscale dell'impresa
+                    type: string
+                outcome:
+                    type: string
+                    enum: 
+                        - definitive_provision_granted
+                definitive_provision:
+                    $ref: "#/components/schemas/Provision"
+
+        SecondProvisionOutcome:
+            type: object               
+            required:
+                - cui
+                - c_fiscale_impresa
+                - outcome
+                - second_provision
+                - instance_index_fii
+                - resource_rea_update
+                - resource_rea_end
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                c_fiscale_impresa:
+                    description: Codice fiscale dell'impresa
+                    type: string
+                outcome:
+                    type: string
+                    enum: 
+                        - positive_outcome
+                        - negative_outcome
+                second_provision: 
+                    $ref: "#/components/schemas/Provision"
+                instance_index:
+                    description: Per gestire la riapertura del Fascocolo e il rilascio del secondo provvedimento, è necessario ritrasmettere tutti i documenti della pratica alla loro ultima versione
+                    $ref: "#/components/schemas/InstanceIndexFII"
+                resource_rea_update:
+                    $ref: "#/components/schemas/suap_rea_update_xml_fii" 
+                resource_rea_end:
+                    $ref: "#/components/schemas/suap_rea_end_fii" 
 
     headers:
         Agid-JWT-Signature:
