@@ -47,6 +47,8 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -207,6 +209,17 @@ components:
                 application/json:
                     schema:
                         $ref: "#/components/schemas/Error"
+        
+        NotFound:
+            description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                    
         ServerError:
             description: Errore processamento richiesta
             content:
@@ -251,17 +264,22 @@ components:
                     items:
                         type: object
                         required:
-                        - code
+                        - usec_code
+                        - usec_version
                         - ref
                         - description
                         - resource_id
                         - hash
                         - alg_hash
                         properties:
-                            code:                            
+                            usec_code:                            
                                 title: codice della fattispecie presente nel Catalogo
                                 type: string
                                 minLength: 1
+                            usec_version:
+                              title: versione della fattispecie presente nel Catalogo
+                              type: string
+                              minLength: 1
                             ref:                            
                                 title: riferimento all'elemento dell'istanza relativo al procedimento
                                 type: string
@@ -641,7 +659,6 @@ components:
                 - instance_descriptor_version
                 - instance_index
                 - general_index
-                - receiver_administration
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -651,9 +668,6 @@ components:
                     $ref: "#/components/schemas/InstanceIndex"
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
-                receiver_administration:
-                    title: amministrazione destinataria delle istanze
-                    $ref: "#/components/schemas/AdministrationSchema"
 
 
     headers:

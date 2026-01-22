@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+
+    participant EC as Ente Terzo competente
+    participant EI as Ente Terzo interessato 
+
+    Note over EC,EI: ET convoca una CDSS in un qualsiasi momento della propria istruttoria per esprimere un parere
+
+    alt ET competente convoca la endo_cdss (cdss di un endoprocedimento ET)
+        par ET convoca gli altri ET interessati
+            EC ->> EI: notify(cui, instance_descriptor_version,endo_cdss_convened_from_<ET>)
+            EI -->> EC: ack
+        end
+    else ET interessato richiede all'ET competente di convocare un endo_cdss
+        EI ->> EC: request_endo_cdss(cui, requester_administration)
+        EC -->> EI: ack
+        par ET convoca gli altri ET interessati
+            EC ->> EI: notify(cui, instance_descriptor_version,endo_cdss_convened_from_<ET>)
+            EI -->> EC: ack
+        end
+    end

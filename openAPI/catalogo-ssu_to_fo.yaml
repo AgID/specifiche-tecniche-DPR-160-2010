@@ -53,6 +53,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
@@ -79,6 +81,8 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
@@ -173,6 +177,17 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+    
+    NotFound:
+      description: risorsa non trovata
+      headers:
+        Agid-JWT-Signature:
+          $ref: "#/components/headers/Agid-JWT-Signature"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
     ServerError:
       description: Errore processamento richiesta
       content:
@@ -277,6 +292,10 @@ components:
           format: date
         max_gg_proc:          
           title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
+          type: integer
+          format: int32
+        max_gg_correction_req:
+          title: numero di giorni limite a partire da start per l'inoltro della richiesta di correzione a valle di un controllo formale
           type: integer
           format: int32
         max_gg_correction:
@@ -407,7 +426,7 @@ components:
       - usecase_proceedings
       - instance_status
       - times
-      - workflow      
+      - workflow
       properties:
         version:          
           title: numero versione del descrittore
@@ -515,8 +534,7 @@ components:
                 $ref: "#/components/schemas/InterestedAdministrationSchema"
               interested_administration_fiscal_code:                
                 title: amministrazione ghost interessata al procedimento
-                $ref: "#/components/schemas/InterestedAdministrationCFSchema"
-                
+                $ref: "#/components/schemas/InterestedAdministrationCFSchema"              
               form:                
                 title: riferimento agli oggetti per la validazione
                 type: object
@@ -619,6 +637,7 @@ components:
                           enum: 
                              - application/pdf
                              - application/pkcs7-mime
+
               attachments:                
                 title: allegati all'istanza relativi al procedimento
                 type: array
@@ -629,6 +648,7 @@ components:
                   - hash
                   - alg_hash
                   - mime_type
+                  - description
                   properties:
 
                     ref:                      
@@ -639,6 +659,21 @@ components:
                       title: filename dell'allegato
                       type: string
                       minLength: 1
+                    file_size:
+                      description: dimensione del file
+                      type: integer
+                    code:
+                      title: identificativo dell'allegato presente nel Catalogo
+                      type: string
+                      minLength: 1
+                    version:
+                      title: versione dell'allegato presente nel Catalogo
+                      type: string
+                      minLength: 1                      
+                    description:                      
+                      title: descrizione dell'allegato
+                      type: string
+                      minLength: 1                       
                     hash:                      
                       title: hash dell'allegato
                       type: string
@@ -650,14 +685,14 @@ components:
                       - S256
                       - S384
                       - S512
-                    code:
+                    attach_code:
                       title: identificativo dell'allegato presente nel Catalogo
                       type: string
                       minLength: 1
-                    version:
+                    attach_version:
                       title: versione dell'allegato presente nel Catalogo
                       type: string
-                      minLength: 1
+                      minLength: 1                      
                     form:                      
                       title: riferimento agli oggetti per la validazione
                       type: object
@@ -702,6 +737,42 @@ components:
                                 type: string
                     mime_type:
                       type: string
+
+              free_attachments:
+                title: allegati liberi non mappati sul Catalogo, relativi alla fattispecie
+                type: array
+                items:
+                  type: object
+                  required:
+                  - ref
+                  - hash
+                  - alg_hash
+                  - mime_type
+                  properties:
+                    ref:
+                      title: riferimento dell'allegato
+                      type: string
+                      minLength: 1
+                    filename:
+                      title: filename dell'allegato
+                      type: string
+                      minLength: 1
+                    file_size:
+                      description: dimensione del file.
+                      type: integer
+                    hash:
+                      title: hash dell'allegato
+                      type: string
+                      minLength: 1
+                    alg_hash:
+                      title: algoritmo hash dell'allegato 
+                      type: string
+                      enum:
+                      - S256
+                      - S384
+                      - S512
+                    mime_type:
+                      type: string    
 
   headers:
     Agid-JWT-Signature:

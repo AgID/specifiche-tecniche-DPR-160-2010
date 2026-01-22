@@ -1,0 +1,642 @@
+openapi: 3.0.3
+info:
+  title: Ente Terzo → Ente Terzo (ricorsivo)
+  version: 1.0.0
+  description: >
+    API per il coinvoglimento ricorsivo tra Enti Terzi (ET→ET).
+    Ogni richiesta veicola ChainContext nel payload per la correlazione end-to-end e la validazione della ricorsività.
+  contact:
+    name: AgID
+    url: https://www.agid.gov.it/
+  license:
+    name: CC BY-NC-SA 4.0
+    url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+servers:
+  - url: https://<et2-host>/api
+    description: Endpoint ET ricevente
+
+paths:
+
+  /send_instance:
+    post:
+      summary: Apertura di sotto-caso presso ET ricevente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendInstanceRequest"
+      responses:
+        "200": { $ref: "#/components/responses/OKRequest" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "500": { $ref: "#/components/responses/ServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+      security:
+        - bearerAuth: []
+        - Agid-JWT-Signature: []
+
+  /instance/{cui_uuid}/document/{resource_id}:
+    get:
+      summary: Recupero di una risorsa documento/base64
+      parameters:
+        - in: path
+          name: cui_uuid
+          required: true
+          schema: { type: string }
+          description: UUID del CUI istanza
+        - in: path
+          name: resource_id
+          required: true
+          schema: { type: string }
+          description: Identificativo della risorsa
+        - in: header
+          name: If-Match
+          required: true
+          schema: { type: string }
+          description: Hash atteso della risorsa (precondizione)
+      responses:
+        "200":
+          description: Risorsa completa (base64)
+          headers:
+            Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
+          content:
+            text/plain:
+              schema: { type: string, format: byte }
+        "206":
+          description: Porzione di risorsa (Range)
+          headers:
+            Content-Range:
+              description: Range incluso nella risposta
+              schema: { type: string, example: "bytes 21010-47021/47022" }
+            Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
+          content:
+            text/plain:
+              schema: { type: string, format: byte }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "416": { $ref: "#/components/responses/RangeNotSatisfiable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "500": { $ref: "#/components/responses/ServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+      security:
+        - bearerAuth: []
+        - Agid-JWT-Signature: []
+
+  /request_integration:
+    post:
+      summary: Richiesta di integrazioni sul sotto-caso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/IntegrationRequest"
+                - type: object
+                  required: [ chain ]
+                  properties:
+                    chain: { $ref: "#/components/schemas/ChainContext" }
+      responses:
+        "200": { $ref: "#/components/responses/OKRequest" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "500": { $ref: "#/components/responses/ServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+      security:
+        - bearerAuth: []
+        - Agid-JWT-Signature: []
+
+  /request_conformation:
+    post:
+      summary: Richiesta di conformazione (con scadenza)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/ConformationRequest"
+                - type: object
+                  required: [ chain ]
+                  properties:
+                    chain: { $ref: "#/components/schemas/ChainContext" }
+      responses:
+        "200": { $ref: "#/components/responses/OKRequest" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "500": { $ref: "#/components/responses/ServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+      security:
+        - bearerAuth: []
+        - Agid-JWT-Signature: []
+
+  /request_cdss:
+    post:
+      summary: Richiesta CdSS (quando applicabile)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ cui, requester_administration, chain ]
+              properties:
+                cui: { $ref: "#/components/schemas/cui" }
+                requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+                chain: { $ref: "#/components/schemas/ChainContext" }
+      responses:
+        "200": { $ref: "#/components/responses/OKRequest" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "500": { $ref: "#/components/responses/ServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+      security:
+        - bearerAuth: []
+        - Agid-JWT-Signature: []
+
+  /send_conclusions:
+    post:
+      summary: Invio conclusioni (parere/provvedimento) dal figlio al padre
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/SendConclusionsRequests"
+                - type: object
+                  required: [ chain ]
+                  properties:
+                    chain: { $ref: "#/components/schemas/ChainContext" }
+      responses:
+        "200": { $ref: "#/components/responses/OKRequest" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "500": { $ref: "#/components/responses/ServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+      security:
+        - bearerAuth: []
+        - Agid-JWT-Signature: []
+
+  /notify:
+    post:
+      summary: Notifica eventi di processo ET→ET
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - allOf:
+                    - $ref: "#/components/schemas/NotifyMessage"
+                    - type: object
+                      required: [ chain ]
+                      properties:
+                        chain: { $ref: "#/components/schemas/ChainContext" }
+                - allOf:
+                    - $ref: "#/components/schemas/CdssNotifyMessage"
+                    - type: object
+                      required: [ chain ]
+                      properties:
+                        chain: { $ref: "#/components/schemas/ChainContext" }
+                - allOf:
+                    - $ref: "#/components/schemas/TransferOutcomeNotifyMessage"
+                    - type: object
+                      required: [ chain ]
+                      properties:
+                        chain: { $ref: "#/components/schemas/ChainContext" }
+
+      responses:
+        "200": { $ref: "#/components/responses/OKRequest" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "500": { $ref: "#/components/responses/ServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+      security:
+        - bearerAuth: []
+        - Agid-JWT-Signature: []
+
+  /retry:
+    post:
+      summary: Richiesta di ritrasmissione di una specifica operazione
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ cui, operation, requester_administration ]
+              properties:
+                cui: { $ref: "#/components/schemas/cui" }
+                operation:
+                  type: string
+                  description: Operazione oggetto di ritrasmissione
+                  enum:
+                    - send_instance
+                    - request_integration
+                    - request_conformation
+                    - request_cdss
+                    - send_conclusions
+                    - notify
+                    - instance_document
+                requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+                error: { $ref: "#/components/schemas/Error" }
+      responses:
+        "200": { $ref: "#/components/responses/OKRequest" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/ServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+      security:
+        - bearerAuth: []
+        - Agid-JWT-Signature: []
+
+components:
+
+  # ---------- HEADERS ----------
+  headers:
+    Agid-JWT-Signature:
+      description: Token JWS per integrità del payload (profilo PDND "integrity_rest_02")
+      schema:
+        type: string
+        maxLength: 4096
+
+  # ---------- SECURITY ----------
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Autenticazione/Autorizzazione JWT (RFC8725)
+    Agid-JWT-Signature:
+      type: apiKey
+      in: header
+      name: Agid-JWT-Signature
+      description: Firma JWS del body
+
+  # ---------- RESPONSES ----------
+  responses:
+    OKRequest:
+      description: Richiesta completata con successo
+      headers:
+        Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
+
+    BadRequest:
+      description: Richiesta non conforme alla specifica
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+      headers:
+        Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
+
+    Unauthorized:
+      description: Richiesta non autorizzata
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+    NotFound:
+      description: Risorsa non trovata
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+    Conflict:
+      description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+    PreconditionFailed:
+      description: Precondizione fallita (es. If-Match)
+      headers:
+        Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
+
+    PreconditionRequired:
+      description: Precondizione richiesta (es. If-Match mancante)
+
+    RangeNotSatisfiable:
+      description: Range non soddisfacibile
+      headers:
+        Content-Range:
+          description: Range atteso
+          schema: { type: string, example: "bytes */47022" }
+
+    ServerError:
+      description: Errore interno
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+    ServiceUnavailable:
+      description: Servizio non disponibile
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+  # ---------- SCHEMAS ----------
+  schemas:
+
+    # --- Core dominio ---
+    cui:
+      type: object
+      description: Codice Unico dell'Istanza
+      required: [ context, data, progressive, uuid ]
+      properties:
+        context: { type: string }
+        data:    { type: string, format: date }
+        progressive: { type: string }
+        uuid:    { type: string, description: "UUID chiave del CUI" }
+
+    AdministrationSchema:
+      description: Amministrazione censita nel Catalogo SSU
+      oneOf:
+        - type: object
+          required: [ ipacode, officecode, description ]
+          properties:
+            ipacode:   { type: string, minLength: 1 }
+            officecode: { type: string, minLength: 1 }
+            version:
+              type: string
+              pattern: "^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$"
+            description: { type: string }
+        - type: object
+          required: [ fiscal_code, id, description ]
+          properties:
+            fiscal_code: { type: string, minLength: 1 }
+            id:          { type: string, minLength: 1 }
+            description: { type: string, minLength: 1 }
+
+    Error:
+      type: object
+      required: [ code, message ]
+      properties:
+        code: { type: string }
+        message: { type: string }
+
+    # --- Ricorsività ---
+    ChainContext:
+      type: object
+      description: Contesto ricorsivo ET→ET
+      required: [ chain_id, cui, parent_et ]
+      properties:
+        chain_id:
+          type: string
+          minLength: 1
+          description: Correlazione end-to-end della catena di coinvoglimenti
+        depth:
+          type: integer
+          minimum: 1
+          description: Livello ricorsivo (0=SUAP→ET, 1=primo ET-figlio, etc.)
+        cui:
+          $ref: "#/components/schemas/cui"
+        parent_et:
+          $ref: "#/components/schemas/AdministrationSchema"
+
+    # --- Indici/documenti (riuso) ---
+    InstanceIndex:
+      type: array
+      description: Indice delle risorse allegate all'istanza
+      items:
+        type: object
+        required: [ code, ref, description, resource_id, hash, alg_hash ]
+        properties:
+          code: { type: string }
+          ref:  { type: string }
+          description: { type: string }
+          resource_id: { type: string }
+          filename: { type: string }
+          file_size: { type: integer }
+          hash: { type: string }
+          alg_hash: { type: string, enum: [ S256, S384, S512 ] }
+
+    GeneralIndex:
+      type: array
+      description: Indice documenti generali (ricevute, suap, comunica_cui, ...)
+      items:
+        anyOf:
+          - $ref: '#/components/schemas/ricevuta_xml'
+          - $ref: '#/components/schemas/ricevuta_pdf'
+          - $ref: '#/components/schemas/suap_xml'
+          - $ref: '#/components/schemas/suap_pdf'
+          - $ref: '#/components/schemas/suap_rea_start_xml'
+          - $ref: '#/components/schemas/suap_rea_update_xml'
+          - $ref: '#/components/schemas/comunica_cui_xml'
+          - $ref: '#/components/schemas/comunica_cui_pdf'
+
+    # --- Tipi documento (minimo necessario) ---
+    ricevuta_xml: { $ref: "#/components/schemas/__doc_xml_base" }
+    ricevuta_pdf: { $ref: "#/components/schemas/__doc_pdf_base" }
+    suap_xml:     { $ref: "#/components/schemas/__doc_xml_base" }
+    suap_pdf:     { $ref: "#/components/schemas/__doc_pdf_base" }
+    suap_rea_start_xml:  { $ref: "#/components/schemas/__doc_xml_base" }
+    suap_rea_update_xml: { $ref: "#/components/schemas/__doc_xml_base" }
+    comunica_cui_xml:    { $ref: "#/components/schemas/__doc_xml_base" }
+    comunica_cui_pdf:    { $ref: "#/components/schemas/__doc_pdf_base" }
+
+    __doc_xml_base:
+      type: object
+      required: [ mime_type, resource_id, hash, alg_hash ]
+      properties:
+        mime_type: { type: string, enum: [ application/xml, application/pkcs7-mime ] }
+        resource_id: { type: string }
+        filename: { type: string }
+        file_size: { type: integer }
+        hash: { type: string }
+        alg_hash: { type: string, enum: [ S256, S384, S512 ] }
+
+    __doc_pdf_base:
+      type: object
+      required: [ mime_type, resource_id, hash, alg_hash ]
+      properties:
+        mime_type: { type: string, enum: [ application/pdf, application/pkcs7-mime ] }
+        resource_id: { type: string }
+        filename: { type: string }
+        file_size: { type: integer }
+        hash: { type: string }
+        alg_hash: { type: string, enum: [ S256, S384, S512 ] }
+
+    # --- Request specifiche ---
+    SendInstanceRequest:
+      type: object
+      required: [ cui, instance_descriptor_version, instance_index, general_index, chain ]
+      properties:
+        cui: { $ref: "#/components/schemas/cui" }
+        instance_descriptor_version: { type: string }
+        instance_index: { $ref: "#/components/schemas/InstanceIndex" }
+        general_index: { $ref: "#/components/schemas/GeneralIndex" }
+        chain: { $ref: "#/components/schemas/ChainContext" }
+
+    IntegrationRequest:
+      type: object
+      required: [ cui, instance_descriptor_version, integration_list ]
+      properties:
+        cui: { $ref: "#/components/schemas/cui" }
+        instance_descriptor_version: { type: string }
+        integration_list:
+          type: array
+          items:
+            type: object
+            required: [ code, ref, integration_request ]
+            properties:
+              code: { type: string }
+              ref:  { type: string }
+              integration_request:
+                title: elenco integrazioni richieste da uno o più enti terzi
+                type: array
+                items:
+                  type: object
+                  properties:
+                    request: { type: string }
+                    requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+        integration_document_list:
+          type: array
+          items:
+            type: object
+            properties:
+              requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+              resource_id: { type: string }
+              filename: { type: string }
+              file_size: { type: integer }
+              mime_type: { type: string }
+              hash: { type: string }
+              alg_hash: { type: string, enum: [ S256, S384, S512 ] }
+    
+    ConformationRequest:
+      type: object
+      required: [ cui, instance_descriptor_version, conformation_list ]
+      properties:
+        cui: { $ref: "#/components/schemas/cui" }
+        instance_descriptor_version: { type: string }
+        expirationDate:
+              type: string
+              format: date
+              description: Scadenza concessa al presentatore per la conformazione
+        conformation_list:
+          type: array
+          items:
+            type: object
+            required: [ code, ref, conformation_request ]
+            properties:
+              code: { type: string }
+              ref:  { type: string }
+              conformation_request:
+                title: elenco conformazioni richieste da uno o più enti terzi
+                type: array
+                items:
+                  type: object
+                  properties:
+                    request: { type: string }
+                    requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+        conformation_document_list:
+          type: array
+          items:
+            type: object
+            properties:
+              requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+              resource_id: { type: string }
+              filename: { type: string }
+              file_size: { type: integer }
+              mime_type: { type: string }
+              hash: { type: string }
+              alg_hash: { type: string, enum: [ S256, S384, S512 ] }    
+
+    SendConclusionsRequests:
+      type: object
+      oneOf:
+        - $ref: "#/components/schemas/NegativeOutcomeRequired"
+        - $ref: "#/components/schemas/PositiveOutcome"
+      discriminator:
+        propertyName: conclusions_type
+
+    NegativeOutcomeRequired:
+      type: object
+      required: [ conclusions_type, cui, instance_descriptor_version, negative_outcome_motivation, requester_administration ]
+      properties:
+        conclusions_type: { type: string, enum: [ negative_outcome ] }
+        cui: { $ref: "#/components/schemas/cui" }
+        instance_descriptor_version: { type: string }
+        negative_outcome_motivation: { type: string }
+        requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+        resource_id: { type: string }
+        filename: { type: string }
+        file_size: { type: integer }
+        hash: { type: string }
+        alg_hash: { type: string, enum: [ S256, S384, S512 ] }
+
+    PositiveOutcome:
+      type: object
+      required: [ conclusions_type, cui, instance_descriptor_version, positive_outcome, requester_administration ]
+      properties:
+        conclusions_type: { type: string, enum: [ positive_outcome ] }
+        cui: { $ref: "#/components/schemas/cui" }
+        instance_descriptor_version: { type: string }
+        positive_outcome: { type: string }
+        requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+        resource_id: { type: string }
+        filename: { type: string }
+        file_size: { type: integer }
+        hash: { type: string }
+        alg_hash: { type: string, enum: [ S256, S384, S512 ] }
+
+    NotifyMessage:
+      type: object
+      required: [ cui, instance_descriptor_version, event ]
+      properties:
+        cui: { $ref: "#/components/schemas/cui" }
+        instance_descriptor_version: { type: string }
+        event:
+          type: string
+          enum:
+            - end_by_proceeding_time_expired
+            - end_by_integration_times_expired
+            - end_by_conformation_times_expired
+            - end_by_submitter_cancel_requested
+            - integration_request_time_expired
+
+    TransferOutcomeNotifyMessage:
+      type: object
+      required: [ cui, instance_descriptor_version, event, resource_id, filename, mime_type, hash, alg_hash ]
+      properties:
+        cui: { $ref: "#/components/schemas/cui" }
+        instance_descriptor_version: { type: string }
+        event:
+          type: string
+          enum:
+            - end_by_suspension_requested
+            - end_by_positive_outcome
+            - end_by_negative_outcome
+        resource_id: { type: string }
+        filename: { type: string }
+        file_size: { type: integer }
+        mime_type: { type: string, enum: [ application/pdf, application/pkcs7-mime ] }
+        hash: { type: string }
+        alg_hash: { type: string, enum: [ S256, S384, S512 ] }
+
+    CdssNotifyMessage:
+      allOf:
+        - $ref: "#/components/schemas/NotifyMessage"
+        - type: object
+          required: [ event, filename, mime_type, resource_id, hash, alg_hash, cdss_channel, cdss_convocation ]
+          properties:
+            event: { type: string, enum: [ cdss_convened ] }
+            filename: { type: string }
+            file_size: { type: integer }
+            mime_type: { type: string }
+            resource_id: { type: string }
+            hash: { type: string }
+            alg_hash: { type: string, enum: [ S256, S384, S512 ] }
+            cdss_channel: { type: string }
+            cdss_convocation: { type: string, format: date }
