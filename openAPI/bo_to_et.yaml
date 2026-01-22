@@ -844,6 +844,7 @@ components:
                         - $ref: "#/components/schemas/NegativeOutcome"
                         - $ref: "#/components/schemas/PositiveOutcome"
                         - $ref: "#/components/schemas/DefinitiveProvision"
+                        - $ref: "#/components/schemas/SecondProvisionOutcome"
                         - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                         - $ref: "#/components/schemas/ConditionalProvisionDenied"
                 additional_document_list:  
@@ -859,7 +860,7 @@ components:
                             - alg_hash
                         properties:
                             resource_id:
-                                title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
+                                title: id della risorsa , univoco per erogatore e CUI.UUID
                                 type: string
                                 minLength: 1
                             description:                            
@@ -867,14 +868,14 @@ components:
                                 type: string
                                 minLength: 1
                             filename:                      
-                                title: filename della risorsa "documento di parere negativo"
+                                title: filename della risorsa 
                                 type: string
                                 minLength: 1
                             file_size:
                                 description: Dimensione del file.
                                 type: integer
                             mime_type:
-                                title: "indica il formato dei dati previsto per il documento di parere negativo"
+                                title: "indica il formato dei dati previsto per il documento"
                                 type: string
                             hash:
                                 title: hash risorsa
@@ -1094,6 +1095,16 @@ components:
                     - S256
                     - S384
                     - S512
+
+        SecondProvisionOutcome:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+            properties:
+                outcome:
+                    type: string
+                    enum: 
+                        - positive_outcome
+                        - negative_outcome
         
         ConditionalProvisionGranted:
             allOf:
