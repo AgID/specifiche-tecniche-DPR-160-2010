@@ -219,6 +219,8 @@ paths:
         "200": { $ref: "#/components/responses/OKRequest" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
         "428": { $ref: "#/components/responses/PreconditionRequired" }
         "500": { $ref: "#/components/responses/ServerError" }
         "503": { $ref: "#/components/responses/ServiceUnavailable" }
@@ -307,6 +309,15 @@ components:
 
     NotFound:
       description: Risorsa non trovata
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+    Conflict:
+      description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
 
     PreconditionFailed:
       description: Precondizione fallita (es. If-Match)
