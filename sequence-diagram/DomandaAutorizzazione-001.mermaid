@@ -21,7 +21,7 @@ sequenceDiagram
         note left of E: resource_id da instance_index
         B -->> E: instanceDocument
         end
-        E ->> C: audit(cui,instance_retrived)
+        E ->> C: audit(cui,instance_retrived_from_<ET>)
         C -->> E: ack
     end
 
@@ -163,7 +163,7 @@ sequenceDiagram
                             note left of E: resource_id da instance_index
                             B -->> E: instanceDocument
                         end
-                        E ->> C: audit(cui,instance_integrated_retrived)
+                        E ->> C: audit(cui,instance_integrated_retrived_from_<ET>)
                         C -->> E: ack
                     end
                 end
