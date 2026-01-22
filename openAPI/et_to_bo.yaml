@@ -204,6 +204,7 @@ paths:
                         schema:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
+                                - $ref: "#/components/schemas/CdsaNotifyMessage"
                                 - $ref: "#/components/schemas/CdssNotifyMessage"
                                 - $ref: "#/components/schemas/TransferNotifyMessage"
                 required: true
@@ -825,6 +826,42 @@ components:
                     pattern: >-
                         ^end_by_proceeding_time_expired|integration_response_time_expired|conformation_response_time_expired|end_by_submitter_cancel_requested|integration_request_time_expired|end_by_definitive_provision_granted|end_by_conditional_provision_rescinded|end_by_conditional_provision_denied|conditional_provision_extended|conformation_request_times_expired|end_by_observations_times_expired|integration_requested|conformation_requested|involved_et_[0-9]{1,10}$
 
+
+        CdsaNotifyMessage:
+          allOf:
+            - $ref: "#/components/schemas/NotifyMessage"
+            - type: object
+              properties:
+                event:
+                  type: string
+                  enum:
+                    - cdsa_convened
+                filename:
+                  title: filename dell'atto amministrativo
+                  type: string
+                  minLength: 1
+                mime_type:
+                  title: "indica il formato dei dati previsto per l'atto amministrativo"
+                  type: string
+                  minLength: 1
+                resource_id:
+                  title: se presente, id della risorsa documento correlata all'evento notificato
+                  type: string
+                  minLength: 1
+                file_size:
+                  description: Dimensione del file.
+                  type: integer
+                hash:
+                  title: hash risorsa
+                  type: string
+                  minLength: 1
+                alg_hash:
+                  title: algoritmo hash applicato
+                  type: string
+                  enum:
+                    - S256
+                    - S384
+                    - S512
         
         TransferNotifyMessage:
             type: object
@@ -832,6 +869,7 @@ components:
                 - $ref: "#/components/schemas/OutcomeMessage"
                 - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
                 - $ref: "#/components/schemas/GenericCommunicationMessage"
+                - $ref: "#/components/schemas/MinutesCdssTrasmissionMessage"
                         
         TransferMessage:
             type: object
@@ -892,6 +930,23 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
+
+        MinutesCdssTrasmissionMessage:
+          type: object
+          required:
+            - resource_id
+            - filename
+            - mime_type
+            - file_size
+            - hash
+            - alg_hash
+          allOf:
+            - $ref: "#/components/schemas/TransferMessage"
+          properties:
+            event:
+              type: string
+              enum:
+                - minutes_cdss_trasmission
         
         ObservationsToImpedimentsMessage:
             type: object
@@ -926,7 +981,7 @@ components:
 
         CdssNotifyMessage:
             allOf:
-              - $ref: "#/components/schemas/NotifyMessage"
+              - $ref: "#/components/schemas/CdsaNotifyMessage"
               - type: object
                 required:
                     - cdss_channel
@@ -936,32 +991,6 @@ components:
                         type: string
                         enum:
                             - cdss_convened
-                    filename:                      
-                        title: filename dell'atto amministrativo
-                        type: string
-                        minLength: 1
-                    mime_type:
-                        title: "indica il formato dei dati previsto per l'atto amministrativo"
-                        type: string
-                        minLength: 1
-                    resource_id:
-                        title: se presente, id della risorsa documento correlata all'evento notificato
-                        type: string
-                        minLength: 1
-                    file_size:
-                        description: Dimensione del file.
-                        type: integer
-                    hash:
-                        title: hash risorsa
-                        type: string
-                        minLength: 1
-                    alg_hash:
-                        title: algoritmo hash applicato
-                        type: string
-                        enum:
-                        - S256
-                        - S384
-                        - S512
                     cdss_channel:
                         type: string
                         title: "canale utilizzato per la convocazione della Conferenza dei Servizi Sincrona"
