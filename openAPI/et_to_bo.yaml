@@ -59,7 +59,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -84,7 +84,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -108,7 +108,7 @@ paths:
               "500":
                   $ref: "#/components/responses/ServerError"
               "503":
-                  $ref: "#/components/responses/ServiceUnavaliable"
+                  $ref: "#/components/responses/ServiceUnavailable"
           security:
               - bearerAuth: []
                 Agid-JWT-Signature: []
@@ -189,7 +189,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -223,7 +223,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -302,7 +302,7 @@ components:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
 
-        ServiceUnavaliable:
+        ServiceUnavailable:
             description: Servizio non disponibile
             content:
                 application/json:
