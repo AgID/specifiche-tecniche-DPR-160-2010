@@ -462,7 +462,7 @@ components:
                                 title: testo regolarizzazione richiesta
                                 type: string
 
-        RequestIntegration:
+        IntegrationRequest:
             type: object
             required:
               - cui
