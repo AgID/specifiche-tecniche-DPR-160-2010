@@ -97,7 +97,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/RequestIntegration"
+                            $ref: "#/components/schemas/IntegrationRequest"
                 required: true
             responses:
                 "200":
