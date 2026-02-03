@@ -334,6 +334,7 @@ paths:
                             oneOf:
                                 - $ref: "#/components/schemas/CdssNotifyMessage"
                                 - $ref: "#/components/schemas/NotifyMessage"
+                                - $ref: "#/components/schemas/PreliminaryResolutionMessage"
                 required: true
             responses:
                 "200":
@@ -860,7 +861,7 @@ components:
                             - alg_hash
                         properties:
                             resource_id:
-                                title: id della risorsa , univoco per erogatore e CUI.UUID
+                                title: id della risorsa, univoco per erogatore e CUI.UUID
                                 type: string
                                 minLength: 1
                             description:                            
@@ -868,15 +869,18 @@ components:
                                 type: string
                                 minLength: 1
                             filename:                      
-                                title: filename della risorsa 
+                                title: filename della risorsa
                                 type: string
                                 minLength: 1
                             file_size:
-                                description: Dimensione del file.
+                                description: dimensione del file
                                 type: integer
                             mime_type:
-                                title: "indica il formato dei dati previsto per il documento"
+                                title: indica il formato dei dati previsto per il documento
                                 type: string
+                                enum: 
+                                - application/pdf
+                                - application/pkcs7-mime
                             hash:
                                 title: hash risorsa
                                 type: string
@@ -1168,7 +1172,9 @@ components:
                     mime_type:
                         title: "indica il formato dei dati previsto per l'atto amministrativo"
                         type: string
-                        minLength: 1
+                        enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
                     resource_id:
                         title: se presente, id della risorsa documento correlata all'evento notificato
                         type: string
@@ -1196,6 +1202,45 @@ components:
                         type: string
                         format: date
                         minLength: 1
+        
+        PreliminaryResolutionMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/NotifyMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - positive_cds_preliminary_resolution
+                        - negative_cds_preliminary_resolution
+                resource_id:
+                    title: id della risorsa del documento di determinazione della CdS Preliminare 
+                    type: string
+                    minLength: 1
+                filename:                      
+                    title: filename della risorsa del documento di determinazione della CdS Preliminare 
+                    type: string
+                    minLength: 1
+                mime_type:
+                    title: indica il formato dei dati previsto per il documento di determinazione
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                file_size:
+                    description: dimensione del file
+                    type: integer
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
         
     headers:
         Agid-JWT-Signature:
