@@ -7,7 +7,7 @@ sequenceDiagram
     participant C as Catalogo SSU 
     participant E as Enti Terzi    
     Note over F,B: istanza procedibile
-    alt Regime Amministrativo=AUTORIZZAZIONE
+    alt Regime Amministrativo=AUTORIZZAZIONE,SCIA
         par per ogni ente terzo interessato        
             B ->> E: send_instance(SendInstanceRequest)
             E -->> B: ack
