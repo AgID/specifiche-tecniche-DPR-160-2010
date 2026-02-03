@@ -52,7 +52,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -77,7 +77,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -167,7 +167,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -190,7 +190,7 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
-        ServiceUnavaliable:
+        ServiceUnavailable:
             description: Servizio non disponibile
             content:
                 application/json:
@@ -264,17 +264,22 @@ components:
                     items:
                         type: object
                         required:
-                        - code
+                        - usec_code
+                        - usec_version
                         - ref
                         - description
                         - resource_id
                         - hash
                         - alg_hash
                         properties:
-                            code:                            
+                            usec_code:                            
                                 title: codice della fattispecie presente nel Catalogo
                                 type: string
                                 minLength: 1
+                            usec_version:
+                              title: versione della fattispecie presente nel Catalogo
+                              type: string
+                              minLength: 1
                             ref:                            
                                 title: riferimento all'elemento dell'istanza relativo al procedimento
                                 type: string

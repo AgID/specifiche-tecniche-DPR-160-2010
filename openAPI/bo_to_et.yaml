@@ -60,7 +60,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -89,7 +89,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -117,7 +117,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -145,7 +145,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -182,7 +182,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -210,7 +210,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -238,7 +238,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -318,7 +318,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -343,10 +343,14 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -413,7 +417,7 @@ paths:
             "500":
                 $ref: "#/components/responses/ServerError"
             "503":
-                $ref: "#/components/responses/ServiceUnavaliable"
+                $ref: "#/components/responses/ServiceUnavailable"
 
         security:
           - bearerAuth: [ ]
@@ -492,7 +496,7 @@ components:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
 
-        ServiceUnavaliable:
+        ServiceUnavailable:
             description: Servizio non disponibile
             content:
                 application/json:
@@ -841,6 +845,7 @@ components:
                         - $ref: "#/components/schemas/NegativeOutcome"
                         - $ref: "#/components/schemas/PositiveOutcome"
                         - $ref: "#/components/schemas/DefinitiveProvision"
+                        - $ref: "#/components/schemas/SecondProvisionOutcome"
                         - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                         - $ref: "#/components/schemas/ConditionalProvisionDenied"
                 additional_document_list:  
@@ -1094,6 +1099,16 @@ components:
                     - S256
                     - S384
                     - S512
+
+        SecondProvisionOutcome:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+            properties:
+                outcome:
+                    type: string
+                    enum: 
+                        - positive_outcome
+                        - negative_outcome
         
         ConditionalProvisionGranted:
             allOf:

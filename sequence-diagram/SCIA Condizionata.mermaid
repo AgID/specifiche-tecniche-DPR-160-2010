@@ -21,7 +21,7 @@ sequenceDiagram
             note left of E: resource_id da instance_index
             B -->> E: instanceDocument
             end
-            E ->> C: audit(cui,instance_retrived)
+            E ->> C: audit(cui,instance_retrived_from_<ET>)
             C -->> E: ack
         end
     end
@@ -113,18 +113,32 @@ sequenceDiagram
                     E -->> B: ack
                 end
                 alt oltre il tempo di integrazione del presentatore
-                    B ->> F: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
+                    B ->> F: notify(cui, instance_descriptor_version, integration_response_time_expired)
                     F -->> B: ack
                     par per ogni ente terzo interessato
-                        B ->> E: notify(cui, instance_descriptor_version,end_by_integration_times_expired)
+                        B ->> E: notify(cui, instance_descriptor_version, integration_response_time_expired)
                         E -->> B: ack
                     end
-                    B ->> C: audit(cui,end_by_integration_request_time_expired)
+                    B ->> C: audit(cui, integration_response_time_expired)
                     C -->> B: ack
-                    F -) P: notification(cui,end_by_integration_times_expired)
+
+                    opt invio provvedimento finale per mancata conformazione
+                        E ->> B: send_conclusions(NegativeOutcome)
+                        B -->> E: ack 
+                        E ->> C: audit(cui,negative_outcome_sended_from_<ET>)
+                        C -->> E: ack
+                        opt
+                            B ->> E: request_instance_document(cui, resource_id)
+                            note right of B: recupero documento di parere negativo
+                            E -->> B: instanceDocument    
+                        end 
+                    end  
+
+                    B ->> F: notify(cui, instance_descriptor_version, end_by_integration_time_expired)
+                    F -) P: notification(cui, end_by_integration_time_expired)
                 else entro il tempo di integrazione del presentatore 
                     P --) F: instanceIntegrated
-                    F ->> B: send_instance(SendInstanceRequest)
+                    F ->> B: send_instance_updated_documents(SendUpdatedDocuments)
                     B -->> F: ack
                     F ->> C: audit(cui,instance_integrated_to_<BO>_sended)
                     note right of F: <BO> codice BackOffice
@@ -136,11 +150,11 @@ sequenceDiagram
                     end
                     B ->> C: audit(cui,instance_integrated_retrived)
                     C -->> B: ack
-                    B ->> C: request_update_times(cui,times)
+                    B ->> C: update_attachments_and_times(cui,times,attachments,free_attachments)
                     Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per l'integrazione e i giorni passati dall'invio della richiesta
                     C -->> B: instanceDescriptor
                     par per ogni ente terzo interessato                
-                        B ->> E: send_instance(SendInstanceRequest)
+                        B ->> E: send_instance_updated_documents(SendUpdatedDocuments)
                         E -->> B: ack
                         B ->> C: audit(cui,instance_integrated_to_<ET>_sended)
                         note right of B: <ET> codice ente terzo
@@ -150,7 +164,7 @@ sequenceDiagram
                             note left of E: resource_id da instance_index
                             B -->> E: instanceDocument
                         end
-                        E ->> C: audit(cui,instance_integrated_retrived)
+                        E ->> C: audit(cui,instance_integrated_retrived_from_<ET>)
                         C -->> E: ack
                     end
                 end
@@ -246,19 +260,32 @@ sequenceDiagram
                 end
 
                 alt oltre il tempo di conformazione del presentatore
-                    B ->> F: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
+                    B ->> F: notify(cui, instance_descriptor_version, conformation_response_time_expired)
                     F -->> B: ack
                     par per ogni ente terzo interessato
-                        B ->> E: notify(cui, instance_descriptor_version,end_by_conformation_times_expired)
+                        B ->> E: notify(cui, instance_descriptor_version, conformation_response_time_expired)
                         E -->> B: ack
                     end
-                    B ->> C: audit(cui,end_by_conformation_request_time_expired)
+                    B ->> C: audit(cui, conformation_response_time_expired)
                     C -->> B: ack
 
-                    F -) P: notification(cui,end_by_conformation_times_expired)
+                    opt invio provvedimento finale per mancata conformazione
+                        E ->> B: send_conclusions(NegativeOutcome)
+                        B -->> E: ack 
+                        E ->> C: audit(cui, suspension_requested_from_<ET>)
+                        C -->> E: ack
+                        opt
+                            B ->> E: request_instance_document(cui, resource_id)
+                            note right of B: recupero documento di richiesta sospensione
+                            E -->> B: instanceDocument    
+                        end 
+                    end  
+
+                    B ->> F: notify(cui, instance_descriptor_version, end_by_conformation_time_expired)
+                    F -) P: notification(cui, end_by_conformation_time_expired)
                 else entro il tempo di conformazione del presentatore 
                     P --) F: instanceConformated
-                    F ->> B: send_instance(SendInstanceRequest)
+                    F ->> B: send_instance_updated_documents(SendUpdatedDocuments)
                     B -->> F: ack
                     F ->> C: audit(cui,instance_conformated_to_<BO>_sended)
                     note right of F: <BO> codice BackOffice
@@ -270,11 +297,11 @@ sequenceDiagram
                     end
                     B ->> C: audit(cui,instance_conformated_retrived)
                     C -->> B: ack
-                    B ->> C: request_update_times(cui,times)
+                    B ->> C: update_attachments_and_times(cui,times,attachments,free_attachments)
                     Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per la conformazione e i giorni passati dall'invio della richiesta
                     C -->> B: instanceDescriptor
                     par per ogni ente terzo interessato                
-                        B ->> E: send_instance(SendInstanceRequest)
+                        B ->> E: send_instance_updated_documents(SendUpdatedDocuments)
                         E -->> B: ack
                         B ->> C: audit(cui,instance_conformated_to_<ET>_sended)
                         note right of B: <ET> codice ente terzo
@@ -284,7 +311,7 @@ sequenceDiagram
                             note left of E: resource_id da instance_index
                             B -->> E: instanceDocument
                         end
-                        E ->> C: audit(cui,instance_conformated_retrived)
+                        E ->> C: audit(cui,instance_conformated_retrived_from_<ET>)
                         C -->> E: ack
                     end
 
