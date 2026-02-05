@@ -36,8 +36,13 @@ sequenceDiagram
                 note right of B: recupero documento di richiesta di conformazione
                 E -->> B: instanceDocument    
             end
-            E ->> C: audit(cui,conformation_requested_from_<ET>)
-            C -->> E: ack           
+            alt Aggiunti allegati non presenti nell'instance descriptor
+                E ->> C: audit(cui, conformation_requested_with_new_document_to_<Usecase_Proceding_Code>_from_<ET>)
+                C -->> E: ack
+            else
+                E ->> C: audit(cui,conformation_requested_from_<ET>)
+                C -->> E: ack   
+            end        
         end
         alt concluso il tempo di richiesta di conformazione 
             par per ogni ente terzo
@@ -50,8 +55,13 @@ sequenceDiagram
         Note over B: concluso il tempo di richiesta conformazione AND almeno un ente terzo ha richiesto la conformazione
         B ->> F: request_conformation(cui, instance_descriptor_version,conformation_list, conformation_document_list)
         F -->> B: ack
-        B ->> C: audit(cui,conformation_requested)
-        C -->> B: ack
+        alt Aggiunti allegati non presenti nell'instance descriptor
+            E ->> C: audit(cui, conformation_requested_with_new_document_to_<Usecase_Proceding_Code>)
+            C -->> E: ack
+        else
+            B ->> C: audit(cui,conformation_requested)
+            C -->> B: ack
+        end
         B ->> C: request_update_times(cui,times)
         Note right of B: Aggiorna i tempi procedimentali incrementandoli di X giorni, dove X è max_gg_conf_resp dell'oggetto Times
         C -->> B: instanceDescriptor
