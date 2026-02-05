@@ -492,7 +492,6 @@ components:
             required: [ code, ref, integration_request ]
             properties:
               code: { type: string }
-              ref:  { type: string }
               integration_request:
                 title: elenco integrazioni richieste da uno o più enti terzi
                 type: array
@@ -531,7 +530,6 @@ components:
             required: [ code, ref, conformation_request ]
             properties:
               code: { type: string }
-              ref:  { type: string }
               conformation_request:
                 title: elenco conformazioni richieste da uno o più enti terzi
                 type: array

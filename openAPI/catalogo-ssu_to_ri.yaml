@@ -670,7 +670,7 @@ components:
                       properties:
 
                         ref:                      
-                          title: riferimento all'allegato dell'istanza relativo al procedimento
+                          title: riferimento all'allegato dell'istanza relativo al procedimento, definito sul Catalogo
                           type: string
                           minLength: 1
                         filename:                      
@@ -756,7 +756,7 @@ components:
                       - mime_type
                       properties:
                         ref:
-                          title: riferimento dell'allegato
+                          title: riferimento dell'allegato, definito liberamente dalla componente senza avere una corrispondenza sul Catalogo
                           type: string
                           minLength: 1
                         filename:

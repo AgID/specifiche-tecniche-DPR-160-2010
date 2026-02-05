@@ -143,14 +143,19 @@ sequenceDiagram
             opt almeno una richiesta integrazione
                 par almeno un ente terzo
                     E ->> B: request_integration(cui, instance_descriptor_version,integration_list,resource_id)
-                    B -->> E: ack 
+                    B -->> E: ack
                     opt
                         B ->> E: request_instance_document(cui, resource_id)
                         note right of B: recupero documento di richiesta integrazione
                         E -->> B: instanceDocument    
                     end
-                    E ->> C: audit(cui,integration_requested_from_<ET>)
-                    C -->> E: ack           
+                    alt Aggiunti allegati non presenti nell'instance descriptor
+                        F ->> C: audit(cui, integration_requested_with_new_document_to_<Usecase_Proceding_Code>_from_<ET>)
+                        C -->> F: ack
+                    else
+                        E ->> C: audit(cui,integration_requested_from_<ET>)
+                        C -->> E: ack
+                    end           
                 end
                 alt concluso il tempo di richiesta integrazione 
                     par per ogni ente terzo
@@ -163,8 +168,13 @@ sequenceDiagram
                 Note over B: concluso il tempo di richiesta integrazione OR tutti gli enti terzi hanno richiesto integrazione
                 B ->> F: request_integration(cui, instance_descriptor_version,list_of_integration_list,integration_document_list)
                 F -->> B: ack
-                B ->> C: audit(cui,integration_requested)
-                C -->> B: ack  
+                alt Aggiunti allegati non presenti nell'instance descriptor
+                    F ->> C: audit(cui, integration_requested_with_new_document_to_<Usecase_Proceding_Code>_from_<ET>)
+                    C -->> F: ack
+                else
+                    B ->> C: audit(cui,integration_requested)
+                    C -->> B: ack  
+                end
                 B ->> C: request_update_times(cui,times)
                 Note right of B: Aggiorna i tempi procedimentali incrementantoli di X giorni, dove X è max_gg_int_resp dell'oggetto Times
                 C -->> B: instanceDescriptor

@@ -985,6 +985,7 @@ components:
                     type: string
                 updated_documents:
                     $ref: "#/components/schemas/InstanceIndex"
+                    description: 
                 receiver_administration:
                     title: amministrazione destinataria delle istanze
                     $ref: "#/components/schemas/AdministrationSchema"
