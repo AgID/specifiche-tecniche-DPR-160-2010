@@ -213,6 +213,8 @@ sequenceDiagram
                         C -->> E: ack
                     end
                 end
+                B ->> C: revoke_permit_document(cui)
+                C -->> B: ack
                 B ->> F: notify(ConditionalProvisionRescinded)
                 F -->> B: ack
                 F ->> B: request_instance_document(cui, resource_id)
@@ -235,6 +237,8 @@ sequenceDiagram
                     E ->> C: audit(cui,conditional_provision_rescinded_from_<ET>)
                     C -->> E: ack  
                 end
+                B ->> C: revoke_permit_document(cui)
+                C -->> B: ack
                 B ->> F: notify(ConditionalProvisionRescinded)
                 F -->> B: ack
                 F ->> B: request_instance_document(cui, resource_id)
@@ -269,6 +273,8 @@ sequenceDiagram
                     C -->> E: ack
                 end
             end
+            B ->> C: revoke_permit_document(cui)
+            C -->> B: ack
             B ->> F: notify(ConditionalProvisionDenied)
             F -->> B: ack
             F ->> B: request_instance_document(cui, resource_id)

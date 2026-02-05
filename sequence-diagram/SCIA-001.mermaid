@@ -157,6 +157,8 @@ sequenceDiagram
             B ->> C: audit(cui,end_by_proceeding_time_expired)
             C -->> B: ack
         else concluso tempo istanza o tutti gli enti terzi hanno inoltrato conclusione, almeno una richiesta sospensione
+            B ->> C: revoke_permit_document(cui)
+            C -->> B: ack
             B ->> F: notify(cui, instance_descriptor_version,end_by_suspension_requested)
             F -->> B: ack  
             F -) P: notification(cui,end_by_suspension_requested)          

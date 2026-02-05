@@ -373,6 +373,8 @@ sequenceDiagram
     end
     
     alt (concluso tempo istanza (eventuale silenzio assenso) o autorizzazione concessa) e integrazione del presentatore nei tempi 
+        B ->> C: add_permit_document(cui, permit_document)
+        C -->> B: ack
         B ->> F: notify(cui, instance_descriptor_version,end_by_positive_outcome,resource_id)
         F -->> B: ack
         F ->> B: request_instance_document(cui, resource_id)
