@@ -57,7 +57,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -85,7 +85,7 @@ paths:
           "500":
             $ref: "#/components/responses/ServerError"
           "503":
-            $ref: "#/components/responses/ServiceUnavaliable"
+            $ref: "#/components/responses/ServiceUnavailable"
 
         security:
           - bearerAuth: [ ]
@@ -114,7 +114,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -153,7 +153,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -178,7 +178,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -202,7 +202,7 @@ paths:
               "500":
                   $ref: "#/components/responses/ServerError"
               "503":
-                  $ref: "#/components/responses/ServiceUnavaliable"
+                  $ref: "#/components/responses/ServiceUnavailable"
           security:
               - bearerAuth: []
                 Agid-JWT-Signature: []
@@ -231,7 +231,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -311,7 +311,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -390,7 +390,7 @@ components:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
 
-        ServiceUnavaliable:
+        ServiceUnavailable:
             description: Servizio non disponibile
             content:
                 application/json:
@@ -456,6 +456,7 @@ components:
             oneOf:
                 - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
                 - $ref: "#/components/schemas/GenericCommunication"
+                - $ref: "#/components/schemas/PreliminaryResolutionObservationMessage"
 
         TransferMessage:
             allOf:
@@ -516,6 +517,16 @@ components:
                     type: string
                     enum:
                         - observations_to_impediments_provided
+        
+        PreliminaryResolutionObservationMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - observations_to_preliminary_observation
         
         GenericCommunication:
           type: object

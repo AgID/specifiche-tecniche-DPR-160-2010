@@ -60,7 +60,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
               - bearerAuth: []
@@ -86,7 +86,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
               - bearerAuth: []
@@ -112,7 +112,7 @@ paths:
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -155,7 +155,7 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
-        ServiceUnavaliable:
+        ServiceUnavailable:
             description: Servizio non disponibile
             content:
                 application/json:
@@ -333,6 +333,18 @@ components:
                 format: int32
               max_gg_concl_send:          
                 title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
+                type: integer
+                format: int32
+              max_gg_cds_pre_req:          
+                title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi preliminare
+                type: integer
+                format: int32
+              max_gg_cds_istr_req:          
+                title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi istruttoria
+                type: integer
+                format: int32
+              max_gg_cds_dec_req:          
+                title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi decisoria
                 type: integer
                 format: int32
               max_gg_cdss_req:          
@@ -766,7 +778,44 @@ components:
                           - S384
                           - S512
                         mime_type:
-                          type: string    
+                          type: string 
+            permit_document:
+                type: object
+                required:
+                - ref
+                - hash
+                - alg_hash
+                - mime_type
+                - filename
+                - file_size
+                properties:
+                    ref:
+                        title: riferimento dell'allegato
+                        type: string
+                        minLength: 1
+                    filename:
+                        title: filename dell'allegato
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: dimensione del file.
+                        type: integer
+                    hash:
+                        title: hash dell'allegato
+                        type: string
+                        minLength: 1
+                    alg_hash:
+                        title: algoritmo hash dell'allegato 
+                        type: string
+                        enum:
+                        - S256
+                        - S384
+                        - S512
+                    mime_type:
+                        type: string                          
+                    revoked_document:
+                        title: indica se il documento è stato revocato
+                        type: boolean  
 
     headers:
         Agid-JWT-Signature:

@@ -23,7 +23,7 @@ sequenceDiagram
         note left of E: resource_id da instance_index
         B -->> E: instanceDocument
         end
-        E ->> C: audit(cui,instance_retrived)
+        E ->> C: audit(cui,instance_retrived_from_<ET>)
         C -->> E: ack
     end
 
@@ -133,7 +133,7 @@ sequenceDiagram
                     note left of E: resource_id da updated_documents
                     B -->> E: instanceDocument
                 end
-                E ->> C: audit(cui,instance_conformated_retrived)
+                E ->> C: audit(cui,instance_conformated_retrived_from_<ET>)
                 C -->> E: ack
             end
 
@@ -167,6 +167,8 @@ sequenceDiagram
             B ->> C: audit(cui,end_by_proceeding_time_expired)
             C -->> B: ack
         else concluso tempo istanza o tutti gli enti terzi hanno inoltrato conclusione, almeno una richiesta sospensione
+            B ->> C: revoke_permit_document(cui)
+            C -->> B: ack
             B ->> F: notify(cui, instance_descriptor_version,end_by_suspension_requested)
             F -->> B: ack  
             F -) P: notification(cui,end_by_suspension_requested)          

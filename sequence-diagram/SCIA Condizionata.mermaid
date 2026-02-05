@@ -7,7 +7,7 @@ sequenceDiagram
     participant C as Catalogo SSU 
     participant E as Enti Terzi    
     Note over F,B: istanza procedibile
-    alt Regime Amministrativo=AUTORIZZAZIONE
+    alt Regime Amministrativo=AUTORIZZAZIONE,SCIA
         par per ogni ente terzo interessato        
             B ->> E: send_instance(SendInstanceRequest)
             E -->> B: ack
@@ -21,7 +21,7 @@ sequenceDiagram
             note left of E: resource_id da instance_index
             B -->> E: instanceDocument
             end
-            E ->> C: audit(cui,instance_retrived)
+            E ->> C: audit(cui,instance_retrived_from_<ET>)
             C -->> E: ack
         end
     end
@@ -174,7 +174,7 @@ sequenceDiagram
                             note left of E: resource_id da instance_index
                             B -->> E: instanceDocument
                         end
-                        E ->> C: audit(cui,instance_integrated_retrived)
+                        E ->> C: audit(cui,instance_integrated_retrived_from_<ET>)
                         C -->> E: ack
                     end
                 end
@@ -331,7 +331,7 @@ sequenceDiagram
                             note left of E: resource_id da instance_index
                             B -->> E: instanceDocument
                         end
-                        E ->> C: audit(cui,instance_conformated_retrived)
+                        E ->> C: audit(cui,instance_conformated_retrived_from_<ET>)
                         C -->> E: ack
                     end
 
@@ -427,6 +427,8 @@ sequenceDiagram
     end
     Note over F, E: Regime Amministrativo=AUTORIZZAZIONE | azione realizzata in ogni circostanza, anche in caso di CdSS
     alt Regime Amministrativo=AUTORIZZAZIONE | (concluso tempo istanza (eventuale silenzio assenso) o autorizzazione concessa) e integrazione del presentatore nei tempi 
+        B ->> C: add_permit_document(cui, permit_document)
+        C -->> B: ack
         B ->> F: notify(cui, instance_descriptor_version,end_by_positive_outcome,resource_id)
         F -->> B: ack
         F ->> B: request_instance_document(cui, resource_id)

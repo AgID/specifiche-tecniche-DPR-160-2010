@@ -59,7 +59,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -105,7 +105,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -189,7 +189,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -267,7 +267,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -327,7 +327,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -336,7 +336,7 @@ paths:
       tags:
         - Proceedings
  
-  /proceeding/{proceeding_id}/{proceeding_version}/usecase-proceedings:
+  /proceeding/{proceeding_id}/{proceeding_version}/{municipality}/usecase-proceedings:
     get:
       description: Recupero elenco fattispecie (usecase-proceedings) di uno specifico procedimento
       parameters:
@@ -353,6 +353,12 @@ paths:
           schema:
             type: string
             pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+        - name: municipality
+          in: path
+          description: identificativo del comune necessario a determinare l'amministrazione competente
+          required: true
+          schema:
+            type: string
 
       responses:
         "200":
@@ -377,7 +383,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -449,7 +455,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -492,7 +498,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -537,7 +543,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -582,7 +588,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -643,7 +649,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -698,7 +704,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -747,7 +753,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -807,7 +813,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -858,7 +864,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -909,7 +915,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -959,7 +965,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1009,7 +1015,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1059,7 +1065,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1117,7 +1123,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1169,7 +1175,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1215,7 +1221,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1267,7 +1273,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1314,7 +1320,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1352,7 +1358,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1401,7 +1407,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1450,7 +1456,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1499,7 +1505,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1554,7 +1560,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1619,7 +1625,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1669,7 +1675,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1728,7 +1734,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1786,7 +1792,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1845,7 +1851,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1909,7 +1915,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -1966,7 +1972,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -2024,7 +2030,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -2080,7 +2086,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -2139,7 +2145,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -2207,7 +2213,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -2263,7 +2269,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -2325,7 +2331,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -2378,7 +2384,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -2434,7 +2440,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -2490,7 +2496,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -2541,7 +2547,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
       security:
         - bearerAuth: []
           Agid-JWT-Signature: []
@@ -2561,7 +2567,7 @@ components:
       headers:
         Agid-JWT-Signature:
           $ref: "#/components/headers/Agid-JWT-Signature"
-    ServiceUnavaliable:
+    ServiceUnavailable:
       description: Servizio non disponibile
       content:
         application/json:
@@ -2688,6 +2694,18 @@ components:
           format: int32
         max_gg_concl_send:          
           title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
+          type: integer
+          format: int32
+        max_gg_cds_pre_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi preliminare
+          type: integer
+          format: int32
+        max_gg_cds_istr_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi istruttoria
+          type: integer
+          format: int32
+        max_gg_cds_dec_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi decisoria
           type: integer
           format: int32
         max_gg_cdss_req:          
