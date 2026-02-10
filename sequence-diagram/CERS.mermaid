@@ -1,5 +1,6 @@
 sequenceDiagram
-
+    autonumber
+    
     participant RI as Registro Imprese
     participant C as Catalogo SSU    
     participant B as BackOffice SUAP    
@@ -7,7 +8,7 @@ sequenceDiagram
 
 
     note over RI,C: Metadati procedimenti recuperati
-    note over RI: Istanza autocomplilata e firmata
+    note over RI: Istanza autocompilata e firmata
     
    
     RI ->> C: request_cui(instanceDescriptor)
