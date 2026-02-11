@@ -3,10 +3,14 @@ sequenceDiagram
     
     participant F as FrontOffice SUAP  
     participant B as BackOffice SUAP  
-    participant C as Catalogo SSU  
+    participant C as Catalogo SSU
+    participant CU as Comunica  
    
     Note over F,C: istanza presentata al BO, inviato audit al catalogo SSU ed errore su send instance a comunica per problemi di infrastruttura
     Note over F,C: o di controlli lato comunica
+
+    CU ->> F: cancel_istance(cui)
+    F -->> CU: ack
 
     F ->> B: delete_instance(cui)
     B -->> F: ack
