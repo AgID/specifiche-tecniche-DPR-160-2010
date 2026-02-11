@@ -17,12 +17,20 @@ sequenceDiagram
             opt        
                 B->>E: notify(GenericCommunicationMessage)
                 E-->>B: ack
+                opt
+                    E->>B: request_instance_document(cui, resource_id)
+                    B-->>E: instanceDocument
+                end
                 B-->>C: audit(cui, communication_to_<ET>_sended)
                 C-->>B: ack
             end
             opt        
                 E->>B: send_generic_communication(cui, requester_administration, resource_id)
                 B-->>E: ack
+                opt
+                    B->>E: request_instance_document(cui, resource_id)
+                    E-->>B: instanceDocument
+                end
                 E-->>C: audit(cui, communication_sended_from_<ET>)
                 C-->>B: ack
             end
@@ -35,6 +43,10 @@ sequenceDiagram
         P--)F: Invio comunicazione<br/>spontanea
         F->> B: notify(GenericCommunicationMessage)
         B -->> F: ack
+        opt
+            B->>F: request_instance_document(cui, resource_id)
+            F-->>B: instanceDocument
+        end
         F->> C: audit(cui, communication_fo_to_bo)
         C -->> F: ack
 
@@ -42,6 +54,10 @@ sequenceDiagram
             opt
                 B->>F: notify(GenericCommunicationMessage)
                 F-->>B: ack
+                opt
+                    F->>B: request_instance_document(cui, resource_id)
+                    B-->>F: instanceDocument
+                end
                 F--)P: Comunicazione del SUAP
                 B-->>C: audit(cui, communication_bo_to_fo)
                 C-->>B: ack
@@ -50,6 +66,10 @@ sequenceDiagram
                 P--)F: Invio comunicazione
                 F->> B: notify(GenericCommunicationMessage)
                 B -->> F: ack
+                opt
+                    B->>F: request_instance_document(cui, resource_id)
+                    F-->>B: instanceDocument
+                end
                 F->> C: audit(cui, communication_fo_to_bo)
                 C -->> F: ack
             end
