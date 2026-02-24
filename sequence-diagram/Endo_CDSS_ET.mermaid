@@ -10,6 +10,10 @@ sequenceDiagram
         par ET convoca gli altri ET interessati
             EC ->> EI: notify(cui, instance_descriptor_version,endo_cdss_convened_from_<ET>)
             EI -->> EC: ack
+            opt
+                EI ->> EC: request_instance_document(cui, resource_id)
+                EC -->> EI: instanceDocument 
+            end
         end
     else ET interessato richiede all'ET competente di convocare un endo_cdss
         EI ->> EC: request_endo_cdss(cui, requester_administration)
@@ -17,5 +21,9 @@ sequenceDiagram
         par ET convoca gli altri ET interessati
             EC ->> EI: notify(cui, instance_descriptor_version,endo_cdss_convened_from_<ET>)
             EI -->> EC: ack
+            opt
+                EI ->> EC: request_instance_document(cui, resource_id)
+                EC -->> EI: instanceDocument 
+            end
         end
     end

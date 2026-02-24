@@ -41,7 +41,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -68,7 +68,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -93,8 +93,32 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+  
+  /update_instances_and_times:
+    description: Inoltro delle istanze corrette e aggiornamento dei tempi
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateInstancesAndTimes"
+        required: true
+      responses:
+        "200":
+          $ref: "#/components/responses/OKInstanceDescriptor"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
       security:
         - bearerAuth: []
           Agid-JWT-Signature: []
@@ -144,7 +168,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -172,11 +196,65 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+  /add_permit_document:
+    description: Aggiunge  il riferimento del titolo abilitiativo all'instance descriptor
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addPermitDocument"
+        required: true
+      responses:
+        "200":
+          $ref: "#/components/responses/OKInstanceDescriptor"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
           $ref: "#/components/responses/ServiceUnavaliable"
 
       security:
         - bearerAuth: []
           Agid-JWT-Signature: []
+          
+  /revoke_permit_document:
+    description: invalida il titolo abilitiativo all'instance descriptor
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/cui"
+        required: true
+      responses:
+        "200":
+          $ref: "#/components/responses/OKInstanceDescriptor"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavaliable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []               
 
 components:
   responses:
@@ -213,7 +291,7 @@ components:
       headers:
         Agid-JWT-Signature:
           $ref: "#/components/headers/Agid-JWT-Signature"
-    ServiceUnavaliable:
+    ServiceUnavailable:
       description: Servizio non disponibile
       content:
         application/json:
@@ -331,6 +409,18 @@ components:
           title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
           type: integer
           format: int32
+        max_gg_cds_pre_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi preliminare
+          type: integer
+          format: int32
+        max_gg_cds_istr_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi istruttoria
+          type: integer
+          format: int32
+        max_gg_cds_dec_req:          
+          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi decisoria
+          type: integer
+          format: int32
         max_gg_cdss_req:          
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
           type: integer
@@ -386,8 +476,8 @@ components:
         message:
           type: string
           pattern: >-
-            ^instance_retrived|correction_request|corrected_instance_retrived|end_by_instance_refused|instance_to_(?:GHS)?[0-9]{1,10}_sended|integration_request_time_expired|end_by_integration_request_time_expired|integration_requested|instance_integrated_retrived|instance_integrated_to_(?:GHS)?[0-9]{1,10}_sended|end_by_proceeding_time_expired|end_by_suspension_requested|cdss_convened|end_by_positive_outcome|end_by_negative_outcome|end_by_submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_send_conclusions|retry_requested_for_request_cdss|retry_requested_for_request_integration|retry_requested_for_request_conformation|instance_conformated_retrieved|instance_conformated_to_(?:GHS)?[0-9]{1,10}_sended|conformation_request_time_expired|end_by_conformation_request_time_expired|conformation_requested|impediments_received_from_[0-9]{1,10}|observations_to_impediments_provided_to_[0-9]{1,10}|end_by_observations_request_time_expired|end_by_definitive_provision_granted|end_by_conditional_provision_rescinded|end_by_conditional_provision_denied$|
-            communication_bo_to_fo|communication_to_(?:GHS)?[0-9]{1,10}_sended|trasferred_instance$
+            ^instance_retrived|correction_request|corrected_instance_retrived|end_by_instance_refused|instance_to_(?:GHS)?[0-9]{1,10}_sended|integration_request_time_expired|integration_response_time_expired|end_by_integration_request_time_expired|integration_requested|instance_integrated_retrived|instance_integrated_to_(?:GHS)?[0-9]{1,10}_sended|end_by_proceeding_time_expired|end_by_suspension_requested|cdss_convened|end_by_positive_outcome|end_by_negative_outcome|end_by_submitter_cancel_requested|retry_requested_for_send_instance|retry_requested_for_send_conclusions|retry_requested_for_request_cdss|retry_requested_for_request_integration|retry_requested_for_request_conformation|instance_conformated_retrieved|instance_conformated_to_(?:GHS)?[0-9]{1,10}_sended|conformation_request_time_expired|end_by_conformation_request_time_expired|conformation_response_time_expired|conformation_requested|impediments_received_from_[0-9]{1,10}|observations_to_impediments_provided_to_[0-9]{1,10}|end_by_observations_request_time_expired|end_by_definitive_provision_granted|end_by_conditional_provision_rescinded|end_by_conditional_provision_denied$|
+            communication_bo_to_fo|communication_to_(?:GHS)?[0-9]{1,10}_sended|trasferred_instance|reopen_definitive_provision|reopen_proceeding_documents_received|reopen_definitive_provision_notification_to_(?:GHS)?[0-9]{1,10}_sended|second_provision_time_expired|outcome_received_from_(?:GHS)?[0-9]{1,10}|second_provision_positive_outcome|second_provision_negative_outcome|integration_requested_with_new_document_to_<Usecase_Proceding_Code>|conformation_requested_with_new_document_to_<Usecase_Proceding_Code>$
 
         event_time:
           title: timestamp del momento in cui si è verificato l'evento
@@ -586,7 +676,7 @@ components:
                 type: string
                 minLength: 1
               ref:
-                title: riferimento all'allegato dell'istanza relativo al procedimento
+                title: riferimento all'allegato dell'istanza relativo al procedimento, definito sul Catalogo
                 type: string
                 minLength: 1
               filename:
@@ -681,7 +771,7 @@ components:
                 type: string
                 minLength: 1
               ref:
-                title: riferimento dell'allegato
+                title: riferimento dell'allegato, definito liberamente dalla componente senza avere una corrispondenza sul Catalogo
                 type: string
                 minLength: 1
               filename:
@@ -704,6 +794,49 @@ components:
                 - S512
               mime_type:
                 type: string
+    addPermitDocument:
+      description: Richiesta per aggiungere un'amministrazione/ente interessato a un usecase
+      type: object
+      required:
+        - cui
+        - permit_document
+      properties:
+        cui:
+           $ref: "#/components/schemas/cui"
+        permit_document:
+            type: object
+            required:
+            - ref
+            - hash
+            - alg_hash
+            - mime_type
+            - filename
+            - file_size
+            properties:
+                ref:
+                    title: riferimento dell'allegato
+                    type: string
+                    minLength: 1
+                filename:
+                    title: filename dell'allegato
+                    type: string
+                    minLength: 1
+                file_size:
+                    description: dimensione del file.
+                    type: integer
+                hash:
+                    title: hash dell'allegato
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash dell'allegato 
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+                mime_type:
+                    type: string
     
     UpdateInstancesAndTimes:
           type: object
@@ -847,12 +980,14 @@ components:
                 - ended_by_conformation_times_expired
                 - conformated
                 - cdss_convened
+                - cdsa_convened
                 - instance_transferred
                 - ended_by_suspension_requested
                 - ended_by_proceeding_time_expired
                 - ended_by_positive_outcome
                 - ended_by_negative_outcome
                 - ended_by_submitter_cancel_requested
+                - minutes_cdss_trasmission
                 
               timestamp:                
                 title: timestamp del cambiamento di stato
@@ -1036,7 +1171,7 @@ components:
                   properties:
 
                     ref:                      
-                      title: riferimento all'allegato dell'istanza relativo al procedimento
+                      title: riferimento all'allegato dell'istanza relativo al procedimento, definito sul Catalogo
                       type: string
                       minLength: 1
                     filename:                      
@@ -1126,7 +1261,7 @@ components:
                   - mime_type
                   properties:
                     ref:
-                      title: riferimento dell'allegato
+                      title: riferimento dell'allegato, definito liberamente dalla componente senza avere una corrispondenza sul Catalogo
                       type: string
                       minLength: 1
                     filename:
@@ -1149,7 +1284,43 @@ components:
                       - S512
                     mime_type:
                       type: string    
-
+        permit_document:
+            type: object
+            required:
+            - ref
+            - hash
+            - alg_hash
+            - mime_type
+            - filename
+            - file_size
+            properties:
+                ref:
+                    title: riferimento dell'allegato
+                    type: string
+                    minLength: 1
+                filename:
+                    title: filename dell'allegato
+                    type: string
+                    minLength: 1
+                file_size:
+                    description: dimensione del file.
+                    type: integer
+                hash:
+                    title: hash dell'allegato
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash dell'allegato 
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+                mime_type:
+                    type: string
+                revoked_document:
+                    title: indica se il documento è stato revocato
+                    type: boolean                 
   headers:
     Agid-JWT-Signature:
       schema:

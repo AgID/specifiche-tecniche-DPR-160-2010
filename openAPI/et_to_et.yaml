@@ -492,7 +492,6 @@ components:
             required: [ code, ref, integration_request ]
             properties:
               code: { type: string }
-              ref:  { type: string }
               integration_request:
                 title: elenco integrazioni richieste da uno o più enti terzi
                 type: array
@@ -531,7 +530,6 @@ components:
             required: [ code, ref, conformation_request ]
             properties:
               code: { type: string }
-              ref:  { type: string }
               conformation_request:
                 title: elenco conformazioni richieste da uno o più enti terzi
                 type: array
@@ -631,7 +629,10 @@ components:
         - type: object
           required: [ event, filename, mime_type, resource_id, hash, alg_hash, cdss_channel, cdss_convocation ]
           properties:
-            event: { type: string, enum: [ cdss_convened ] }
+            event: 
+              type: string, 
+              pattern: >-
+                        ^cdss_convened|endo_cdss_convened_from_[0-9]{1,10}$ 
             filename: { type: string }
             file_size: { type: integer }
             mime_type: { type: string }

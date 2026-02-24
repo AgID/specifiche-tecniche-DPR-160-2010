@@ -261,7 +261,7 @@ properties:
 
               ref:
                 "$id": "#root/usecase_proceedings/attachments/ref"
-                title: riferimento all'allegato dell'istanza relativo al procedimento
+                title: riferimento all'allegato dell'istanza relativo al procedimento, definito sul Catalogo
                 type: string
                 minLength: 1
               filename:
@@ -365,12 +365,10 @@ properties:
             - mime_type
             properties:
               ref:
-                "$id": "#root/usecase_proceedings/attachments/ref"
-                title: riferimento dell'allegato
+                title: riferimento dell'allegato, definito liberamente dalla componente senza avere una corrispondenza sul Catalogo
                 type: string
                 minLength: 1
               filename:
-                "$id": "#root/usecase_proceedings/attachments/filename"
                 title: filename dell'allegato
                 type: string
                 minLength: 1
@@ -378,12 +376,10 @@ properties:
                 description: dimensione del file
                 type: integer
               hash:
-                "$id": "#root/usecase_proceedings/attachments/hash"
                 title: hash dell'allegato
                 type: string
                 minLength: 1
               alg_hash:
-                "$id": "#root/usecase_proceedings/attachments/alg_hash"
                 title: algoritmo hash dell'allegato 
                 type: string
                 enum:
@@ -392,7 +388,43 @@ properties:
                 - S512
               mime_type:
                 type: string
-
+    permit_document:
+        type: object
+        required:
+        - ref
+        - hash
+        - alg_hash
+        - mime_type
+        - filename
+        - file_size
+        properties:
+            ref:
+                title: riferimento dell'allegato
+                type: string
+                minLength: 1
+            filename:
+                title: filename dell'allegato
+                type: string
+                minLength: 1
+            file_size:
+                description: dimensione del file.
+                type: integer
+            hash:
+                title: hash dell'allegato
+                type: string
+                minLength: 1
+            alg_hash:
+                title: algoritmo hash dell'allegato 
+                type: string
+                enum:
+                - S256
+                - S384
+                - S512
+            mime_type:
+                type: string  
+            revoked_document:
+                title: indica se il documento è stato revocato
+                type: boolean
   InterestedAdministrationSchema:
     description: Un array di amministrazioni competenti.
     type: array
