@@ -40,6 +40,10 @@ paths:
                                         - request_cdss
                                         - request_integration
                                         - request_conformation
+                                usecase_proceeding:        
+                                    title: codice della fattispecie presente nel Catalogo
+                                    type: string
+                                    minLength: 1
                                 error:
                                     $ref: "#/components/schemas/Error"
 
@@ -50,6 +54,8 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -208,6 +214,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -237,6 +247,16 @@ components:
 
         NotFound:
             description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        Conflict:
+            description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
             content:
                 application/json:
                     schema:
@@ -802,20 +822,9 @@ components:
                     type: string
                 event:
                     type: string
-                    enum:
-                        - end_by_proceeding_time_expired
-                        - end_by_integration_times_expired
-                        - end_by_conformation_times_expired
-                        - end_by_submitter_cancel_requested
-                        - integration_request_time_expired
-                        - end_by_definitive_provision_granted
-                        - end_by_conditional_provision_rescinded
-                        - end_by_conditional_provision_denied
-                        - conditional_provision_extended
-                        - conformation_request_times_expired
-                        - end_by_observations_times_expired
-                        - integration_requested
-                        - conformation_requested
+                    pattern: >-
+                        ^end_by_proceeding_time_expired|end_by_integration_times_expired|end_by_conformation_times_expired|end_by_submitter_cancel_requested|integration_request_time_expired|end_by_definitive_provision_granted|end_by_conditional_provision_rescinded|end_by_conditional_provision_denied|conditional_provision_extended|conformation_request_times_expired|end_by_observations_times_expired|integration_requested|conformation_requested|involved_et_[0-9]{1,10}$
+
         
         TransferNotifyMessage:
             type: object

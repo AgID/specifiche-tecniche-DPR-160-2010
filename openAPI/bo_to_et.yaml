@@ -55,6 +55,8 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -80,6 +82,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -104,6 +110,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -128,6 +138,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -161,6 +175,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -185,6 +203,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -209,6 +231,10 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
@@ -298,6 +324,37 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /notify:
+        post:
+            description: Notifica eventi di processo di una data istanza di procedimento.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            oneOf:
+                                - $ref: "#/components/schemas/CdssNotifyMessage"
+                                - $ref: "#/components/schemas/NotifyMessage"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavaliable"
+
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
     /send_generic_communication:
       post:
         description: Comunicazione generica tra enti terzi e backoffice
@@ -346,16 +403,20 @@ paths:
                       - S512
           required: true
         responses:
-          "200":
-            $ref: "#/components/responses/OKRequest"
-          "400":
-            $ref: "#/components/responses/BadRequest"
-          "401":
-            $ref: "#/components/responses/Unauthorized"
-          "500":
-            $ref: "#/components/responses/ServerError"
-          "503":
-            $ref: "#/components/responses/ServiceUnavaliable"
+            "200":
+                $ref: "#/components/responses/OKRequest"
+            "400":
+                $ref: "#/components/responses/BadRequest"
+            "401":
+                $ref: "#/components/responses/Unauthorized"
+            "404":
+                $ref: "#/components/responses/NotFound"
+            "409":
+                $ref: "#/components/responses/Conflict"
+            "500":
+                $ref: "#/components/responses/ServerError"
+            "503":
+                $ref: "#/components/responses/ServiceUnavaliable"
 
         security:
           - bearerAuth: [ ]
@@ -381,6 +442,16 @@ components:
         
         NotFound:
             description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+        Conflict:
+            description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
             content:
                 application/json:
                     schema:
@@ -677,6 +748,9 @@ components:
                                 title: filename della risorsa "documento di richiesta conformazione"
                                 type: string
                                 minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
                             mime_type:
                                 title: "indica il formato dei dati previsto per il documento di richiesta conformazione"
                                 type: string
@@ -724,6 +798,9 @@ components:
                     title: filename della risorsa "documento di motivi ostativi"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     title: "indica il formato dei dati previsto per il documento di motivi ostativi"
                     type: string
@@ -742,22 +819,86 @@ components:
 
         SendConclusionRequests:
             type: object
-            oneOf:
-                - $ref: "#/components/schemas/NegativeOutcome"
-                - $ref: "#/components/schemas/PositiveOutcome"
-                - $ref: "#/components/schemas/DefinitiveProvision"
-                - $ref: "#/components/schemas/ConditionalProvisionRescinded"
-                - $ref: "#/components/schemas/ConditionalProvisionDenied"
+            required:
+                - cui
+                - instance_descriptor_version
+                - usecase_proceeding_list
+                - conclusion_document
+                - requester_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                usecase_proceeding_list:
+                    type: array
+                    items:
+                        type: string
+                        title: codice della fattispecie presente nel Catalogo
+                        minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                conclusion_document:
+                    oneOf:
+                        - $ref: "#/components/schemas/NegativeOutcome"
+                        - $ref: "#/components/schemas/PositiveOutcome"
+                        - $ref: "#/components/schemas/DefinitiveProvision"
+                        - $ref: "#/components/schemas/ConditionalProvisionRescinded"
+                        - $ref: "#/components/schemas/ConditionalProvisionDenied"
+                additional_document_list:  
+                    type: array
+                    items:
+                        type: object
+                        required:
+                            - resource_id
+                            - filename
+                            - description
+                            - mime_type
+                            - hash
+                            - alg_hash
+                        properties:
+                            resource_id:
+                                title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
+                                type: string
+                                minLength: 1
+                            description:                            
+                                title: descrizione della risorsa
+                                type: string
+                                minLength: 1
+                            filename:                      
+                                title: filename della risorsa "documento di parere negativo"
+                                type: string
+                                minLength: 1
+                            file_size:
+                                description: Dimensione del file.
+                                type: integer
+                            mime_type:
+                                title: "indica il formato dei dati previsto per il documento di parere negativo"
+                                type: string
+                            hash:
+                                title: hash risorsa
+                                type: string
+                                minLength: 1
+                            alg_hash:
+                                title: algoritmo hash applicato
+                                type: string
+                                enum:
+                                - S256
+                                - S384
+                                - S512
 
         NegativeOutcome:
             type: object
             required:
-                - cui
-                - instance_descriptor_version
                 - negative_outcome_motivation
                 - conclusions_type
-                - requester_administration
-                - usecase_proceeding_list
+                - resource_id
+                - filename
+                - description
+                - mime_type
+                - hash
+                - alg_hash
             properties:
                 conclusions_type:
                     type: string
@@ -765,16 +906,9 @@ components:
                     - suspension_requested
                     - suspension_requested_for_impediments
                     - negative_outcome
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
                 negative_outcome_motivation:
                     type: string
                     minLength: 1
-                requester_administration:
-                    title: amministrazione richiedente
-                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
                     type: string
@@ -800,62 +934,36 @@ components:
                     - S256
                     - S384
                     - S512
-                usecase_proceeding_list:
-                    type: array
-                    items:
-                        type: string
-                        title: codice della fattispecie presente nel Catalogo
-                        minLength: 1
 
             example:
                 conclusions_type: "negative_outcome"
-                cui: 
-                    context: "string"
-                    sub_context: "string"
-                    data: "2024-07-10"
-                    progressive: "string"
-                    uuid: "string"
-                instance_descriptor_version: "string"
                 negative_outcome_motivation: "string"
-                requester_administration: 
-                    ipacode: "string"
-                    officecode: "string"
-                    version: "00.00.00"
-                    description: "string"
                 resource_id: "string"
                 filename: "string"
                 file_size: 1234
                 mime_type: "string"
                 hash: "string"
                 alg_hash: "S256"
-                usecase_proceeding_list: [
-                    {title: "string"}
-                ]
                 
 
         PositiveOutcome:
             required:
-                - cui
-                - instance_descriptor_version
                 - positive_outcome
                 - conclusions_type
-                - requester_administration
-                - usecase_proceeding_list
+                - resource_id
+                - filename
+                - description
+                - mime_type
+                - hash
+                - alg_hash
             properties:
                 conclusions_type:
                     type: string
                     enum: 
                     - positive_outcome
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
                 positive_outcome:
                     type: string
                     minLength: 1
-                requester_administration:
-                    title: amministrazione richiedente
-                    $ref: "#/components/schemas/AdministrationSchema"
                 resource_id:
                     title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
                     type: string
@@ -881,12 +989,6 @@ components:
                     - S256
                     - S384
                     - S512
-                usecase_proceeding_list:
-                    type: array
-                    items:
-                        type: string
-                        title: codice della fattispecie presente nel Catalogo
-                        minLength: 1
         
         ConditionalProvision:
             type: object
@@ -921,6 +1023,9 @@ components:
                     title: filename dell'esito del Provvedimento Condizionato"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     type: string
                     enum: 
@@ -970,6 +1075,9 @@ components:
                     title: filename dell'esito del Provvedimento Definitivo"
                     type: string
                     minLength: 1
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type:
                     type: string
                     enum: 
@@ -1017,6 +1125,67 @@ components:
                         enum: 
                             - conditional_provision_rescinded
 
+        NotifyMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    pattern: >-
+                        ^cdss_convened|involved_et_[0-9]{1,10}$
+        
+        CdssNotifyMessage:
+            allOf:
+              - $ref: "#/components/schemas/NotifyMessage"
+              - type: object
+                required:
+                    - cdss_channel
+                    - cdss_convocation
+                properties:
+                    filename:                      
+                        title: filename dell'atto amministrativo
+                        type: string
+                        minLength: 1
+                    mime_type:
+                        title: "indica il formato dei dati previsto per l'atto amministrativo"
+                        type: string
+                        minLength: 1
+                    resource_id:
+                        title: se presente, id della risorsa documento correlata all'evento notificato
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
+                    hash:
+                        title: hash risorsa
+                        type: string
+                        minLength: 1
+                    alg_hash:
+                        title: algoritmo hash applicato
+                        type: string
+                        enum:
+                        - S256
+                        - S384
+                        - S512
+                    cdss_channel:
+                        type: string
+                        title: "canale utilizzato per la convocazione della Conferenza dei Servizi Sincrona"
+                        minLength: 1
+                    cdss_convocation:
+                        title: "data della convocazione della Conferenza dei Servizi Sincrona"
+                        type: string
+                        format: date
+                        minLength: 1
+        
     headers:
         Agid-JWT-Signature:
             schema:
