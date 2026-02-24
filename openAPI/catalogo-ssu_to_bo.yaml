@@ -96,6 +96,30 @@ paths:
       security:
         - bearerAuth: []
           Agid-JWT-Signature: []
+  
+  /update_instances_and_times:
+    description: Inoltro delle istanze corrette e aggiornamento dei tempi
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateInstancesAndTimes"
+        required: true
+      responses:
+        "200":
+          $ref: "#/components/responses/OKInstanceDescriptor"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
           
   /add_interested_administration:
     description: Aggiunge una lista di amministrazioni interessate
@@ -660,6 +684,95 @@ components:
               mime_type:
                 type: string
     
+    UpdateInstancesAndTimes:
+          type: object
+          required:
+            - cui
+            - times
+            - instances
+          properties:
+            cui:
+              $ref: "#/components/schemas/cui"
+            times:          
+              $ref: "#/components/schemas/Times"
+            instances:
+              type: array
+              items:
+                type: object
+                required:
+                - code
+                - version
+                - instance
+              properties:
+                code:
+                  title: codice della fattispecie presente nel Catalogo
+                  type: string
+                  minLength: 1
+                version:
+                  title: versione della fattispecie presente nel Catalogo
+                  type: string
+                  minLength: 1
+                instance:
+                  title: porzione istanza relativa al procedimento
+                  type: object
+                  required:
+                  - ref
+                  - hash
+                  - alg_hash
+                  properties:
+                    ref:
+                      title: riferimento all'elemento dell'istanza relativo al procedimento
+                      type: string
+                      minLength: 1
+                    filename:
+                        title: filename dell'istanza
+                        type: string
+                        minLength: 1
+                    hash:
+                      title: hash dell'istanza relativo al procedimento
+                      type: string
+                      minLength: 1
+                    alg_hash:
+                      title: algoritmo hash dell'istanza relativo al procedimento
+                      type: string
+                      enum:
+                      - S256
+                      - S384
+                      - S512
+                    mime_type:
+                      type: string
+                      enum: 
+                        - application/xml
+                        - application/pkcs7-mime
+                    activity_model: 
+                      title: porzione distinta modello attivita
+                      type: object
+                      properties:
+                          ref:                    
+                            title: distinta modello attivita
+                            type: string
+                            minLength: 1
+                          filename:                      
+                              title: filename del modello distinta attivita
+                              type: string
+                              minLength: 1
+                          hash:                    
+                            title: hash del modello distinta attivita
+                            type: string
+                            minLength: 1
+                          alg_hash:                    
+                            title: algoritmo hash del modello distinta attivita
+                            type: string
+                            enum:
+                            - S256
+                            - S384
+                            - S512
+                          mime_type:
+                            type: string
+                            enum: 
+                              - application/pdf
+                              - application/pkcs7-mime
+   
     InstanceDescriptor:
       description: descrittore istanza
       type: object

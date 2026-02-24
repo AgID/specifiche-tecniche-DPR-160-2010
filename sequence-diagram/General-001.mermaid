@@ -78,12 +78,12 @@ sequenceDiagram
             B ->> C: audit(cui,correction_requested)
             C -->> B: ack
             P --) F: instanceCorrect
-            F ->> B: send_instance(SendInstanceRequest)
+            F ->> B: send_instance_updated_documents(SendUpdatedDocuments)
             B -->> F: ack
             F ->> C: audit(cui,corrected_instance_to_<BO>_sended)
             note right of F: <BO> codice BackOffice
             C -->> F: ack
-            B ->> C: request_update_times(cui, times)
+            B ->> C: UpdateInstancesAndTimes(cui, times, instances)
             C ->> B: instanceDescriptor
             Note right of C: Aggiorna i tempi procedimentali decrementandoli dei giorni avanzati
             loop per ogni procedimento parte dell'istanza 
