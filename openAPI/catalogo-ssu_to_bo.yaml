@@ -122,30 +122,6 @@ paths:
       security:
         - bearerAuth: []
           Agid-JWT-Signature: []
-  
-  /update_instances_and_times:
-    description: Inoltro delle istanze corrette e aggiornamento dei tempi
-    post:
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateInstancesAndTimes"
-        required: true
-      responses:
-        "200":
-          $ref: "#/components/responses/OKInstanceDescriptor"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "500":
-          $ref: "#/components/responses/ServerError"
-        "503":
-          $ref: "#/components/responses/ServiceUnavailable"
-      security:
-        - bearerAuth: []
-          Agid-JWT-Signature: []
           
   /add_interested_administration:
     description: Aggiunge una lista di amministrazioni interessate
