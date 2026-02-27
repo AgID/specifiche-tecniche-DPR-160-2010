@@ -356,6 +356,7 @@ components:
       required: [ context, data, progressive, uuid ]
       properties:
         context: { type: string }
+        sub_context: { type: string }
         data:    { type: string, format: date }
         progressive: { type: string }
         uuid:    { type: string, description: "UUID chiave del CUI" }
@@ -477,6 +478,8 @@ components:
         instance_descriptor_version: { type: string }
         instance_index: { $ref: "#/components/schemas/InstanceIndex" }
         general_index: { $ref: "#/components/schemas/GeneralIndex" }
+        receiver_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+        purpose: {  type: string, enum: [Cdss, Istruttoria] }
         chain: { $ref: "#/components/schemas/ChainContext" }
 
     IntegrationRequest:
