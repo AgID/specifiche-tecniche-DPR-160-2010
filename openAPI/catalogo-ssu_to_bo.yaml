@@ -175,7 +175,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -202,7 +202,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
         "503":
-          $ref: "#/components/responses/ServiceUnavaliable"
+          $ref: "#/components/responses/ServiceUnavailable"
 
       security:
         - bearerAuth: []
@@ -291,7 +291,7 @@ components:
           - context
           - sub_context
           - data
-          - progressive
+          - progressivo
           - uuid
       properties:
           context:
@@ -307,7 +307,7 @@ components:
               type: string
               format: date
           
-          progressive:
+          progressivo:
               title: numero progressivo a rotazione annuale
               type: string
 
