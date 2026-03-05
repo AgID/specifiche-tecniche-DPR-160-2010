@@ -213,7 +213,7 @@ components:
                 - context
                 - sub_context
                 - data
-                - progressive
+                - progressivo
                 - uuid
             properties:
                 context:
@@ -229,7 +229,7 @@ components:
                     type: string
                     format: date
 
-                progressive:
+                progressivo:
                     title: numero progressivo a rotazione annuale
                     type: string
 

@@ -367,41 +367,15 @@ paths:
                 required:
                   - cui
                   - requester_administration
-                  - resource_id
-                  - filename
-                  - mime_type
-                  - hash
-                  - alg_hash
+                  - document
                 properties:
                   cui:
                     $ref: "#/components/schemas/cui"
                   requester_administration:
                     title: amministrazione richiedente
                     $ref: "#/components/schemas/AdministrationSchema"
-                  resource_id:
-                    title: id della risorsa documento correlata alla comunicazione spontanea
-                    type: string
-                    minLength: 1
-                  filename:
-                    title: filename della risorsa documento correlata alla comunicazione spontanea
-                    type: string
-                    minLength: 1
-                  mime_type:
-                    type: string
-                    enum:
-                      - application/pdf
-                      - application/pkcs7-mime
-                  hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                  alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                      - S256
-                      - S384
-                      - S512
+                  document:
+                    $ref: "#/components/schemas/Document"
           required: true
         responses:
             "200":
@@ -533,7 +507,7 @@ components:
                 - context
                 - sub_context
                 - data
-                - progressive
+                - progressivo
                 - uuid
             properties:
                 context:
@@ -549,7 +523,7 @@ components:
                     type: string
                     format: date
                 
-                progressive:
+                progressivo:
                     title: numero progressivo a rotazione annuale
                     type: string
 
@@ -651,41 +625,19 @@ components:
                                         requester_administration:
                                             title: amministrazione richiedente
                                             $ref: "#/components/schemas/AdministrationSchema"
-
                 integration_document_list:
                     type: array
                     items:
                         type: object
+                        required:
+                            - requester_administration
+                            - document
                         properties:
                             requester_administration:
                                 title: amministrazione richiedente
                                 $ref: "#/components/schemas/AdministrationSchema"
-                            resource_id:
-                                title: id della risorsa "documento di richiesta integrazioni", univoco per erogatore e CUI.UUID
-                                type: string
-                                minLength: 1
-                            filename:                      
-                                title: filename della risorsa "documento di richiesta integrazioni"
-                                type: string
-                                minLength: 1
-                            file_size:
-                                description: Dimensione del file.
-                                type: integer
-                            mime_type:
-                                title: "indica il formato dei dati previsto per il documento di richiesta integrazioni"
-                                type: string
-                                minLength: 1
-                            hash:
-                                title: hash risorsa
-                                type: string
-                                minLength: 1
-                            alg_hash:
-                                title: algoritmo hash applicato
-                                type: string
-                                enum:
-                                - S256
-                                - S384
-                                - S512
+                            document:
+                                $ref: "#/components/schemas/Document"
 
         ConformationRequest:
             type: object
@@ -735,36 +687,11 @@ components:
                     type: array
                     items:
                         type: object
+                        required:
+                            - document
                         properties:
-                            requester_administration:
-                                title: amministrazione richiedente
-                                $ref: "#/components/schemas/AdministrationSchema"
-                            resource_id:
-                                title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
-                                type: string
-                                minLength: 1
-                            filename:                      
-                                title: filename della risorsa "documento di richiesta conformazione"
-                                type: string
-                                minLength: 1
-                            file_size:
-                                description: Dimensione del file.
-                                type: integer
-                            mime_type:
-                                title: "indica il formato dei dati previsto per il documento di richiesta conformazione"
-                                type: string
-                                minLength: 1
-                            hash:
-                                title: hash risorsa
-                                type: string
-                                minLength: 1
-                            alg_hash:
-                                title: algoritmo hash applicato
-                                type: string
-                                enum:
-                                - S256
-                                - S384
-                                - S512
+                            document:
+                                $ref: "#/components/schemas/Document"
         
         Impediments:
             type: object
@@ -774,6 +701,7 @@ components:
                 - expiration_date
                 - impediments
                 - requester_administration
+                - document
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -789,32 +717,8 @@ components:
                 requester_administration:
                     title: amministrazione richiedente
                     $ref: "#/components/schemas/AdministrationSchema"
-                resource_id:
-                    title: id della risorsa "documento di motivi ostativi", univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                filename:                      
-                    title: filename della risorsa "documento di motivi ostativi"
-                    type: string
-                    minLength: 1
-                file_size:
-                    description: Dimensione del file.
-                    type: integer
-                mime_type:
-                    title: "indica il formato dei dati previsto per il documento di motivi ostativi"
-                    type: string
-                    minLength: 1
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
+                document:
+                    $ref: "#/components/schemas/Document"
 
         SendConclusionRequests:
             type: object
@@ -842,66 +746,32 @@ components:
                     oneOf:
                         - $ref: "#/components/schemas/NegativeOutcome"
                         - $ref: "#/components/schemas/PositiveOutcome"
-                        - $ref: "#/components/schemas/DefinitiveProvision"
-                        - $ref: "#/components/schemas/SecondProvisionOutcome"
+                        - $ref: "#/components/schemas/SecondProvisionOutcome"                        
                         - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                         - $ref: "#/components/schemas/ConditionalProvisionDenied"
+                        - $ref: "#/components/schemas/DefinitiveProvision"
                 additional_document_list:  
                     type: array
                     items:
                         type: object
                         required:
-                            - resource_id
-                            - filename
                             - description
-                            - mime_type
-                            - hash
-                            - alg_hash
+                            - document
                         properties:
-                            resource_id:
-                                title: id della risorsa, univoco per erogatore e CUI.UUID
-                                type: string
-                                minLength: 1
                             description:                            
                                 title: descrizione della risorsa
                                 type: string
                                 minLength: 1
-                            filename:                      
-                                title: filename della risorsa
-                                type: string
-                                minLength: 1
-                            file_size:
-                                description: dimensione del file
-                                type: integer
-                            mime_type:
-                                title: indica il formato dei dati previsto per il documento
-                                type: string
-                                enum: 
-                                - application/pdf
-                                - application/pkcs7-mime
-                            hash:
-                                title: hash risorsa
-                                type: string
-                                minLength: 1
-                            alg_hash:
-                                title: algoritmo hash applicato
-                                type: string
-                                enum:
-                                - S256
-                                - S384
-                                - S512
+                            document:
+                                $ref: "#/components/schemas/Document"
 
         NegativeOutcome:
             type: object
             required:
                 - negative_outcome_motivation
                 - conclusions_type
-                - resource_id
-                - filename
                 - description
-                - mime_type
-                - hash
-                - alg_hash
+                - document
             properties:
                 conclusions_type:
                     type: string
@@ -912,53 +782,18 @@ components:
                 negative_outcome_motivation:
                     type: string
                     minLength: 1
-                resource_id:
-                    title: id della risorsa "documento di esito negativo", univoco per erogatore e CUI.UUID
+                description:
                     type: string
                     minLength: 1
-                filename:                      
-                    title: filename della risorsa "documento di parere negativo"
-                    type: string
-                    minLength: 1
-                file_size:
-                    description: Dimensione del file.
-                    type: integer
-                mime_type:
-                    title: "indica il formato dei dati previsto per il documento di parere negativo"
-                    type: string
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
-
-            example:
-                conclusions_type: "negative_outcome"
-                negative_outcome_motivation: "string"
-                resource_id: "string"
-                filename: "string"
-                file_size: 1234
-                mime_type: "string"
-                hash: "string"
-                alg_hash: "S256"
-                
+                document:
+                    $ref: "#/components/schemas/Document"                
 
         PositiveOutcome:
             required:
                 - positive_outcome
                 - conclusions_type
-                - resource_id
-                - filename
                 - description
-                - mime_type
-                - hash
-                - alg_hash
+                - document
             properties:
                 conclusions_type:
                     type: string
@@ -967,31 +802,11 @@ components:
                 positive_outcome:
                     type: string
                     minLength: 1
-                resource_id:
-                    title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
+                description:
                     type: string
                     minLength: 1
-                filename:                      
-                    title: filename della risorsa "documento di parere positivo"
-                    type: string
-                    minLength: 1
-                file_size:
-                    description: Dimensione del file.
-                    type: integer
-                mime_type:
-                    title: "indica il formato dei dati previsto per il documento di parere positivo"
-                    type: string
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
+                document:
+                    $ref: "#/components/schemas/Document"
         
         ConditionalProvision:
             type: object
@@ -999,8 +814,8 @@ components:
                 - cui
                 - instance_descriptor_version
                 - date
-                - outcome
                 - competent_administration
+                - document
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -1009,42 +824,11 @@ components:
                 date:
                     type: string
                     format: date
-                outcome:
-                    type: string
-                    enum: 
-                        - conditional_provision_granted
-                        - conditional_provision_denied
-                        - conditional_provision_rescinded
                 competent_administration:
                     title: amministrazione richiedente
                     $ref: "#/components/schemas/AdministrationSchema"
-                resource_id:
-                    title: id della risorsa associata all'esito del Provvedimento Condizionato, univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                filename:                      
-                    title: filename dell'esito del Provvedimento Condizionato"
-                    type: string
-                    minLength: 1
-                file_size:
-                    description: Dimensione del file.
-                    type: integer
-                mime_type:
-                    type: string
-                    enum: 
-                        - application/pdf
-                        - application/pkcs7-mime
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
+                document:
+                    $ref: "#/components/schemas/Document"
         
         DefinitiveProvision:
             type: object
@@ -1052,8 +836,8 @@ components:
                 - cui
                 - instance_descriptor_version
                 - date
-                - outcome
                 - competent_administration
+                - document
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -1062,45 +846,17 @@ components:
                 date:
                     type: string
                     format: date
-                outcome:
-                    type: string
-                    enum: 
-                        - definitive_provision_granted
                 competent_administration:
-
                     title: amministrazione richiedente
                     $ref: "#/components/schemas/AdministrationSchema"
-                resource_id:
-                    title: id della risorsa associata all'esito del Provvedimento Definitivo, univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                filename:                      
-                    title: filename dell'esito del Provvedimento Definitivo"
-                    type: string
-                    minLength: 1
-                file_size:
-                    description: Dimensione del file.
-                    type: integer
-                mime_type:
-                    type: string
-                    enum: 
-                        - application/pdf
-                        - application/pkcs7-mime
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
+                document:
+                    $ref: "#/components/schemas/Document"
 
         SecondProvisionOutcome:
             allOf:
                 - $ref: "#/components/schemas/DefinitiveProvision"
+                - required:
+                    - outcome
             properties:
                 outcome:
                     type: string
@@ -1110,8 +866,10 @@ components:
         
         ConditionalProvisionGranted:
             allOf:
-                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/ConditionalProvision"
                 - type: object
+                - required:
+                    - outcome
                   properties:
                     outcome:
                         type: string
@@ -1120,8 +878,10 @@ components:
         
         ConditionalProvisionDenied:
             allOf:
-                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/ConditionalProvision"
                 - type: object
+                - required:
+                    - outcome
                   properties:
                     outcome:
                         type: string
@@ -1130,8 +890,10 @@ components:
         
         ConditionalProvisionRescinded:
             allOf:
-                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/ConditionalProvision"
                 - type: object
+                - required:
+                    - outcome
                   properties:
                     outcome:
                         type: string
@@ -1163,34 +925,6 @@ components:
                     - cdss_channel
                     - cdss_convocation
                 properties:
-                    filename:                      
-                        title: filename dell'atto amministrativo
-                        type: string
-                        minLength: 1
-                    mime_type:
-                        title: "indica il formato dei dati previsto per l'atto amministrativo"
-                        type: string
-                        enum: 
-                        - application/pdf
-                        - application/pkcs7-mime
-                    resource_id:
-                        title: se presente, id della risorsa documento correlata all'evento notificato
-                        type: string
-                        minLength: 1
-                    file_size:
-                        description: Dimensione del file.
-                        type: integer
-                    hash:
-                        title: hash risorsa
-                        type: string
-                        minLength: 1
-                    alg_hash:
-                        title: algoritmo hash applicato
-                        type: string
-                        enum:
-                        - S256
-                        - S384
-                        - S512
                     cdss_channel:
                         type: string
                         title: "canale utilizzato per la convocazione della Conferenza dei Servizi Sincrona"
@@ -1200,27 +934,44 @@ components:
                         type: string
                         format: date
                         minLength: 1
+                    document:
+                        $ref: "#/components/schemas/Document"
         
         PreliminaryResolutionMessage:
             type: object
             allOf:
                 - $ref: "#/components/schemas/NotifyMessage"
+            required:
+                - event
+                - document
             properties:
                 event:
                     type: string
                     enum:
                         - positive_cds_preliminary_resolution
                         - negative_cds_preliminary_resolution
+                document:
+                    description: documento relativo alla CdS preliminare
+                    $ref: "#/components/schemas/Document"
+
+        Document:
+            type: object
+            required:
+                - resource_id
+                - mime_type
+                - hash
+                - alg_hash
+            properties:
                 resource_id:
-                    title: id della risorsa del documento di determinazione della CdS Preliminare 
+                    title: id della risorsa del documento
                     type: string
                     minLength: 1
                 filename:                      
-                    title: filename della risorsa del documento di determinazione della CdS Preliminare 
+                    title: filename della risorsa del documento
                     type: string
                     minLength: 1
                 mime_type:
-                    title: indica il formato dei dati previsto per il documento di determinazione
+                    title: indica il formato dei dati previsto per il documento
                     type: string
                     enum: 
                         - application/pdf

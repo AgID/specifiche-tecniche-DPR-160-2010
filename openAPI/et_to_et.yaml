@@ -353,12 +353,12 @@ components:
     cui:
       type: object
       description: Codice Unico dell'Istanza
-      required: [ context, data, progressive, uuid ]
+      required: [ context, data, progressivo, uuid ]
       properties:
         context: { type: string }
         sub_context: { type: string }
         data:    { type: string, format: date }
-        progressive: { type: string }
+        progressivo: { type: string }
         uuid:    { type: string, description: "UUID chiave del CUI" }
 
     AdministrationSchema:
@@ -507,14 +507,10 @@ components:
           type: array
           items:
             type: object
+            required: [ requester_administration, document ]
             properties:
               requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
-              resource_id: { type: string }
-              filename: { type: string }
-              file_size: { type: integer }
-              mime_type: { type: string }
-              hash: { type: string }
-              alg_hash: { type: string, enum: [ S256, S384, S512 ] }
+              document: { $ref: "#/components/schemas/__doc_pdf_base" }
     
     ConformationRequest:
       type: object
@@ -545,14 +541,10 @@ components:
           type: array
           items:
             type: object
+            required: [requester_administration, document ]
             properties:
               requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
-              resource_id: { type: string }
-              filename: { type: string }
-              file_size: { type: integer }
-              mime_type: { type: string }
-              hash: { type: string }
-              alg_hash: { type: string, enum: [ S256, S384, S512 ] }    
+              document: { $ref: "#/components/schemas/__doc_pdf_base" }    
 
     SendConclusionsRequests:
       type: object
@@ -609,7 +601,7 @@ components:
 
     TransferOutcomeNotifyMessage:
       type: object
-      required: [ cui, instance_descriptor_version, event, resource_id, filename, mime_type, hash, alg_hash ]
+      required: [ cui, instance_descriptor_version, event, document ]
       properties:
         cui: { $ref: "#/components/schemas/cui" }
         instance_descriptor_version: { type: string }
@@ -619,28 +611,18 @@ components:
             - end_by_suspension_requested
             - end_by_positive_outcome
             - end_by_negative_outcome
-        resource_id: { type: string }
-        filename: { type: string }
-        file_size: { type: integer }
-        mime_type: { type: string, enum: [ application/pdf, application/pkcs7-mime ] }
-        hash: { type: string }
-        alg_hash: { type: string, enum: [ S256, S384, S512 ] }
+        document: { $ref: "#/components/schemas/__doc_pdf_base" }
 
     CdssNotifyMessage:
       allOf:
         - $ref: "#/components/schemas/NotifyMessage"
         - type: object
-          required: [ event, filename, mime_type, resource_id, hash, alg_hash, cdss_channel, cdss_convocation ]
+          required: [ event, cdss_channel, cdss_convocation ]
           properties:
             event: 
-              type: string, 
+              type: string
               pattern: >-
                         ^cdss_convened|endo_cdss_convened_from_[0-9]{1,10}$ 
-            filename: { type: string }
-            file_size: { type: integer }
-            mime_type: { type: string }
-            resource_id: { type: string }
-            hash: { type: string }
-            alg_hash: { type: string, enum: [ S256, S384, S512 ] }
+            document: { $ref: "#/components/schemas/__doc_pdf_base" }
             cdss_channel: { type: string }
             cdss_convocation: { type: string, format: date }
