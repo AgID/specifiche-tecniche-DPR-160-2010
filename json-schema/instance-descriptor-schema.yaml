@@ -388,49 +388,50 @@ properties:
                 - S512
               mime_type:
                 type: string
-    permit_document:
-        type: object
-        required:
-        - ref
-        - hash
-        - alg_hash
-        - mime_type
-        - filename
-        - file_size
-        properties:
-            ref:
-                title: riferimento dell'allegato
-                type: string
-                minLength: 1
-            filename:
-                title: filename dell'allegato
-                type: string
-                minLength: 1
-            file_size:
-                description: dimensione del file.
-                type: integer
-            hash:
-                title: hash dell'allegato
-                type: string
-                minLength: 1
-            alg_hash:
-                title: algoritmo hash dell'allegato 
-                type: string
-                enum:
-                - S256
-                - S384
-                - S512
-            mime_type:
-                type: string  
-            revoked_document:
-                title: indica se il documento è stato revocato
-                type: boolean
+        permit_document:
+            type: object
+            required:
+            - ref
+            - hash
+            - alg_hash
+            - mime_type
+            - filename
+            - file_size
+            properties:
+                ref:
+                    title: riferimento dell'allegato
+                    type: string
+                    minLength: 1
+                filename:
+                    title: filename dell'allegato
+                    type: string
+                    minLength: 1
+                file_size:
+                    description: dimensione del file.
+                    type: integer
+                hash:
+                    title: hash dell'allegato
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash dell'allegato 
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+                mime_type:
+                    type: string  
+                revoked_document:
+                    title: indica se il documento è stato revocato
+                    type: boolean
+                    
   InterestedAdministrationSchema:
-    description: Un array di amministrazioni competenti.
+    description: Un array di amministrazioni interessate.
     type: array
     items:
       type: object
-      description: Amministrazione competente censita nel Catalogo SSU
+      description: Amministrazione censita nel Catalogo SSU
       required:
         - description
         - ipacode
@@ -448,20 +449,20 @@ properties:
         version:
           title: versione dell'ufficio dell'amministrazione valorizzata solo se non è un amministrazione GHOST
           type: string
-          pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"      
+          pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
         description:
           title: descrizione dell'amministrazione
           type: string
         id:
           title: identificativo dell'amministrazione
           type: string
-          minLength: 1                                            
+          minLength: 1
   InterestedAdministrationCFSchema:
-    description: Un array di amministrazioni competenti non censite su ipa.
+    description: Un array di amministrazioni interessate non censite su ipa.
     type: array
     items:
       type: object
-      description: Amministrazione competente censita nel Catalogo SSU
+      description: Amministrazione censita nel Catalogo SSU
       properties:
         fiscal_code:
           title: codice fiscale  dell'amministrazione non presente su IPA
@@ -473,4 +474,4 @@ properties:
         id:
           title: identificativo dell'amministrazione
           type: string
-          minLength: 1                                  
+          minLength: 1
