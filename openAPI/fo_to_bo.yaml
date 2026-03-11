@@ -237,6 +237,7 @@ paths:
                         schema:
                             oneOf:
                                 - $ref: "#/components/schemas/NotifyMessage"
+                                - $ref: "#/components/schemas/PreliminaryResolutionMessage"
                                 - $ref: "#/components/schemas/TransferNotifyMessage"
                 required: true
             responses:
@@ -893,6 +894,26 @@ components:
                     enum: 
                         - positive_outcome
                         - negative_outcome
+
+        PreliminaryResolutionMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/NotifyMessage"
+            required:
+                - event
+                - document
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - positive_cds_preliminary_resolution
+                        - negative_cds_preliminary_resolution
+                competent_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                document:
+                    description: documento relativo alla CdS preliminare
+                    $ref: "#/components/schemas/Document"
 
         Document:
             type: object
