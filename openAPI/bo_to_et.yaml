@@ -950,6 +950,9 @@ components:
                     enum:
                         - positive_cds_preliminary_resolution
                         - negative_cds_preliminary_resolution
+                competent_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
                 document:
                     description: documento relativo alla CdS preliminare
                     $ref: "#/components/schemas/Document"
