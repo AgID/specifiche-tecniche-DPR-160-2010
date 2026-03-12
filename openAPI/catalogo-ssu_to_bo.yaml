@@ -386,7 +386,7 @@ components:
           type: integer
           format: int32
         max_gg_cds_pre_req:          
-          title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi preliminare
+          title: numero di giorni limite a partire da start entro cui può essere richiesta la conferenza di servizi preliminare
           type: integer
           format: int32
         max_gg_cds_istr_req:          
