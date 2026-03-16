@@ -2949,20 +2949,23 @@ components:
         description: Entita id,versione, descrizione e risorsa binaria codificata in base64
         resource: "U3dhZ2dlciByb2Nrcw=="
 
-    SystemEntity:
+    ETSystemEntity:
       allOf:
-        - $ref: "#/components/schemas/GenericEntity"
+        - $ref: "#/components/schemas/ComponentEntity"
         - type: object
-          required:
-            - telematic_ref
           properties:
-            telematic_ref:
+            e_service_to_bo:
+              type: string
+            e_service_to_et:
               type: string
       example:
         id: 1
         version: 1.0.0
-        description: Entita id,versione, descrizione e riferimento telemantico sistema implementante
-        telematic_ref: string
+        description: Entità generica con id,versione, descrizione
+        start: 2024-01-01
+        end: 2024-12-31
+        state: Active
+        e_service_to_bo: string
     
     FOSystemEntity:
       allOf:
@@ -3118,7 +3121,7 @@ components:
 
     third_party_system:
       allOf:
-        - $ref: "#/components/schemas/SystemEntity"
+        - $ref: "#/components/schemas/ETSystemEntity"
         - type: object
           properties:
             date_from:
