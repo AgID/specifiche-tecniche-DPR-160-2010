@@ -356,6 +356,35 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /send_extension_conditional_provision:
+      post:
+        description: Comunicazione per segnalare la proroga del provvedimento condizionato
+        requestBody:
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/ConditionalProvisionExtended"
+            required: true
+        responses:
+            "200":
+                $ref: "#/components/responses/OKRequest"
+            "400":
+                $ref: "#/components/responses/BadRequest"
+            "401":
+                $ref: "#/components/responses/Unauthorized"
+            "404":
+                $ref: "#/components/responses/NotFound"
+            "409":
+                $ref: "#/components/responses/Conflict"
+            "500":
+                $ref: "#/components/responses/ServerError"
+            "503":
+                $ref: "#/components/responses/ServiceUnavailable"
+
+        security:
+          - bearerAuth: [ ]
+            Agid-JWT-Signature: [ ]
+
     /send_generic_communication:
       post:
         description: Comunicazione generica tra enti terzi e backoffice
@@ -836,6 +865,27 @@ components:
                 - cui
                 - instance_descriptor_version
                 - date
+                - competent_administration
+                - document
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                competent_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                document:
+                    $ref: "#/components/schemas/Document"
+        
+        ConditionalProvisionExtended:
+            type: object
+            required:   
+                - cui
+                - instance_descriptor_version
                 - competent_administration
                 - document
             properties:
