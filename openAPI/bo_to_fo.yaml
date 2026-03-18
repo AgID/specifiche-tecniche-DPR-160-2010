@@ -239,7 +239,6 @@ paths:
         get:
             description: | 
                 Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
-                Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
             parameters:
                 - in: header
                   name: Range
