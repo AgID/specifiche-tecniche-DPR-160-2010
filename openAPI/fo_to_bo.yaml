@@ -150,12 +150,11 @@ paths:
         get:
             description: | 
                 Recupero risorsa documento per un dato CUI.
-                Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
             
             parameters:
                 - in: header
                   name: Range
-                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa (RFC 9110, single part).
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa.
                   required: false
                   schema:
                     type: string
