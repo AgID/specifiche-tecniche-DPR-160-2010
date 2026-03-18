@@ -726,6 +726,7 @@ components:
             required:
                 - cui
                 - instance_descriptor_version
+                - code
                 - expiration_date
                 - impediments
                 - requester_administration
@@ -735,6 +736,10 @@ components:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
                     type: string
+                code:
+                    title: codice della fattispecie presente nel Catalogo
+                    type: string
+                    minLength: 1
                 expiration_date:
                     type: string
                     description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"

@@ -487,12 +487,17 @@ components:
         ObservationsToImpedimentsMessage:
             type: object
             allOf:
-                - $ref: "#/components/schemas/TransferMessage"
+                - $ref: "#/components/schemas/BaseTransferMessage"
+            required:
+                - event
+                - document
             properties:
                 event:
                     type: string
                     enum:
                         - observations_to_impediments_provided
+                document:
+                    $ref: "#/components/schemas/Document"
         
         PreliminaryResolutionObservationMessage:
             type: object
