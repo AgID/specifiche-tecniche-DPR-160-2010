@@ -1367,7 +1367,7 @@ paths:
       tags:
         - Administrations
 
-  /single-desk/{municipality}/{context}:
+  /single_desk/{municipality}/{context}:
     get:
       description: |
         Recupero Sportello per uno specifico comune
@@ -1416,7 +1416,7 @@ paths:
       tags:
         - Sportello
 
-  /single-desk/{single_desk_id}/{single_desk_version}/frontoffice-system:
+  /single_desk/{single_desk_id}/{single_desk_version}/frontoffice-system:
     get:
       description: |
         Recupero Sistema FrontOffice di uno specifico Sportello
