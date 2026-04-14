@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: ComUnica to FrontOffice SUAP
+    title: ComUnica to FrontOffice
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili da ComUnica a FrontOffice SUAP
+        API rese disponibili da ComUnica a FrontOffice
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: ComUnica to FrontOffice SUAP endpoint
+      description: ComUnica to FrontOffice endpoint
 
 paths:
     /retry:
@@ -48,17 +48,19 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
     /send_instance:
-        description: Invio riferimenti istanza
+        description: Inoltro dei riferimenti a un' istanza di procedimento
         post:
             requestBody:
                 content:
@@ -73,10 +75,12 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -98,7 +102,7 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
-        ServiceUnavaliable:
+        ServiceUnavailable:
             description: Servizio non disponibile
             content:
                 application/json:
@@ -117,6 +121,17 @@ components:
                 application/json:
                     schema:
                         $ref: "#/components/schemas/Error"
+        
+        NotFound:
+            description: risorsa non trovata
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+
         ServerError:
             description: Errore processamento richiesta
             content:
@@ -134,7 +149,7 @@ components:
             required:
                 - context
                 - data
-                - progressive
+                - progressivo
                 - uuid
             properties:
                 context:
@@ -159,24 +174,44 @@ components:
             items:
                 type: object
                 required:
-                - code
+                - usec_code
+                - usec_version
                 - ref
+                - description
                 - resource_id
                 - hash
                 - alg_hash
                 properties:
-                    code:                            
-                        title: codice della fattispecie presente nel Catalogo
-                        type: string
-                        minLength: 1
+                    usec_code:                            
+                      title: codice della fattispecie presente nel Catalogo
+                      type: string
+                      minLength: 1
+                    usec_version:
+                      title: versione della fattispecie presente nel Catalogo
+                      type: string
+                      minLength: 1
                     ref:                            
                         title: riferimento all'elemento dell'istanza relativo al procedimento
                         type: string
                         minLength: 1
+                    description:                            
+                        title: dscrizione della risorsa
+                        type: string
+                        minLength: 1                        
                     resource_id:                            
                         title: id della risorsa, univoco per erogatore e CUI.UUID
                         type: string
                         minLength: 1
+                    filename:                      
+                        title: filename della risorsa "documento di parere negativo"
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: Dimensione del file.
+                        type: integer
+                    mime_type:
+                        title: "indica il formato dei dati previsto per il documento di parere negativo"
+                        type: string
                     hash:                            
                         title: hash dell'elemento dell'istanza relativo al procedimento
                         type: string
@@ -201,7 +236,6 @@ components:
                           - $ref: '#/components/schemas/suap_pdf'
                           - $ref: '#/components/schemas/suap_rea_start_xml'
                           - $ref: '#/components/schemas/suap_rea_update_xml'
-                          - $ref: '#/components/schemas/suap_rea_end_xml'
                           - $ref: '#/components/schemas/comunica_cui_xml'
                           - $ref: '#/components/schemas/comunica_cui_pdf'
         ricevuta_xml:
@@ -226,9 +260,13 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -256,9 +294,13 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -291,9 +333,13 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -321,9 +367,13 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -355,9 +405,13 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -389,9 +443,13 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -401,40 +459,7 @@ components:
                             - S256
                             - S384
                             - S512
-        suap_rea_end_xml:
-                      type: object
-                      description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
-                        precedente alla variazione DECRETO 12 novembre 2021 recuperabile nella sezione regole “Regole tecniche”
-                        del portale impresainungiorno
-                        (https://www.impresainungiorno.gov.it/documents/155997/157488/suap-rea-1.1.1.xsd/2094658b-c981-4795-8d18-ffa91fa97069)
-                      additionalProperties: false
-                      required:
-                        - name
-                        - mime_type
-                        - resource_id
-                        - hash
-                        - alg_hash
-                      properties:
-                        name:
-                          type: string
-                          enum:
-                            - SUAP_REA_END_XML
-                        mime_type:
-                          type: string
-                          enum:
-                            - application/xml
-                        resource_id:
-                          type: string
-                          minLength: 1
-                        hash:
-                          type: string
-                          minLength: 1
-                        alg_hash:
-                          type: string
-                          enum:
-                            - S256
-                            - S384
-                            - S512
+
         comunica_cui_xml:
                       type: object
                       description: il presente documento è validato con l’XML Schema definito ai sensi dell’allegato al DPR 160/2010
@@ -457,9 +482,13 @@ components:
                           type: string
                           enum:
                             - application/xml
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -487,9 +516,13 @@ components:
                           type: string
                           enum:
                             - application/pdf
+                            - application/pkcs7-mime
                         resource_id:
                           type: string
                           minLength: 1
+                        file_size:
+                          description: Dimensione del file.
+                          type: integer
                         hash:
                           type: string
                           minLength: 1
@@ -510,6 +543,7 @@ components:
             required:
                 - code
                 - message
+                
         SendInstanceRequest:
             required:
                 - cui
@@ -529,6 +563,31 @@ components:
                     $ref: "#/components/schemas/InstanceIndex"
                 general_index:
                     $ref: "#/components/schemas/GeneralIndex"
+        
+        AdministrationSchema:
+            description: Amministrazione compentente censita nel Catalogo SSU
+            type: object
+            required:
+                - ipacode
+                - officecode
+                - version
+                - description
+            properties:
+                ipacode:
+                    title: codice IPA dell'amministrazione
+                    type: string
+                    minLength: 1
+                officecode:
+                    title: codice dell'ufficio dell'amministrazione 
+                    type: string
+                    minLength: 1
+                version:
+                    title: versione dell'ufficio dell'amministrazione 
+                    type: string
+                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+                description:
+                    title: descrizione dell'amministrazione
+                    type: string
 
     headers:
         Agid-JWT-Signature:
@@ -539,7 +598,8 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
         bearerAuth:
@@ -552,6 +612,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi  [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header

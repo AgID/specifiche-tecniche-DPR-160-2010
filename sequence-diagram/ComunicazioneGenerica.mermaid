@@ -1,0 +1,78 @@
+sequenceDiagram
+    autonumber
+      
+    actor P as Presentatore  
+    participant F as FrontOffice 
+    participant B as BackOffice
+    participant E as EnteTerzo
+    participant C as Catalogo SSU
+
+   
+    Note over P,E: istanza presentata e processo in corso
+
+    Note over P,E: Possibile comunicazione tra SUAP ed ET
+    opt Comunicazione generica da tra BO(A) ed ET(B)
+        
+        loop Inizio scambio di comunicazioni
+            opt        
+                B->>E: notify(GenericCommunicationMessage)
+                E-->>B: ack
+                opt
+                    E->>B: request_instance_document(cui, resource_id)
+                    B-->>E: instanceDocument
+                end
+                B-->>C: audit(cui, communication_to_<ET>_sended)
+                C-->>B: ack
+            end
+            opt        
+                E->>B: send_generic_communication(cui, requester_administration, resource_id)
+                B-->>E: ack
+                opt
+                    B->>E: request_instance_document(cui, resource_id)
+                    E-->>B: instanceDocument
+                end
+                E-->>C: audit(cui, communication_sended_from_<ET>)
+                C-->>B: ack
+            end
+        end
+    end   
+    
+    Note over P,E: Possibile comunicazione tra Presentatore e SUAP
+    opt Comunicazione spontanea dal Presentatore al SUAP
+
+        P--)F: Invio comunicazione<br/>spontanea
+        F->> B: notify(GenericCommunicationMessage)
+        B -->> F: ack
+        opt
+            B->>F: request_instance_document(cui, resource_id)
+            F-->>B: instanceDocument
+        end
+        F->> C: audit(cui, communication_fo_to_bo)
+        C -->> F: ack
+
+        loop Inizio scambio di comunicazioni
+            opt
+                B->>F: notify(GenericCommunicationMessage)
+                F-->>B: ack
+                opt
+                    F->>B: request_instance_document(cui, resource_id)
+                    B-->>F: instanceDocument
+                end
+                F--)P: Comunicazione del SUAP
+                B-->>C: audit(cui, communication_bo_to_fo)
+                C-->>B: ack
+            end
+            opt
+                P--)F: Invio comunicazione
+                F->> B: notify(GenericCommunicationMessage)
+                B -->> F: ack
+                opt
+                    B->>F: request_instance_document(cui, resource_id)
+                    F-->>B: instanceDocument
+                end
+                F->> C: audit(cui, communication_fo_to_bo)
+                C -->> F: ack
+            end
+        end
+
+    end

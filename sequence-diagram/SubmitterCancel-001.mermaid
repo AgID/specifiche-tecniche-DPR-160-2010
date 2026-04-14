@@ -12,7 +12,7 @@ sequenceDiagram
     Note over P,C: istanza presentata e processo in corso
           
     P ->> F: request_cancel(cui)
-    F ->> B: request_cancel_istance(cui)
+    F ->> B: cancel_istance(cui)
     B -->> F: ack
 
     F ->> C: audit(cui,submitter_cancel_requested)

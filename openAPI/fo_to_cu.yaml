@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: FrontOffice SUAP to ComUnica
+    title: FrontOffice to ComUnica
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili da FrontOffice SUAP a ComUnica
+        API rese disponibili da FrontOffice a ComUnica
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: FrontOffice SUAP to ComUnica endpoint
+      description: FrontOffice to ComUnica endpoint
 
 paths:
 
@@ -47,10 +47,12 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -83,10 +85,12 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
@@ -95,10 +99,16 @@ paths:
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: |
-                Recupero risorsa documento per un dato CUI.
-                Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
+                Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
 
             parameters:
+                - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa.
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
                 - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
@@ -151,41 +161,24 @@ paths:
                 "401":
                     $ref: "#/components/responses/Unauthorized"
                 "404":
-                    description: risorsa non trovata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/NotFound"
                 "412":
-                    description: precondizione fallita, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionFailed"
                 "416":
-                    description: richiesta di range non soddisfacibile
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
-                        Content-Range:
-                            description: espressione del range non soddisfacibile
-                            schema:
-                                type: string
-                                example: bytes 21010-47021/47022
+                    $ref: "#/components/responses/RangeNotSatisfiable"
                 "428":
-                    description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionRequired"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
     /cancel_instance:
-        description: richiesta annullamento istanza per annullamento pratica comunica da parte del presentatore
+        description: richiesta di cancellazione di una data istanza di procedimento da parte del Soggetto Presentatore
         post:
             requestBody:
                 content:
@@ -200,17 +193,21 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
 
     /notify_receipt:
-        description: notifica invio ricevuta al presentatore
+        description: notifica invio ricevuta al Soggetto Presentatore
         post:
             requestBody:
                 content:
@@ -241,10 +238,14 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -275,7 +276,63 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
-        ServiceUnavaliable:
+        
+        NotFound:
+            description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        Conflict:
+            description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                
+        PreconditionFailed:
+            description: precondizione fallita, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        RangeNotSatisfiable:
+            description: richiesta di range non soddisfacibile
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                Content-Range:
+                    description: lunghezza attuale della rappresentazione selezionata
+                    schema:
+                        type: string
+                        example: bytes */47022
+
+        PreconditionRequired:
+            description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+        ServiceUnavailable:
             description: Servizio non disponibile
             content:
                 application/json:
@@ -310,7 +367,7 @@ components:
             required:
                 - context
                 - data
-                - progressive
+                - progressivo
                 - uuid
             properties:
                 context:
@@ -344,10 +401,15 @@ components:
                 filename: 
                     title: nome del file distinta comunica
                     type: string
-                    
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type: 
                     title: mime type della distinta comunica
                     type: string
+                    enum:
+                      - application/xml
+                      - application/pkcs7-mime
         comunica-cui-signed:             
             type: object
             description: Distinta Comunica firmata
@@ -363,9 +425,15 @@ components:
                 filename: 
                     title: nome del file distinta comunica firmata
                     type: string
+                file_size:
+                    description: Dimensione del file.
+                    type: integer
                 mime_type: 
                     title: mime type della distinta comunica firmata
                     type: string
+                    enum:
+                      - application/pdf
+                      - application/pkcs7-mime
         FOPortal:
             type: object
             description: Url portale Frontoffice SUAP
@@ -400,7 +468,8 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
         bearerAuth:
@@ -413,6 +482,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header

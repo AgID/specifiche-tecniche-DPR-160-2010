@@ -5,14 +5,20 @@ description: codice unico dell'istanza
 type: object
 required:
 - context
+- sub_context
 - data
-- progressive
+- progressivo
 - uuid
 properties:
   context:
     "$id": "#root/context"
     title: contesto dell'istanza
     type: string
+
+  sub_context:
+    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+    type: string
+
   data:
     "$id": "#root/cui/data"
     title: data emissione cui

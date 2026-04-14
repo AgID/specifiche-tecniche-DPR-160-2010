@@ -1,12 +1,12 @@
 openapi: 3.0.3
 
 info:
-    title: BackOffice SUAP to Ente Terzo SUAP
+    title: BackOffice to Ente Terzo
 
     version: 1.0.0
 
     description: |-
-        API rese disponibili da BackOffice SUAP a Ente Terzo SUAP
+        API rese disponibili da BackOffice a Ente Terzo
 
     contact:
         name: AgID - Agenzia per l'Italia Digitale
@@ -18,7 +18,7 @@ info:
 
 servers:
     - url: https://<system host+subdomains>.it
-      description: Ente Terzo SUAP to BackOffice SUAP endpoint
+      description: BackOffice to Ente Terzo endpoint
 
 paths:
     /retry:
@@ -55,17 +55,47 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+    
+    /send_impediments:
+        description: Inoltro dei motivi ostativi relativi alle proprie istruttorie in relazione a una data instanza di procedimento
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Impediments"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
     /send_conclusions:
-        description: Invio conclusioni
+        description: Inoltro delle conclusioni delle proprie istruttorie in relazione a una data instanza di procedimento
         post:
             requestBody:
                 content:
@@ -80,17 +110,49 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+    /send_conditional_provision:
+        description: Inoltro del Provvedimento Condizionato
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ConditionalProvisionGranted"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
     /request_cdss:
         post:
-            description: Richiesta convocazione Conferenza dei Servizi Sincrona (CdSS)
+            description: Richiesta convocazione Conferenza dei Servizi Sincrona (CdSS) in relazione a una data instanza di procedimento
             requestBody:
                 content:
                     application/json:
@@ -113,22 +175,26 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
     /request_integration:
         post:
-            description: Richiesta integrazioni
+            description: Richiesta integrazioni in relazione a una data instanza di procedimento
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/RequestIntegrationRequest"
+                            $ref: "#/components/schemas/IntegrationRequest"
                 required: true
             responses:
                 "200":
@@ -137,10 +203,42 @@ paths:
                     $ref: "#/components/responses/BadRequest"
                 "401":
                     $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+    /request_conformation:
+        post:
+            description: Richiesta di conformazione in relazione a una data instanza di procedimento
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ConformationRequest"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavailable"
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
@@ -148,10 +246,16 @@ paths:
     /instance/{cui_uuid}/document/{resource_id}:
         get:
             description: | 
-                Recupero risorsa documento per un dato CUI.
-                Le Range Request (RFC9110) sono supportate soltanto in modalità single part.
+                Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
             
             parameters:
+                - in: header
+                  name: Range
+                  description: Specifica l'intervallo di byte richiesto per il recupero parziale della risorsa.
+                  required: false
+                  schema:
+                    type: string
+                    example: bytes=0-999
                 - in: header
                   name: If-Match
                   description: precondizione contenente l'hash della risorsa
@@ -170,8 +274,6 @@ paths:
                   required: true
                   schema:
                       type: string
-                
-
             responses:
                 "200":
                     description: risorsa richiesta, codificata in base64, il mime type relativo è specificato nel descrittore dell'istanza
@@ -205,38 +307,123 @@ paths:
                 "401":
                     $ref: "#/components/responses/Unauthorized"
                 "404":
-                    description: risorsa non trovata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/NotFound"
                 "412":
-                    description: precondizione fallita, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionFailed"
                 "416":
-                    description: richiesta di range non soddisfacibile
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
-                        Content-Range:
-                            description: espressione del range non soddisfacibile
-                            schema:
-                                type: string
-                                example: bytes 21010-47021/47022
+                    $ref: "#/components/responses/RangeNotSatisfiable"
                 "428":
-                    description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
-                    headers:
-                        Agid-JWT-Signature:
-                            $ref: "#/components/headers/Agid-JWT-Signature"
+                    $ref: "#/components/responses/PreconditionRequired"
                 "500":
                     $ref: "#/components/responses/ServerError"
                 "503":
-                    $ref: "#/components/responses/ServiceUnavaliable"
+                    $ref: "#/components/responses/ServiceUnavailable"
 
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
+
+    /notify:
+        post:
+            description: Notifica eventi di processo di una data istanza di procedimento.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            oneOf:
+                                - $ref: "#/components/schemas/CdssNotifyMessage"
+                                - $ref: "#/components/schemas/NotifyMessage"
+                                - $ref: "#/components/schemas/PreliminaryResolutionMessage"
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavailable"
+
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+
+    /send_extension_conditional_provision:
+      post:
+        description: Comunicazione per segnalare la proroga del provvedimento condizionato
+        requestBody:
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/ConditionalProvisionExtended"
+            required: true
+        responses:
+            "200":
+                $ref: "#/components/responses/OKRequest"
+            "400":
+                $ref: "#/components/responses/BadRequest"
+            "401":
+                $ref: "#/components/responses/Unauthorized"
+            "404":
+                $ref: "#/components/responses/NotFound"
+            "409":
+                $ref: "#/components/responses/Conflict"
+            "500":
+                $ref: "#/components/responses/ServerError"
+            "503":
+                $ref: "#/components/responses/ServiceUnavailable"
+
+        security:
+          - bearerAuth: [ ]
+            Agid-JWT-Signature: [ ]
+
+    /send_generic_communication:
+      post:
+        description: Comunicazione generica tra enti terzi e backoffice
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - cui
+                  - requester_administration
+                  - document
+                properties:
+                  cui:
+                    $ref: "#/components/schemas/cui"
+                  requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                  document:
+                    $ref: "#/components/schemas/Document"
+          required: true
+        responses:
+            "200":
+                $ref: "#/components/responses/OKRequest"
+            "400":
+                $ref: "#/components/responses/BadRequest"
+            "401":
+                $ref: "#/components/responses/Unauthorized"
+            "404":
+                $ref: "#/components/responses/NotFound"
+            "409":
+                $ref: "#/components/responses/Conflict"
+            "500":
+                $ref: "#/components/responses/ServerError"
+            "503":
+                $ref: "#/components/responses/ServiceUnavailable"
+
+        security:
+          - bearerAuth: [ ]
+            Agid-JWT-Signature: [ ]
 
 components:    
     responses:
@@ -255,7 +442,63 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
-        ServiceUnavaliable:
+        
+        NotFound:
+            description: risorsa non trovata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+        Conflict:
+            description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                
+        PreconditionFailed:
+            description: precondizione fallita, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+        
+        RangeNotSatisfiable:
+            description: richiesta di range non soddisfacibile
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+                Content-Range:
+                    description: lunghezza attuale della rappresentazione selezionata
+                    schema:
+                        type: string
+                        example: bytes */47022
+
+        PreconditionRequired:
+            description: precondizione richiesta, rappresentazione risorsa non correttamente individuata
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Error"
+            headers:
+                Agid-JWT-Signature:
+                    $ref: "#/components/headers/Agid-JWT-Signature"
+
+        ServiceUnavailable:
             description: Servizio non disponibile
             content:
                 application/json:
@@ -290,13 +533,19 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
-                - progressive
+                - progressivo
                 - uuid
             properties:
                 context:
                     title: contesto dell'istanza
                     type: string
+
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
+                    type: string
+
                 data:
                     title: data emissione cui
                     type: string
@@ -312,28 +561,46 @@ components:
 
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
-            type: object
-            required:
-                - ipacode
-                - officecode
-                - version
-                - description
-            properties:
-                ipacode:
-                    title: codice IPA dell'amministrazione
-                    type: string
-                    minLength: 1
-                officecode:
-                    title: codice dell'ufficio dell'amministrazione 
-                    type: string
-                    minLength: 1
-                version:
-                    title: versione dell'ufficio dell'amministrazione 
-                    type: string
-                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
-                description:
-                    title: descrizione dell'amministrazione
-                    type: string
+            oneOf:
+                - type: object
+                  required:
+                    - ipacode
+                    - officecode
+                    - description
+                  properties:
+                    ipacode:
+                        title: codice IPA dell'amministrazione
+                        type: string
+                        minLength: 1
+                    officecode:
+                        title: codice dell'ufficio dell'amministrazione 
+                        type: string
+                        minLength: 1
+                    version:
+                        title: versione dell'ufficio dell'amministrazione, necessaria quando non è un ente ghost
+                        type: string
+                        pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+                    description:
+                        title: descrizione dell'amministrazione
+                        type: string
+                - type: object
+                  required:
+                    - fiscal_code
+                    - description
+                    - id
+                  properties:
+                    fiscal_code:
+                        title: codice fiscale dell'amministrazione
+                        type: string
+                        minLength: 1
+                    description:
+                        title: descrizione dell'amministrazione
+                        type: string
+                        minLength: 1
+                    id:
+                        title: id univoco dell'amministrazione
+                        type: string
+                        minLength: 1
                     
         Error:
             type: object
@@ -346,7 +613,8 @@ components:
             required:
                 - code
                 - message
-        RequestIntegrationRequest:
+
+        IntegrationRequest:
             type: object
             required:
                 - cui
@@ -363,7 +631,6 @@ components:
                         type: object
                         required:
                             - code
-                            - ref
                             - integration_request
                         properties:
                             code:
@@ -386,97 +653,203 @@ components:
                                         requester_administration:
                                             title: amministrazione richiedente
                                             $ref: "#/components/schemas/AdministrationSchema"
-
                 integration_document_list:
                     type: array
                     items:
                         type: object
+                        required:
+                            - requester_administration
+                            - document
                         properties:
                             requester_administration:
                                 title: amministrazione richiedente
                                 $ref: "#/components/schemas/AdministrationSchema"
-                            resource_id:
-                                title: id della risorsa "documento di richiesta integrazioni", univoco per erogatore e CUI.UUID
-                                type: string
-                                minLength: 1
-                            hash:
-                                title: hash risorsa
-                                type: string
-                                minLength: 1
-                            alg_hash:
-                                title: algoritmo hash applicato
-                                type: string
-                                enum:
-                                - S256
-                                - S384
-                                - S512
+                            document:
+                                $ref: "#/components/schemas/Document"
 
-        SendConclusionRequests:
-            type: object
-            oneOf:
-                - $ref: "#/components/schemas/NegativeOutcomeRequired"
-                - $ref: "#/components/schemas/ConformationRequired"
-                - $ref: "#/components/schemas/PositiveOutcome"
-            discriminator:
-                propertyName: conclusions_type
-                mapping:
-                    suspension_requested: "#/components/schemas/NegativeOutcomeRequired"
-                    conformation_requested: "#/components/schemas/ConformationRequired"
-                    positive_outcome: "#/components/schemas/PositiveOutcome"
-
-        NegativeOutcomeRequired:
+        ConformationRequest:
             type: object
             required:
                 - cui
                 - instance_descriptor_version
-                - negative_outcome_motivation
-                - conclusions_type
-                - requester_administration
+                - expirationDate
+                - conformation_list
             properties:
-                conclusions_type:
-                    type: string
-                    enum: 
-                    - suspension_requested
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
                     type: string
-                negative_outcome_motivation:
+                expirationDate:
+                        title: data di scadenza concessa al presentatore per inoltrare la documentazione relativa alla richiesta di conformazione
+                        type: string
+                        format: date
+                conformation_list:
+                    type: array
+                    items:
+                        type: object
+                        required:
+                            - code
+                            - conformation_request
+                        properties:
+                            code:
+                                title: codice della fattispecie presente nel Catalogo
+                                type: string
+                                minLength: 1
+                            ref:
+                                title: riferimento all'elemento dell'istanza relativo al procedimento (procedimento o allegato)
+                                type: string
+                                minLength: 1
+                            conformation_request:
+                                title: elenco conformazioni richieste da uno o più enti terzi
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        request:
+                                            title: testo conformazione richiesta
+                                            type: string
+                                        requester_administration:
+                                            title: amministrazione richiedente
+                                            $ref: "#/components/schemas/AdministrationSchema"
+                conformation_document_list:
+                    type: array
+                    items:
+                        type: object
+                        required:
+                            - document
+                        properties:
+                            document:
+                                $ref: "#/components/schemas/Document"
+        
+        Impediments:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - code
+                - expiration_date
+                - impediments
+                - requester_administration
+                - document
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                code:
+                    title: codice della fattispecie presente nel Catalogo
+                    type: string
+                    minLength: 1
+                expiration_date:
+                    type: string
+                    description: "data di scadenza concessa al presentatore per inoltrare le osservazioni relative ai motivi ostativi"
+                    format: date
+                impediments:
                     type: string
                     minLength: 1
                 requester_administration:
                     title: amministrazione richiedente
                     $ref: "#/components/schemas/AdministrationSchema"
-                resource_id:
-                    title: id della risorsa "documento di richiesta sospensione", univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
+                document:
+                    $ref: "#/components/schemas/Document"
 
-        ConformationRequired:
+        SendConclusionRequests:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - usecase_proceeding_list
+                - conclusion_document
+                - requester_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                usecase_proceeding_list:
+                    type: array
+                    items:
+                        type: string
+                        title: codice della fattispecie presente nel Catalogo
+                        minLength: 1
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                conclusion_document:
+                    oneOf:
+                        - $ref: "#/components/schemas/NegativeOutcome"
+                        - $ref: "#/components/schemas/PositiveOutcome"
+                        - $ref: "#/components/schemas/SecondProvisionOutcome"                        
+                        - $ref: "#/components/schemas/ConditionalProvisionRescinded"
+                        - $ref: "#/components/schemas/ConditionalProvisionDenied"
+                        - $ref: "#/components/schemas/DefinitiveProvision"
+                additional_document_list:  
+                    type: array
+                    items:
+                        type: object
+                        required:
+                            - description
+                            - document
+                        properties:
+                            description:                            
+                                title: descrizione della risorsa
+                                type: string
+                                minLength: 1
+                            document:
+                                $ref: "#/components/schemas/Document"
+
+        NegativeOutcome:
+            type: object
+            required:
+                - negative_outcome_motivation
+                - conclusions_type
+                - description
+                - document
+            properties:
+                conclusions_type:
+                    type: string
+                    enum: 
+                    - suspension_requested
+                    - suspension_requested_for_impediments
+                    - negative_outcome
+                negative_outcome_motivation:
+                    type: string
+                    minLength: 1
+                description:
+                    type: string
+                    minLength: 1
+                document:
+                    $ref: "#/components/schemas/Document"                
+
+        PositiveOutcome:
+            required:
+                - positive_outcome
+                - conclusions_type
+                - description
+                - document
+            properties:
+                conclusions_type:
+                    type: string
+                    enum: 
+                    - positive_outcome
+                positive_outcome:
+                    type: string
+                    minLength: 1
+                description:
+                    type: string
+                    minLength: 1
+                document:
+                    $ref: "#/components/schemas/Document"
+        
+        ConditionalProvision:
             type: object
             required:
                 - cui
                 - instance_descriptor_version
                 - date
-                - conformation_requested
-                - conclusions_type
-                - requester_administration
+                - competent_administration
+                - document
             properties:
-                conclusions_type:
-                    type: string
-                    enum: 
-                    - conformation_requested
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
@@ -484,54 +857,185 @@ components:
                 date:
                     type: string
                     format: date
-                conformation_requested:
-                    type: string
-                    minLength: 1
-                requester_administration:
+                competent_administration:
                     title: amministrazione richiedente
                     $ref: "#/components/schemas/AdministrationSchema"
-                resource_id:
-                    title: id della risorsa "documento di richiesta conformazione", univoco per erogatore e CUI.UUID
-                    type: string
-                    minLength: 1
-                hash:
-                    title: hash risorsa
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash applicato
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
-
-        PositiveOutcome:
+                document:
+                    $ref: "#/components/schemas/Document"
+        
+        DefinitiveProvision:
+            type: object
             required:
                 - cui
                 - instance_descriptor_version
-                - positive_outcome
-                - conclusions_type
-                - requester_administration
+                - date
+                - competent_administration
+                - document
             properties:
-                conclusions_type:
-                    type: string
-                    enum: 
-                    - positive_outcome
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
                     type: string
-                positive_outcome:
+                date:
                     type: string
-                    minLength: 1
-                requester_administration:
+                    format: date
+                competent_administration:
                     title: amministrazione richiedente
                     $ref: "#/components/schemas/AdministrationSchema"
+                document:
+                    $ref: "#/components/schemas/Document"
+        
+        ConditionalProvisionExtended:
+            type: object
+            required:   
+                - cui
+                - instance_descriptor_version
+                - competent_administration
+                - document
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                competent_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                document:
+                    $ref: "#/components/schemas/Document"
+
+        SecondProvisionOutcome:
+            allOf:
+                - $ref: "#/components/schemas/DefinitiveProvision"
+                - required:
+                    - outcome
+            properties:
+                outcome:
+                    type: string
+                    enum: 
+                        - positive_outcome
+                        - negative_outcome
+        
+        ConditionalProvisionGranted:
+            allOf:
+                - $ref: "#/components/schemas/ConditionalProvision"
+                - type: object
+                - required:
+                    - outcome
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_granted
+        
+        ConditionalProvisionDenied:
+            allOf:
+                - $ref: "#/components/schemas/ConditionalProvision"
+                - type: object
+                - required:
+                    - outcome
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_denied
+        
+        ConditionalProvisionRescinded:
+            allOf:
+                - $ref: "#/components/schemas/ConditionalProvision"
+                - type: object
+                - required:
+                    - outcome
+                  properties:
+                    outcome:
+                        type: string
+                        enum: 
+                            - conditional_provision_rescinded
+
+        NotifyMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    pattern: >-
+                        ^cdss_convened|involved_et_[0-9]{1,10}$
+        
+        CdssNotifyMessage:
+            allOf:
+              - $ref: "#/components/schemas/NotifyMessage"
+              - type: object
+                required:
+                    - cdss_channel
+                    - cdss_convocation
+                properties:
+                    cdss_channel:
+                        type: string
+                        title: "canale utilizzato per la convocazione della Conferenza dei Servizi Sincrona"
+                        minLength: 1
+                    cdss_convocation:
+                        title: "data della convocazione della Conferenza dei Servizi Sincrona"
+                        type: string
+                        format: date
+                        minLength: 1
+                    document:
+                        $ref: "#/components/schemas/Document"
+        
+        PreliminaryResolutionMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/NotifyMessage"
+            required:
+                - event
+                - document
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - positive_cds_preliminary_resolution
+                        - negative_cds_preliminary_resolution
+                competent_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+                document:
+                    description: documento relativo alla CdS preliminare
+                    $ref: "#/components/schemas/Document"
+
+        Document:
+            type: object
+            required:
+                - resource_id
+                - mime_type
+                - hash
+                - alg_hash
+            properties:
                 resource_id:
-                    title: id della risorsa "documento di parere positivo", univoco per erogatore e CUI.UUID
+                    title: id della risorsa del documento
                     type: string
                     minLength: 1
+                filename:                      
+                    title: filename della risorsa del documento
+                    type: string
+                    minLength: 1
+                mime_type:
+                    title: indica il formato dei dati previsto per il documento
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                file_size:
+                    description: dimensione del file
+                    type: integer
                 hash:
                     title: hash risorsa
                     type: string
@@ -543,7 +1047,7 @@ components:
                     - S256
                     - S384
                     - S512
-
+        
     headers:
         Agid-JWT-Signature:
             schema:
@@ -553,7 +1057,8 @@ components:
                 example: eyJzd.fafa.fafafa
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
 
     securitySchemes:
         bearerAuth:
@@ -566,6 +1071,7 @@ components:
             type: apiKey
             description: |-
                 Il valore di questo header è una token JWT firmato secondo la specifica JWS.
-                Vedi Modi  [integrity_rest_01] Integrità del payload del messaggio REST.
+                Vedi Modi [integrity_rest_02] Integrità del payload del messaggio REST.
+                In ogni caso la versione del pattern di sicurezza da utilizzare è l'ultima versione indicata da PDND.
             name: Agid-JWT-Signature
             in: header

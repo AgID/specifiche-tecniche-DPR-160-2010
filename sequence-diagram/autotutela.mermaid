@@ -1,0 +1,284 @@
+sequenceDiagram
+    autonumber
+    
+    participant P as Presentatore
+    participant F as Front-office SUAP    
+    participant B as Back-office SUAP    
+    participant E as Enti Terzi
+    participant C as Catalogo SSU 
+    participant RI as Registro Imprese
+
+    
+    alt annullamento di un provvedimento amministrativo adottato in violazione di legge o viziato da eccesso di potere o da incompetenza
+        note over B: Riapertura d'ufficio o per istanza di parte
+        B ->> F: notify(NotifyMessage)
+        note left of B: NotifyMessage.event = reopen_definitive_provision
+        F -->> B: ack
+
+        B ->> C: audit(cui, reopen_definitive_provision)
+        C -->> F: ack
+
+        opt
+            loop per ogni documento presente
+                F ->> B: request_instance_document(cui, resource_id)
+                B -->> F: instanceDocument
+            end
+        end
+
+        B ->> C: request_instance_descriptor(cui)
+        C -->> B: instanceDescriptor
+
+        opt 
+            note over P, B: Concedere un tempo congruo per presentare le integrazioni spontanee
+            P --) F: instanceIntegrated
+            F ->> B: send_instance_updated_documents(SendUpdatedDocuments)
+            B -->> F: ack
+
+            F ->> C: audit(cui, second_provision_instance_integrated_to_<BO>_sended)
+            note right of F: <BO> codice Back-office SUAP
+            C -->> F: ack
+            
+            opt 
+                loop per ogni integrazione ricevuta 
+                    B ->> F: request_instance_document(cui, resource_id)
+                    F -->> B: instanceDocument
+                end
+            end
+
+            F ->> C: audit(cui, second_provision_instance_integrated_retrived)
+            C -->> F: ack
+        end  
+
+        par per ogni Ente Terzo coinvolto sul procedimento
+            B ->> E: notify(ReopenProceedingNotification)
+            note right of B: ReopenProceedingNotification = include il documento che attesta le motivazioni di riapertura del procedimento e le eventuali integrazioni spontanee del Presentatore
+            E -->> B: ack
+            
+            B ->> C: audit(cui, reopen_definitive_provision_notification_to_<ET>_sended)
+            note right of B: <ET> codice ente terzo
+            C -->> B: ack
+
+            opt recupero del documento di riapertura
+                loop per ogni documento presente
+                    E ->> B: request_instance_document(cui, resource_id)
+                    B -->> E: instanceDocument
+                end
+            end
+
+            E ->> C: audit(cui,reopen_proceeding_documents_received)
+            C -->> E: ack
+        end
+
+        note over F, E: avvio del sotto-processo per gestire per gestire le istruttorie degli Enti Terzi (a partire dalla ricezione delle istanze fino all'inoltro del parere) adottando lo stesso workflow applicato durante il provvedimento di prima istanza 
+
+        par monitoggio della scadenza del secondo provvedimento
+            alt oltre i 12 mesi dal rilascio del primo provvedimento
+                B ->> C: audit(cui, second_provision_time_expired)
+                C -->> B: ack
+                par per ogni ente terzo coinvolto sul procedimento
+                    B ->> E: notify(second_provision_time_expired)
+                    E -->> B: ack
+                end
+            end
+        and raccolta esiti degli enti terzi
+            par per ogni ente terzo coinvolto sul procedimento
+                E ->> B: send_conclusions(SecondProvisionOutcome)
+                B -->> E: ack
+
+                opt recupero del secondo provvedimento degli enti terzi
+                    B ->> E: request_instance_document(cui, resource_id)
+                    note right of B: recupero documento del secondo provvedimento
+                    E -->> B: instanceDocument    
+                end
+
+                B ->> C: audit(cui, outcome_received_from_<ET>)
+                note right of B: <ET> codice ente terzo
+                C -->> B: ack
+            end
+        end 
+
+        B ->> F: notify(SecondProvisionOutcome)
+        F -->> B: ack
+
+        opt recupero del secondo provvedimento
+            F ->> B: request_instance_document(cui, resource_id)
+            note right of F: recupero documento del secondo provvedimento
+            B -->> F: instanceDocument    
+        end
+        F --) P: SecondProvisionOutcome
+
+        alt esito positivo
+            B ->> C: audit(cui, second_provision_positive_outcome)
+            C -->> B: ack  
+        else esito negativo
+            B ->> C: audit(cui, second_provision_negative_outcome)
+            C -->> B: ack
+        end      
+
+        B ->> RI: notify(SecondProvisionOutcome)
+        RI -->> B: ack 
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        note left of RI: recupero documento del secondo provvedimento
+        B -->> RI: instanceDocument  
+
+    else annullamento di un provvedimento finale in virtù di una sentenza passata in giudicato
+        note over B: Riapertura d'ufficio o per istanza di parte
+        alt non sono necessarie modifiche al progetto
+            alt vizi inerenti ad atti endoprocedimentali
+                note over B: Riapertura d'ufficio o per istanza di parte
+                B ->> F: notify(NotifyMessage)
+                note left of B: NotifyMessage.event = reopen_definitive_provision
+                F -->> B: ack
+
+                opt
+                    loop per ogni documento presente
+                        F ->> B: request_instance_document(cui, resource_id)
+                        B -->> F: instanceDocument
+                    end
+                end
+
+                B ->> C: audit(cui, reopen_definitive_provision)
+                C -->> B: ack
+
+                B ->> C: request_instance_descriptor(cui)
+                C -->> B: instanceDescriptor
+
+                par per ogni Ente Terzo coinvolto sul procedimento
+                    B ->> E: notify(ReopenProceedingNotification)
+                    note right of B: ReopenProceedingNotification = include il documento che attesta le motivazioni di riapertura del procedimento e le integrazioni richieste per colmare i vizi endoprocedimentali
+                    E -->> B: ack
+                    
+                    B ->> C: audit(cui, reopen_definitive_provision_notification_to_<ET>_sended)
+                    note right of B: <ET> codice ente terzo
+                    C -->> B: ack
+                    
+                    opt recupero del documento di riapertura
+                        loop per ogni documento presente
+                            E ->> B: request_instance_document(cui, resource_id)
+                            B -->> E: instanceDocument
+                        end
+                    end
+
+                    E ->> C: audit(cui,reopen_proceeding_documents_received)
+                    C -->> E: ack
+                end
+
+                alt entro i tempi concessi per fornire l'esito dei controlli
+                    par per ogni ente terzo che deve colmare i vizi endoprocedimentali
+                        E ->> B: send_conclusions(SecondProvisionOutcome)
+                        B -->> E: ack
+
+                        opt recupero del secondo provvedimento degli enti terzi
+                            B ->> E: request_instance_document(cui, resource_id)
+                            note right of B: recupero documento del secondo provvedimento
+                            E -->> B: instanceDocument    
+                        end
+
+                        B ->> C: audit(cui, outcome_received_from_<ET>)
+                        note right of B: <ET> codice ente terzo
+                        C -->> B: ack
+                    end
+                else oltre i tempi per fornire l'esito dei controlli
+                    par per ogni ente terzo che deve colmare i vizi endoprocedimentali
+                        B ->> E: notify(second_provision_response_time_expired)
+                        E -->> B: ack
+
+                        B ->> C: audit(cui, second_provision_response_time_expired)
+                        C -->> B: ack
+                    end
+                end
+
+                B ->> F: notify(SecondProvisionOutcome)
+                F -->> B: ack
+
+                F ->> B: request_instance_document(cui, resource_id)
+                note right of F: recupero documento del secondo provvedimento
+                B -->> F: instanceDocument    
+
+                F --) P: SecondProvisionOutcome
+
+                alt esito positivo
+                    B ->> C: audit(cui, second_provision_positive_outcome)
+                    C -->> B: ack  
+                else esito negativo
+                    B ->> C: audit(cui, second_provision_negative_outcome)
+                    C -->> B: ack
+                end
+
+                B ->> RI: notify(SecondProvisionOutcome)
+                RI -->> B: ack 
+
+                RI ->> B: request_instance_document(cui, resource_id)
+                note left of RI: recupero documento del secondo provvedimento
+                B -->> RI: instanceDocument      
+
+            else false rappresentazione dei fatti inoltrati dall'Istante
+                B ->> E: notify(ReopenProceedingNotification)
+                note right of B: ReopenProceedingNotification = include il documento che attesta la riapertura del procedimento per gestire l'annullamento d'ufficio
+                E -->> B: ack
+                
+                B ->> C: audit(cui, reopen_definitive_provision_notification_to_<ET>_sended)
+                note right of B: <ET> codice ente terzo
+                C -->> B: ack
+
+                opt
+                    E ->> B: request_instance_document(cui, resource_id)
+                    note left of E: recupero del documento di annullamento d'ufficio
+                    B -->> E: instanceDocument
+                    
+                end
+
+                E ->> C: audit(cui,reopen_proceeding_documents_received)
+                C -->> E: ack
+
+                alt entro i tempi concessi per fornire l'esito dei controlli
+                    par per ogni ente terzo coinvolto sul procedimento
+                        E ->> B: send_conclusions(SecondProvisionOutcome)
+                        B -->> E: ack
+
+                        opt recupero del secondo provvedimento degli enti terzi
+                            B ->> E: request_instance_document(cui, resource_id)
+                            note right of B: recupero documento del secondo provvedimento
+                            E -->> B: instanceDocument    
+                        end
+
+                        B ->> C: audit(cui, outcome_received_from_<ET>)
+                        note right of B: <ET> codice ente terzo
+                        C -->> B: ack
+                    end
+                else oltre i tempi per fornire l'esito dei controlli
+                    par per ogni ente terzo che deve colmare i vizi endoprocedimentali
+                        B ->> E: notify(second_provision_response_time_expired)
+                        E -->> B: ack
+                        B ->> C: audit(cui, second_provision_response_time_expired)
+                        C -->> B: ack
+                    end
+                end
+
+                B ->> F: send_conclusions(SecondProvisionOutcome)
+                Note left of B: Annullamento d'ufficio
+                F -->> B: ack
+
+                F ->> B: request_instance_document(cui, resource_id)
+                note right of F: recupero documento del secondo provvedimento
+                B -->> F: instanceDocument    
+
+                F --) P: SecondProvisionOutcome
+
+                B ->> C: audit(cui, second_provision_negative_outcome)
+                C -->> F: ack
+
+                B ->> RI: notify(SecondProvisionOutcome)
+                RI -->> B: ack 
+
+                RI ->> B: request_instance_document(cui, resource_id)
+                note left of RI: recupero documento del secondo provvedimento
+                B -->> RI: instanceDocument
+            end
+
+        else sono necessarie modifiche al progetto
+            note over P, E: procedimento non annullabile
+        end
+
+    end
