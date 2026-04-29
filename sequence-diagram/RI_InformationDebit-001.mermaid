@@ -112,7 +112,7 @@ sequenceDiagram
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument 
 
-    else chiusura istruttoria cds preliminare Studio di fattibilità(dopo step: xx DomandaAutorizzazione)
+    else chiusura istruttoria cds preliminare Studio di fattibilità(dopo step: 35 DomandaAutorizzazione)
         alt risoluzione positiva cds
             B ->> RI: notify(cui, instance_descriptor_version, positive_cds_preliminary_resolution, resource_id)
             RI -->> B: ack
