@@ -18,6 +18,9 @@ properties:
   cui:
     "$id": "#root/cui"
     "$ref": https://raw.githubusercontent.com/AgID/specifiche-tecniche-DPR-160-2010/refs/heads/approved02/json-schema/cui-schema.yaml
+  related_uuid:
+    title: UUID chiave del CUI del procedimento dipendente relativo allo studio di fattibilità
+    type: string
   municipality:
     "$id": "#root/municipality"
     title: codice istat 6 cifre del comune in cui l'istanza è stata presentata
