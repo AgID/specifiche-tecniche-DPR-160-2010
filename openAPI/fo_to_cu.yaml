@@ -378,12 +378,16 @@ components:
             description: codice unico dell'istanza
             required:
                 - context
+                - sub_context
                 - data
                 - progressivo
                 - uuid
             properties:
                 context:
                     title: contesto dell'istanza
+                    type: string
+                sub_context:
+                    title: Specificità del contesto (es. SUE Produttivo, SUE Residenziale)
                     type: string
                 data:
                     title: data emissione cui
