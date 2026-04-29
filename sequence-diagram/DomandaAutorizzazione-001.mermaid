@@ -74,17 +74,17 @@ sequenceDiagram
         end
     else Lo studio di fattibilità è già stato svolto oppure non è previsto.
 
-            opt Lo studio di fattibilità è stato svolto e ci sono osservazioni dal Presentatore
-                P --) F: observations_to_preliminary_resolution
-                F ->> B: notify(cui, PreliminaryResolutionObservationMessage)
-                B -->> F: ack  
-                B ->> F: request_instance_document(cui, resource_id)
-                F ->> B: instanceDocument
-                F ->> C: audit(cui,preliminary_resolution_observations_forwarded)
-                C -->> F: ack
-            end
+        opt Lo studio di fattibilità è stato svolto e ci sono osservazioni dal Presentatore
+            P --) F: observations_to_preliminary_resolution
+            F ->> B: notify(cui, PreliminaryResolutionObservationMessage)
+            B -->> F: ack  
+            B ->> F: request_instance_document(cui, resource_id)
+            F ->> B: instanceDocument
+            F ->> C: audit(cui,preliminary_resolution_observations_forwarded)
+            C -->> F: ack
+        end
         
-        else CdSS da SUAP AND SUAP ente procedente
+        alt CdSS da SUAP AND SUAP ente procedente se c'è stato lo studio di fattibilità deve essere fatta la CDSS
             opt 
                 B ->> C: request_update_times(cui,times)
                 C -->> B: instanceDescriptor
@@ -327,6 +327,7 @@ sequenceDiagram
                         note over B, E: gestione della CDSS mediante sequence-diagram CdSS-mermaid
                     end            
                 end
+            end
         end
         Note over F, E: azione realizzata in ogni circostanza, anche in caso di CdSS
         
