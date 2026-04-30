@@ -104,6 +104,14 @@ sequenceDiagram
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument 
 
+    else chiusura per fine tempi procedimentali (dopo step: 80 SCIA-001)
+
+        B ->> RI: notify(cui, instance_descriptor_version,end_by_end_by_proceeding_time_expired, resource_id)
+        RI -->> B: ack
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument
+
     else chiusura istruttoria per sospensione (dopo step: 70 SCIA-001)
 
         B ->> RI: notify(cui, instance_descriptor_version,end_by_suspension_requested,resource_id)
