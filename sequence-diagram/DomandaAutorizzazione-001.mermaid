@@ -286,7 +286,7 @@ sequenceDiagram
                     end
                 else osservazioni non inviate entro i tempi previsti (10 giorni)
                     par per ogni ET interessato
-                        B ->> E: notify(cui, instance_descriptor_version,end_by_observations_times_expired)
+                        B ->> E: notify(cui, instance_descriptor_version,end_by_observations_time_expired)
                         E -->> B: ack
                     end
                     B ->> C: audit(cui, end_by_observations_request_time_expired)
@@ -375,7 +375,7 @@ sequenceDiagram
             end
         else osservazioni non inviate entro i tempi previsti (10 giorni)
             par per ogni ET interessato
-                B ->> E: notify(cui, instance_descriptor_version,end_by_observations_times_expired)
+                B ->> E: notify(cui, instance_descriptor_version,end_by_observations_time_expired)
                 E -->> B: ack
             end
             B ->> C: audit(cui, end_by_observations_request_time_expired)
