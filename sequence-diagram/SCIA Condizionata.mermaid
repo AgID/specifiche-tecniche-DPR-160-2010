@@ -161,7 +161,7 @@ sequenceDiagram
                     B ->> C: audit(cui,instance_integrated_retrived)
                     C -->> B: ack
                     B ->> C: update_attachments_and_times(cui,times,attachments,free_attachments)
-                    Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per l'integrazione e i giorni passati dall'invio della richiesta
+                    Note right of B: Reset dei tempi procedimentali
                     C -->> B: instanceDescriptor
                     par per ogni ente terzo interessato                
                         B ->> E: send_instance_updated_documents(SendUpdatedDocuments)
@@ -318,7 +318,7 @@ sequenceDiagram
                     B ->> C: audit(cui,instance_conformated_retrived)
                     C -->> B: ack
                     B ->> C: update_attachments_and_times(cui,times,attachments,free_attachments)
-                    Note right of B: Aggiorna i tempi procedimentali decrementandoli di X giorni, dove X è la differenza tra i giorni concessi per la conformazione e i giorni passati dall'invio della richiesta
+                    Note right of B: Reset dei tempi procedimentali
                     C -->> B: instanceDescriptor
                     par per ogni ente terzo interessato                
                         B ->> E: send_instance_updated_documents(SendUpdatedDocuments)
