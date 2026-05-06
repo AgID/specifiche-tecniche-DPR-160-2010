@@ -136,11 +136,11 @@ sequenceDiagram
                     end
                 end
                 Note right of ET1:ET₂ fine del tempo di integrazione da parte del presentatore
-                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, end_by_integration_request_time_expired)
+                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, end_by_integration_time_expired)
                 ET2-->>ET1: ack
                 opt 
                     loop per ogni ente nella chain
-                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_integration_request_time_expired)
+                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_integration_time_expired)
                         ETn -->> ET2: ack
                     end
                 end
@@ -189,11 +189,11 @@ sequenceDiagram
                     end
                 end
                 Note right of ET1:ET₂ fine del tempo di conformazione da parte del presentatore
-                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, end_by_conformation_request_time_expired)
+                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, end_by_conformation_time_expired)
                 ET2-->>ET1: ack
                 opt 
                     loop per ogni ente nella chain
-                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_conformation_request_time_expired)
+                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_conformation_time_expired)
                         ETn -->> ET2: ack
                     end
                 end
