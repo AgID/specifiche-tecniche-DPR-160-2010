@@ -236,7 +236,7 @@ paths:
                     application/json:
                         schema:
                             type: object
-                            required:	
+                            required:
                                 - cui
                                 - instance_descriptor_version
                                 - cdss_resolution
@@ -245,7 +245,7 @@ paths:
                                   $ref: "#/components/schemas/cui"
                               instance_descriptor_version:
                                   type: string
-                              cdss_resolution:  	
+                              cdss_resolution:
                                   $ref: "#/components/schemas/CdssResolution"
                               outcome:  
                                   type: string
