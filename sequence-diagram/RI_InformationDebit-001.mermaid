@@ -21,6 +21,9 @@ sequenceDiagram
         note right of RI: resource_id da instance_index
         B -->> RI: instanceDocument
     end
+
+    B ->> C: audit(cui, instance_to_ri_sended)
+    C -->> B: ack
     
 
     alt istanza corretta (dopo step 43 General-001)
@@ -37,7 +40,8 @@ sequenceDiagram
             B -->> RI: instanceDocument
         end
 
-
+        B ->> C: audit(cui, corrected_instance_to_ri_sended)
+        C -->> B: ack
 
     end
 
@@ -59,6 +63,13 @@ sequenceDiagram
             B -->> RI: instanceDocument
         end
 
+        alt Istanza conformata
+            B ->> C: audit(cui, instance_conformated_to_ri_sended)
+            C -->> B: ack
+        else Instanza integrata
+            B ->> C: audit(cui, instance_integrated_to_ri_sended)
+            C -->> B: ack
+        end
 
     end
 
@@ -76,6 +87,8 @@ sequenceDiagram
         RI ->> B:  request_instance_document(cui, resource_id)
         note right of RI: resource_id da notify
         B -->> RI: instanceDocument
+        B ->> C: audit(cui, observations_to_impediments_provided_to_RI)
+        C -->> B: ack
     end
 
     alt richiesta integrazione presentata e scaduti tempi integrazione (dopo step: 56 DomandaAutorizzazione-001 o 56 SCIA Condizionata)
