@@ -12,6 +12,8 @@ sequenceDiagram
 
     B ->> RI: send_instance(SendInstanceRequest)
     RI -->> B: ack
+    B ->> C: audit(cui, instance_to_RI_sended)
+    C -->> B: ack
     
     RI ->> C: request_instance_descriptor(cui)
 	C -->> RI: instanceDescriptor
@@ -22,14 +24,17 @@ sequenceDiagram
         B -->> RI: instanceDocument
     end
 
-    B ->> C: audit(cui, instance_to_ri_sended)
-    C -->> B: ack
+    RI ->> C: audit(cui, instance_retrieved)
+    C -->> RI: ack
     
 
     alt istanza corretta (dopo step 43 General-001)
 
         B ->> RI: send_instance(SendInstanceRequest)
         RI -->> B: ack
+
+        B ->> C: audit(cui, corrected_instance_to_RI_sended)
+        C -->> B: ack
     
         RI ->> C: request_instance_descriptor(cui)
         C -->> RI: instanceDescriptor
@@ -40,8 +45,8 @@ sequenceDiagram
             B -->> RI: instanceDocument
         end
 
-        B ->> C: audit(cui, corrected_instance_to_ri_sended)
-        C -->> B: ack
+        RI ->> C: audit(cui, corrected_instance_retrieved)
+        C -->> RI: ack
 
     end
 
@@ -49,10 +54,16 @@ sequenceDiagram
 
         alt:
             B ->> RI: send_conformation_documents(SendUpdatedDocuments)
+            RI -->> B: ack
+            B ->> C: audit(cui, instance_conformated_to_RI_sended)
+            C -->> B: ack
         else:
             B ->> RI: send_integration_documents(SendUpdatedDocuments)
+            RI -->> B: ack
+            B ->> C: audit(cui, instance_integrated_to_RI_sended)
+            C -->> B: ack
         end
-        RI -->> B: ack
+        
     
         RI ->> C: request_instance_descriptor(cui)
         C -->> RI: instanceDescriptor
@@ -64,11 +75,11 @@ sequenceDiagram
         end
 
         alt Istanza conformata
-            B ->> C: audit(cui, instance_conformated_to_ri_sended)
-            C -->> B: ack
+            RI ->> C: audit(cui, instance_conformated_retrieved)
+            C -->> RI: ack
         else Instanza integrata
-            B ->> C: audit(cui, instance_integrated_to_ri_sended)
-            C -->> B: ack
+            RI ->> C: audit(cui, instance_integrated_retrieved)
+            C -->> RI: ack
         end
 
     end
