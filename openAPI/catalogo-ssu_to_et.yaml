@@ -108,6 +108,35 @@ paths:
       security:
         - bearerAuth: []
           Agid-JWT-Signature: []
+  /add_interested_administration:
+    description: Aggiunge una lista di amministrazioni interessate
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addInterestedAdministrationRequest"
+        required: true
+      responses:
+        "200":
+          description: Singola amministrazione aggiunta con successo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InterestedAdministrationResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
 
 
 components:
@@ -194,6 +223,7 @@ components:
       headers:
         Agid-JWT-Signature:
           $ref: "#/components/headers/Agid-JWT-Signature"
+
 
   schemas:
     cui:
@@ -364,6 +394,7 @@ components:
           title: data evetuale conferenza di servizi sincrona
           type: string
           format: date
+
     AdministrationSchema:
       description: Amministrazione compentente censita nel Catalogo SSU
       type: object
@@ -833,6 +864,118 @@ components:
                 revoked_document:
                     title: indica se il documento è stato revocato
                     type: boolean                    
+    addInterestedAdministrationRequest:
+      description: Richiesta per aggiungere un'amministrazione/ente interessato a un usecase
+      type: object
+      required:
+        - cui
+        - usecase
+        - interested_administration
+      properties:
+        cui:
+           $ref: "#/components/schemas/cui"
+        interested_administration:
+          description: Dettagli dell'amministrazione
+          oneOf:
+            - description: Amministrazione pubblica (ente con codice IPA)
+              type: object
+              properties:
+                ipacode:
+                  title: Codice IPA dell'amministrazione
+                  type: string
+                  example: "0123456789"
+                officecode:
+                  title: Codice ufficio/AOO dell'amministrazione
+                  type: string
+                  example: "ABCDE"
+                description:
+                  title: Descrizione dell'amministrazione
+                  type: string
+                  example: "Ministero dell'Innovazione"
+              required:
+                - ipacode
+                - officecode
+                - description
+            - description: Ente non censito su IPA
+              type: object
+              properties:
+                fiscal_code:
+                  title: Codice fiscale dell'ente 
+                  type: string
+                  example: "ABCDE"
+                pec:
+                  title: Indirizzo PEC dell'ente 
+                  type: string
+                  format: email
+                  example: "ente@pec.it"
+                description:
+                  title: Descrizione dell'ente
+                  type: string
+                  example: "Azienda XYZ"
+              required:
+                - fiscal_code
+                - pec
+                - description
+    InterestedAdministrationResponse:
+      type: object
+      description: Contenitore della risposta per una singola amministrazione
+      oneOf:
+        - properties:
+            administration_ipa:
+              $ref: "#/components/schemas/InterestedAdministrationSingleSchema"
+          required:
+            - administration_ipa
+        - properties:
+            administration_noipa:
+              $ref: "#/components/schemas/InterestedAdministrationCFSingleSchema"
+          required:
+            - administration_noipa
+
+    # --- SCHEMI SINGOLI (Modificati da array a object) ---
+    InterestedAdministrationSingleSchema:
+      type: object
+      description: Amministrazione censita nel Catalogo SSU (Singola)
+      required:
+        - description
+        - ipacode
+        - officecode
+        - id
+      properties:
+        ipacode:
+          title: codice IPA dell'amministrazione
+          type: string
+        officecode:
+          title: codice dell'ufficio dell'amministrazione
+          type: string
+        version:
+          title: versione dell'ufficio
+          type: string
+          pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+        description:
+          title: descrizione dell'amministrazione
+          type: string
+        id:
+          title: identificativo dell'amministrazione
+          type: string
+
+    InterestedAdministrationCFSingleSchema:
+      type: object
+      description: Amministrazione non censita su IPA (Singola)
+      required:
+        - fiscal_code
+        - description
+        - id
+      properties:
+        fiscal_code:
+          title: codice fiscale dell'amministrazione
+          type: string
+        description:
+          title: descrizione dell'amministrazione
+          type: string
+        id:
+          title: identificativo dell'amministrazione
+          type: string
+
   headers:
     Agid-JWT-Signature:
       schema:
