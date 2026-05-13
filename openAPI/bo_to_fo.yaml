@@ -903,7 +903,6 @@ components:
                 - cui
                 - instance_descriptor_version
                 - updated_documents
-                - receiver_administration
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
@@ -911,10 +910,7 @@ components:
                     type: string
                 updated_documents:
                     $ref: "#/components/schemas/InstanceIndex"
-                    description: 
-                receiver_administration:
-                    title: amministrazione destinataria delle istanze
-                    $ref: "#/components/schemas/AdministrationSchema"
+                    description:
         
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
