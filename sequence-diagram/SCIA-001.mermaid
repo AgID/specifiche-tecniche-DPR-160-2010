@@ -105,6 +105,13 @@ sequenceDiagram
 
             B ->> F: notify(cui, instance_descriptor_version, end_by_conformation_time_expired)
             F -) P: notification(cui, end_by_conformation_time_expired)
+
+            par per ogni ente terzo interessato
+                B ->> E: notify(cui, instance_descriptor_version, end_by_conformation_time_expired)
+                E -->> B: ack
+            end
+            B ->> C: audit(cui, end_by_conformation_time_expired)
+            C -->> B: ack
         else entro il tempo di conformazione del presentatore 
             P --) F: instanceConformated
             F ->> B: send_instance_updated_documents(SendUpdatedDocuments)

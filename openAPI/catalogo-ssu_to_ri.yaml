@@ -486,10 +486,10 @@ components:
                     - corrected 
                     - refused
                     - integration_requested
-                    - ended_by_integration_times_expired
+                    - ended_by_integration_time_expired
                     - integrated
                     - conformation_requested
-                    - ended_by_conformation_times_expired
+                    - ended_by_conformation_time_expired
                     - conformated
                     - cdss_convened
                     - instance_transferred

@@ -149,13 +149,14 @@ sequenceDiagram
                         note right of B: recupero documento di richiesta integrazione
                         E -->> B: instanceDocument    
                     end
-                    alt Richiesti allegati non presenti nell'instance descriptor
+                    opt Richiesti allegati non presenti nell'instance descriptor
                         E ->> C: audit(cui, integration_requested_with_new_document_to_<Usecase_Proceding_Code>_from_<ET>)
                         C -->> E: ack
-                    else
+                    end
+                    opt Richiesta integrazione per allegati già presenti nell'instance descriptor
                         E ->> C: audit(cui,integration_requested_from_<ET>)
                         C -->> E: ack
-                    end           
+                    end
                 end
                 alt concluso il tempo di richiesta integrazione 
                     par per ogni ente terzo
@@ -200,7 +201,7 @@ sequenceDiagram
                     B ->> C: audit(cui, integration_response_time_expired)
                     C -->> B: ack
 
-                    opt invio provvedimento finale per mancata conformazione
+                    opt invio provvedimento finale per mancata integrazione
                         E ->> B: send_conclusions(NegativeOutcome)
                         B -->> E: ack 
                         E ->> C: audit(cui,negative_outcome_sended_from_<ET>)
@@ -214,6 +215,13 @@ sequenceDiagram
 
                     B ->> F: notify(cui, instance_descriptor_version, end_by_integration_time_expired)
                     F -) P: notification(cui, end_by_integration_time_expired)
+
+                    par per ogni ente terzo interessato
+                        B ->> E: notify(cui, instance_descriptor_version, end_by_integration_time_expired)
+                        E -->> B: ack
+                    end
+                    B ->> C: audit(cui, end_by_integration_time_expired)
+                    C -->> B: ack
                 else entro il tempo di integrazione del presentatore 
                     P --) F: instanceIntegrated
                     F ->> B: send_instance_updated_documents(SendUpdatedDocuments)
@@ -286,7 +294,7 @@ sequenceDiagram
                     end
                 else osservazioni non inviate entro i tempi previsti (10 giorni)
                     par per ogni ET interessato
-                        B ->> E: notify(cui, instance_descriptor_version,end_by_observations_times_expired)
+                        B ->> E: notify(cui, instance_descriptor_version,end_by_observations_time_expired)
                         E -->> B: ack
                     end
                     B ->> C: audit(cui, end_by_observations_request_time_expired)
@@ -375,7 +383,7 @@ sequenceDiagram
             end
         else osservazioni non inviate entro i tempi previsti (10 giorni)
             par per ogni ET interessato
-                B ->> E: notify(cui, instance_descriptor_version,end_by_observations_times_expired)
+                B ->> E: notify(cui, instance_descriptor_version,end_by_observations_time_expired)
                 E -->> B: ack
             end
             B ->> C: audit(cui, end_by_observations_request_time_expired)
