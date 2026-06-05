@@ -969,7 +969,7 @@ components:
                 event:
                     type: string
                     pattern: >-
-                        ^cdss_convened|involved_et_[0-9]{1,10}$
+                        ^cdss_convened_from_[0-9]{1,10}|involved_et_[0-9]{1,10}$
         
         CdssNotifyMessage:
             allOf:
@@ -978,6 +978,8 @@ components:
                 required:
                     - cdss_channel
                     - cdss_convocation
+                    - usec_code
+                    - usec_version
                 properties:
                     cdss_channel:
                         type: string
@@ -988,6 +990,12 @@ components:
                         type: string
                         format: date
                         minLength: 1
+                    usec_code:
+                        title: Codice della fattispecie
+                        type: string
+                    usec_version:
+                        title: Versione della fattispecie
+                        type: string
                     document:
                         $ref: "#/components/schemas/Document"
         
