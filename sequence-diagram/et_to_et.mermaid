@@ -124,27 +124,27 @@ sequenceDiagram
                         ETn -->> ET2: ack
                     end
                 end
-            else Timeout integrazione
-                SUAP->>ET1: notify(integration_request_time_expired)
-                ET1 -->> SUAP: ack
-                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, integration_request_time_expired)
+            else fine del tempo di integrazione da parte del presentatore
+                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, end_by_integration_time_expired)
                 ET2-->>ET1: ack
                 opt 
                     loop per ogni ente nella chain
-                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, integration_request_time_expired)
-                        ETn -->> ET2: ack
-                    end
-                end
-                Note right of ET1:ET₂ fine del tempo di integrazione da parte del presentatore
-                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, end_by_integration_request_time_expired)
-                ET2-->>ET1: ack
-                opt 
-                    loop per ogni ente nella chain
-                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_integration_request_time_expired)
+                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_integration_time_expired)
                         ETn -->> ET2: ack
                     end
                 end
                 Note right of SUAP: SUAP chiude la pratica con esito negativo
+            end
+         else Fine tempo di richiesta integrazione degli Enti terzi
+            SUAP->>ET1: notify(integration_request_time_expired)
+            ET1 -->> SUAP: ack
+            ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, integration_request_time_expired)
+            ET2-->>ET1: ack
+            opt 
+                loop per ogni ente nella chain
+                    ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, integration_request_time_expired)
+                    ETn -->> ET2: ack
+                end
             end
         end
         Note right of SUAP: Invio esito  
@@ -177,27 +177,27 @@ sequenceDiagram
                     end
                 end
 
-            else Timeout conformazione
-                SUAP->>ET1: notify(conformation_request_time_expired)
-                ET1 -->> SUAP: ack
-                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, conformation_request_time_expired)
+            else fine del tempo di conformazione da parte del presentatore
+                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, end_by_conformation_time_expired)
                 ET2-->>ET1: ack
                 opt 
                     loop per ogni ente nella chain
-                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, conformation_request_time_expired)
-                        ETn -->> ET2: ack
-                    end
-                end
-                Note right of ET1:ET₂ fine del tempo di conformazione da parte del presentatore
-                ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, end_by_conformation_request_time_expired)
-                ET2-->>ET1: ack
-                opt 
-                    loop per ogni ente nella chain
-                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_conformation_request_time_expired)
+                        ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, end_by_conformation_time_expired)
                         ETn -->> ET2: ack
                     end
                 end
                 Note right of SUAP: SUAP chiude la pratica con esito negativo
+            end
+        else fine tempo di richiesta conformazione degli Enti Terzi
+            SUAP->>ET1: notify(conformation_request_time_expired)
+            ET1 -->> SUAP: ack
+            ET1->>ET2: notify(chain_id=CH-123, depth=1, cui, parent_et=ET1, conformation_request_time_expired)
+            ET2-->>ET1: ack
+            opt 
+                loop per ogni ente nella chain
+                    ET2->>ETn: notify(chain_id=CH-123, depth=2, cui, parent_et=ET2, conformation_request_time_expired)
+                    ETn -->> ET2: ack
+                end
             end
         end    
         Note right of SUAP: Invio esito  
@@ -222,6 +222,13 @@ sequenceDiagram
                         ETn -->> ET2: ack
                     end
                 end 
-                Note right of SUAP: SUAP chiude la pratica per silenzio-assenso           
+                Note right of SUAP: SUAP chiude la pratica per silenzio-assenso 
+            else ET invia esito positivo esplicito
+                ET2 ->>ET1: send_conclusions(chain_id=CH-123, depth=2, cui, parent_et=ET1)
+                Note left of ET1: ET₁ collega l'esito al caso padre grazie a cui e parent_et
+                ET1 -->> ET2: ack
+                %% --- CHIUSURA ITER ---
+                ET1->>SUAP: send_conclusions(PositiveOutcome)
+                Note right of SUAP: SUAP riceve l'esito e chiude la pratica
             end
 end

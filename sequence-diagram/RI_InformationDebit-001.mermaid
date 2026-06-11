@@ -12,6 +12,8 @@ sequenceDiagram
 
     B ->> RI: send_instance(SendInstanceRequest)
     RI -->> B: ack
+    B ->> C: audit(cui, instance_to_RI_sended)
+    C -->> B: ack
     
     RI ->> C: request_instance_descriptor(cui)
 	C -->> RI: instanceDescriptor
@@ -21,12 +23,18 @@ sequenceDiagram
         note right of RI: resource_id da instance_index
         B -->> RI: instanceDocument
     end
+
+    RI ->> C: audit(cui, instance_retrieved)
+    C -->> RI: ack
     
 
     alt istanza corretta (dopo step 43 General-001)
 
         B ->> RI: send_instance(SendInstanceRequest)
         RI -->> B: ack
+
+        B ->> C: audit(cui, corrected_instance_to_RI_sended)
+        C -->> B: ack
     
         RI ->> C: request_instance_descriptor(cui)
         C -->> RI: instanceDescriptor
@@ -37,7 +45,8 @@ sequenceDiagram
             B -->> RI: instanceDocument
         end
 
-
+        RI ->> C: audit(cui, corrected_instance_retrieved)
+        C -->> RI: ack
 
     end
 
@@ -45,10 +54,16 @@ sequenceDiagram
 
         alt:
             B ->> RI: send_conformation_documents(SendUpdatedDocuments)
+            RI -->> B: ack
+            B ->> C: audit(cui, instance_conformated_to_RI_sended)
+            C -->> B: ack
         else:
             B ->> RI: send_integration_documents(SendUpdatedDocuments)
+            RI -->> B: ack
+            B ->> C: audit(cui, instance_integrated_to_RI_sended)
+            C -->> B: ack
         end
-        RI -->> B: ack
+        
     
         RI ->> C: request_instance_descriptor(cui)
         C -->> RI: instanceDescriptor
@@ -59,6 +74,13 @@ sequenceDiagram
             B -->> RI: instanceDocument
         end
 
+        alt Istanza conformata
+            RI ->> C: audit(cui, instance_conformated_retrieved)
+            C -->> RI: ack
+        else Instanza integrata
+            RI ->> C: audit(cui, instance_integrated_retrieved)
+            C -->> RI: ack
+        end
 
     end
 
@@ -76,16 +98,18 @@ sequenceDiagram
         RI ->> B:  request_instance_document(cui, resource_id)
         note right of RI: resource_id da notify
         B -->> RI: instanceDocument
+        B ->> C: audit(cui, observations_to_impediments_provided_to_RI)
+        C -->> B: ack
     end
 
     alt richiesta integrazione presentata e scaduti tempi integrazione (dopo step: 56 DomandaAutorizzazione-001 o 56 SCIA Condizionata)
 
-        B ->> RI: notify(cui, instance_descriptor_version, end_by_integration_times_expired)
+        B ->> RI: notify(cui, instance_descriptor_version, end_by_integration_time_expired)
         RI -->> B: ack
 
     else richiesta di conformazione presentata e scaduti i tempi di conformazione (dopo step: 36 SCIA-001 o 134 SCIA Condizionata)
     
-        B ->> RI: notify(cui, instance_descriptor_version, end_by_conformation_times_expired)
+        B ->> RI: notify(cui, instance_descriptor_version, end_by_conformation_time_expired)
         RI -->> B: ack
 
     else chiusura istruttoria con esito positivo (dopo step: 133 DomandaAutorizzazione-001 o 197 SCIA Condizionata)
@@ -104,11 +128,30 @@ sequenceDiagram
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument 
 
+    else chiusura per fine tempi procedimentali (dopo step: 80 SCIA-001)
+
+        B ->> RI: notify(cui, instance_descriptor_version,end_by_end_by_proceeding_time_expired, resource_id)
+        RI -->> B: ack
+
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument
+
     else chiusura istruttoria per sospensione (dopo step: 70 SCIA-001)
 
         B ->> RI: notify(cui, instance_descriptor_version,end_by_suspension_requested,resource_id)
         RI -->> B: ack
 
+        RI ->> B: request_instance_document(cui, resource_id)
+        B -->> RI: instanceDocument 
+
+    else chiusura istruttoria cds preliminare Studio di fattibilità(dopo step: 35 DomandaAutorizzazione)
+        alt risoluzione positiva cds
+            B ->> RI: notify(cui, instance_descriptor_version, positive_cds_preliminary_resolution, resource_id)
+            RI -->> B: ack
+        else risoluzione negativa cds
+            B ->> RI: notify(cui, instance_descriptor_version, negative_cds_preliminary_resolution, resource_id)
+            RI -->> B: ack
+        end
         RI ->> B: request_instance_document(cui, resource_id)
         B -->> RI: instanceDocument 
 

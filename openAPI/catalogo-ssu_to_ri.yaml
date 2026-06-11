@@ -252,7 +252,7 @@ components:
                 message:
                     type: string
                     pattern: >-
-                        ^receipt_sended|instance_to_[0-9]{1,10}_sended$
+                        ^receipt_sended|instance_to_[0-9]{1,10}_sended|instance_retrieved|corrected_instance_retrieved|instance_conformated_retrieved|instance_integrated_retrieved$
 
                 event_time:
                     title: timestamp del momento in cui si è verificato l'evento
@@ -456,6 +456,10 @@ components:
             
             cui:          
               "$ref": "#/components/schemas/cui"
+
+            related_uuid:
+              title: UUID chiave del CUI del procedimento dipendente relativo allo studio di fattibilità
+              type: string
             
             municipality:          
               title: codice istat 6 cifre del comune in cui l'istanza è stata presentata
