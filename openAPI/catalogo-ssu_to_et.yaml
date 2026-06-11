@@ -457,6 +457,10 @@ components:
         
         cui:          
           "$ref": "#/components/schemas/cui"
+
+        related_uuid:
+          title: UUID chiave del CUI del procedimento dipendente relativo allo studio di fattibilità
+          type: string
         
         municipality:          
           title: codice istat 6 cifre del comune in cui l'istanza è stata presentata
