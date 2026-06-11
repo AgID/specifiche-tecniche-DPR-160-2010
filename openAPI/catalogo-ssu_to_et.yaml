@@ -278,7 +278,7 @@ components:
       type: object
       description: risposta AdministrationGhost
       required:
-        - type
+        - cui_uuid
       properties:
         cui_uuid:
           title: tipo messaggio
