@@ -1027,6 +1027,8 @@ components:
                         - end_by_positive_outcome
                         - end_by_negative_outcome
                         - end_by_integration_time_expired
+                        - positive_cds_preliminary_resolution
+                        - negative_cds_preliminary_resolution
                 c_fiscale_impresa:
                     description: Codice fiscale dell'impresa
                     type: string
