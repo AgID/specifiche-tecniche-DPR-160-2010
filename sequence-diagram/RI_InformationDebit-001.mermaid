@@ -80,12 +80,12 @@ sequenceDiagram
 
     alt richiesta integrazione presentata e scaduti tempi integrazione (dopo step: 56 DomandaAutorizzazione-001 o 56 SCIA Condizionata)
 
-        B ->> RI: notify(cui, instance_descriptor_version, end_by_integration_times_expired)
+        B ->> RI: notify(cui, instance_descriptor_version, end_by_integration_time_expired)
         RI -->> B: ack
 
     else richiesta di conformazione presentata e scaduti i tempi di conformazione (dopo step: 36 SCIA-001 o 134 SCIA Condizionata)
     
-        B ->> RI: notify(cui, instance_descriptor_version, end_by_conformation_times_expired)
+        B ->> RI: notify(cui, instance_descriptor_version, end_by_conformation_time_expired)
         RI -->> B: ack
 
     else chiusura istruttoria con esito positivo (dopo step: 133 DomandaAutorizzazione-001 o 197 SCIA Condizionata)
