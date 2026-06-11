@@ -12,6 +12,8 @@ sequenceDiagram
 
     B ->> RI: send_instance(SendInstanceRequest)
     RI -->> B: ack
+    B ->> C: audit(cui, instance_to_RI_sended)
+    C -->> B: ack
     
     RI ->> C: request_instance_descriptor(cui)
 	C -->> RI: instanceDescriptor
@@ -21,12 +23,18 @@ sequenceDiagram
         note right of RI: resource_id da instance_index
         B -->> RI: instanceDocument
     end
+
+    RI ->> C: audit(cui, instance_retrieved)
+    C -->> RI: ack
     
 
     alt istanza corretta (dopo step 43 General-001)
 
         B ->> RI: send_instance(SendInstanceRequest)
         RI -->> B: ack
+
+        B ->> C: audit(cui, corrected_instance_to_RI_sended)
+        C -->> B: ack
     
         RI ->> C: request_instance_descriptor(cui)
         C -->> RI: instanceDescriptor
@@ -37,7 +45,8 @@ sequenceDiagram
             B -->> RI: instanceDocument
         end
 
-
+        RI ->> C: audit(cui, corrected_instance_retrieved)
+        C -->> RI: ack
 
     end
 
@@ -45,10 +54,16 @@ sequenceDiagram
 
         alt:
             B ->> RI: send_conformation_documents(SendUpdatedDocuments)
+            RI -->> B: ack
+            B ->> C: audit(cui, instance_conformated_to_RI_sended)
+            C -->> B: ack
         else:
             B ->> RI: send_integration_documents(SendUpdatedDocuments)
+            RI -->> B: ack
+            B ->> C: audit(cui, instance_integrated_to_RI_sended)
+            C -->> B: ack
         end
-        RI -->> B: ack
+        
     
         RI ->> C: request_instance_descriptor(cui)
         C -->> RI: instanceDescriptor
@@ -59,6 +74,13 @@ sequenceDiagram
             B -->> RI: instanceDocument
         end
 
+        alt Istanza conformata
+            RI ->> C: audit(cui, instance_conformated_retrieved)
+            C -->> RI: ack
+        else Instanza integrata
+            RI ->> C: audit(cui, instance_integrated_retrieved)
+            C -->> RI: ack
+        end
 
     end
 
@@ -76,6 +98,8 @@ sequenceDiagram
         RI ->> B:  request_instance_document(cui, resource_id)
         note right of RI: resource_id da notify
         B -->> RI: instanceDocument
+        B ->> C: audit(cui, observations_to_impediments_provided_to_RI)
+        C -->> B: ack
     end
 
     alt richiesta integrazione presentata e scaduti tempi integrazione (dopo step: 56 DomandaAutorizzazione-001 o 56 SCIA Condizionata)
