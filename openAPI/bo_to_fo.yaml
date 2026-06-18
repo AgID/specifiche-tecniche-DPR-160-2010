@@ -945,9 +945,16 @@ components:
             type: object
             required:
                 - cui
+                - failure_reason
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
+                failure_reason:
+                    description: motivazioni specifiche del fallimento tecnico o di business
+                    type: string
+                    enum:
+                        - cu_fail_link
+                        - cu_fail_check
 
         Document:
             type: object
