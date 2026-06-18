@@ -472,7 +472,7 @@ components:
     # --- Request specifiche ---
     SendInstanceRequest:
       type: object
-      required: [ cui, instance_descriptor_version, instance_index, general_index, chain ]
+      required: [ cui, instance_descriptor_version, instance_index, general_index, chain, usecase_proceeding ]
       properties:
         cui: { $ref: "#/components/schemas/cui" }
         instance_descriptor_version: { type: string }
@@ -481,6 +481,10 @@ components:
         receiver_administration: { $ref: "#/components/schemas/AdministrationSchema" }
         purpose: {  type: string, enum: [Cdss, Istruttoria] }
         chain: { $ref: "#/components/schemas/ChainContext" }
+        usecase_proceeding:
+          title: codice della fattispecie presente nel Catalogo
+          type: string
+          minLength: 1
 
     IntegrationRequest:
       type: object
