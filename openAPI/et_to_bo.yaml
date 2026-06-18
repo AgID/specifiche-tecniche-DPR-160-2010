@@ -1055,7 +1055,8 @@ components:
             type: object
             required:
               - event
-              - requester_administration
+              - receiver_administration
+              - usecase_proceeding
             allOf:
               - $ref: "#/components/schemas/TransferMessage"
             properties:
@@ -1063,9 +1064,17 @@ components:
                 type: string
                 enum:
                   - generic_communication
-              requester_administration:
-                title: amministrazione richiedente
+              receiver_administration:
+                title: amministrazione ricevente
                 $ref: "#/components/schemas/AdministrationSchema"
+              usecase_proceeding:
+                  title: codice della fattispecie presente nel Catalogo
+                  type: string
+                  minLength: 1
+              notes:
+                  title: eventuali note aggiuntive alla comunicazione
+                  type: string
+                  minLength: 1
     
         CdsNotifyMessage:
             allOf:
