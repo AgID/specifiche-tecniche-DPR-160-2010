@@ -91,6 +91,7 @@ properties:
              - AUTORIZZAZIONE
              - PROVVEDIMENTO-CONDIZIONATO
              - SCIA-CONDIZIONATA
+             - CERS
       version:
         "$id": "#root/workflow/version"
         title: version del workflow del regime amministrativo
