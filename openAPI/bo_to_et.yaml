@@ -395,7 +395,6 @@ paths:
                 required:
                   - cui
                   - requester_administration
-                  - usecase_proceeding
                   - document
                 properties:
                   cui:
