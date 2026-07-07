@@ -338,6 +338,9 @@ components:
           uuid:
               title: UUID chiave del CUI
               type: string
+          version:
+              title: versione specifiche
+              type: string
     Times:
       description: tempi amministrativi dell'istanza
       type: object
