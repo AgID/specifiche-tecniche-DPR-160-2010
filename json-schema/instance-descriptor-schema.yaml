@@ -14,7 +14,7 @@ properties:
   version:
     "$id": "#root/version"
     title: numero versione del descrittore
-    type: integer
+    type: string
   cui:
     "$id": "#root/cui"
     "$ref": https://raw.githubusercontent.com/AgID/specifiche-tecniche-DPR-160-2010/refs/heads/approved02/json-schema/cui-schema.yaml
