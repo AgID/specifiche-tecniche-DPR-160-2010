@@ -762,6 +762,73 @@ paths:
       tags:
         - Proceedings
 
+  /usecase-proceedings/{usecase_proceedings_id}/{usecase_proceedings_version}/adminstrative-regime:
+    get:
+      description: |
+        Recupero del dettaglio della fattispecie completo di tempi e regime amministrativo associati in un determinato contesto
+
+      parameters:
+        - in: path
+          name: usecase_proceedings_id
+          description: id della fattispecie
+          required: true
+          schema:
+            type: string
+        - name: usecase_proceedings_version
+          in: path
+          description: versione della fattispecie
+          required: true
+          schema:
+            type: string
+            pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+        - in: query
+          name: context
+          description: contesto di riferimento. I valori ammissibili sono reperibili invocando il path /context
+          required: true
+          schema:
+            type: string
+            default: "SUAP"
+
+      responses:
+        "200":
+          description: Dettaglio della fattispecie completo dei tempi e del regime amministrativo
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - usecase-proceeding
+                  - adminstrative-regime
+                properties:
+                  usecase-proceeding:
+                    $ref: "#/components/schemas/UseCaseProceeding"
+                  adminstrative-regime:
+                    $ref: "#/components/schemas/AdministrativeRegime"
+                  times:
+                    $ref: "#/components/schemas/Times"
+
+          headers:
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+      security:
+        - bearerAuth: []
+          Agid-JWT-Signature: []
+
+      tags:
+        - UseCases
+
   /usecase-proceedings/{usecase_proceedings_id}/{usecase_proceedings_version}/usecase-proceedings:
     get:
       description: |
