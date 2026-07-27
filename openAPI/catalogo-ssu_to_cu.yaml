@@ -132,6 +132,10 @@ components:
                     title: UUID chiave del CUI
                     type: string
 
+                version:
+                    title: versione specifiche
+                    type: string
+
         Error:
             type: object
             description: codice e descrizione condizione di errore

@@ -34,3 +34,7 @@ properties:
     "$id": "#root/cui/uuid"
     title: UUID chiave del CUI
     type: string
+
+  version:
+    title: versione specifiche
+    type: string
