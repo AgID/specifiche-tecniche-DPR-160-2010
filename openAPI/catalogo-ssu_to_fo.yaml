@@ -519,6 +519,7 @@ components:
                - AUTORIZZAZIONE
                - PROVVEDIMENTO-CONDIZIONATO
                - SCIA-CONDIZIONATA
+               - CERS
                
             version:              
               title: version del workflow del regime amministrativo
