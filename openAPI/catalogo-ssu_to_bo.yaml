@@ -918,7 +918,7 @@ components:
       properties:
         version:          
           title: numero versione del descrittore
-          type: integer
+          type: string
         
         cui:          
           "$ref": "#/components/schemas/cui"
