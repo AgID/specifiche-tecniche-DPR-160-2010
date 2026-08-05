@@ -238,6 +238,7 @@ paths:
                                 - $ref: "#/components/schemas/NotifyMessage"
                                 - $ref: "#/components/schemas/PreliminaryResolutionMessage"
                                 - $ref: "#/components/schemas/TransferNotifyMessage"
+                                - $ref: "#/components/schemas/UpdateInstanceDescriptorNotification"
                 required: true
             responses:
                 "200":
@@ -741,6 +742,24 @@ components:
                 - $ref: "#/components/schemas/ConditionalProvisionDenied"
                 - $ref: "#/components/schemas/GenericCommunication"
 
+        UpdateInstanceDescriptorNotification:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    enum:
+                        - InstanceDescriptorUpdated
+                updateReason:
+                    title: Inserire la motivazione dell'aggiornamento dell'Instance Descriptor
+                    type: string
 
         BaseTransferMessage:
             type: object
