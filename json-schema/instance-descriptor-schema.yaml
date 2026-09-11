@@ -95,11 +95,6 @@ properties:
              - PROVVEDIMENTO-CONDIZIONATO
              - SCIA-CONDIZIONATA
              - CERS
-             - WF-SEMPLIFICATO-SCIA
-             - WF-SEMPLIFICATO-AUTORIZZAZIONE
-             - WF-SEMPLIFICATO-SCIA-CONDIZIONATA
-             - WF-SEMPLIFICATO-PROVVEDIMENTO-CONDIZIONATO
-             - WF-SEMPLIFICATO-CERS
       version:
         "$id": "#root/workflow/version"
         title: version del workflow del regime amministrativo
