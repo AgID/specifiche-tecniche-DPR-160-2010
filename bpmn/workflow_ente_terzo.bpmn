@@ -1,0 +1,807 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_EnteTerzo_v7_allineato_DI" targetNamespace="http://example.com/ente-terzo/v7-di" exporter="Camunda Modeler" exporterVersion="5.38.1">
+  <bpmn:collaboration id="Collab_EnteTerzo">
+    <bpmn:participant id="P_Main" name="Workflow BO Suap (estratto)" processRef="Proc_Main_Blackbox" />
+    <bpmn:participant id="P_Ente" name="Ente terzo" processRef="Proc_EnteTerzo" />
+    <bpmn:messageFlow id="MF1" name="ricezione pratica" sourceRef="M_Throw_1" targetRef="E_Start_RicezionePratica" />
+    <bpmn:messageFlow id="MF2" name="chiusura pratica" sourceRef="M_Throw_2" targetRef="E_ES_Chiusura_Start" />
+    <bpmn:messageFlow id="MF3" name="stop richieste" sourceRef="M_Throw_3" targetRef="E_ES_Stop_Start" />
+    <bpmn:messageFlow id="MF4" name="richieste integrazione" sourceRef="E_Throw_RichiestaIntegrazione" targetRef="M_Catch_4" />
+    <bpmn:messageFlow id="MF5" name="timeout integrazione" sourceRef="M_Throw_5" targetRef="E_Catch_TimeoutIntegrazione" />
+    <bpmn:messageFlow id="MF6" name="ricezione integrazione" sourceRef="M_Throw_6" targetRef="E_Catch_RicezioneIntegrazione" />
+    <bpmn:messageFlow id="MF7" name="invio motivi ostativi" sourceRef="E_Throw_MotiviOstativi" targetRef="M_Catch_7" />
+    <bpmn:messageFlow id="MF8" name="timeout osservazioni" sourceRef="M_Throw_8" targetRef="E_Catch_TimeoutOsservazioni" />
+    <bpmn:messageFlow id="MF9" name="ricezione osservazioni" sourceRef="M_Throw_9" targetRef="E_Catch_RicezioneOsservazioni" />
+    <bpmn:messageFlow id="MF10" name="invio parere" sourceRef="E_Throw_Parere" targetRef="M_Catch_10" />
+    <bpmn:messageFlow id="MF11" name="ricezione conclusione" sourceRef="M_Throw_11" targetRef="E_Catch_RicezioneConclusione" />
+    <bpmn:textAnnotation id="TextAnnotation_1loo5gw">
+      <bpmn:text>Può richiedere integrazioni al SUAP o all'Ente Terzo che lo ha coinvolto</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0mx8lb7">
+      <bpmn:text>In caso di attivazione dell'Ente Terzo ricorsivo, l'Ente Terzo coinvolto utilizza il lane dell'Ente Terzo e interagisce con l'Ente Terzo che lo ha attivato attraverso uno scambio di messaggi analogo a quello previsto tra SUAP ed Ente Terzo.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0im95er">
+      <bpmn:text>Invia l'esito al SUAP o all'Ente Terzo che lo ha coinvolto</bpmn:text>
+    </bpmn:textAnnotation>
+  </bpmn:collaboration>
+  <bpmn:process id="Proc_Main_Blackbox" isExecutable="false">
+    <bpmn:intermediateThrowEvent id="M_Throw_1" name="→ ricezione pratica">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="M_Throw_5" name="→ timeout integrazione">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="M_Throw_6" name="→ ricezione integrazione">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="M_Throw_11" name="→ ricezione conclusione">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="M_Catch_10" name="← invio parere">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="M_Throw_9" name="→ ricezione osservazioni">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="M_Throw_8" name="→ timeout osservazioni">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="M_Catch_7" name="← invio motivi ostativi">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="M_Catch_4" name="← richieste integrazione">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="M_Throw_2" name="→ chiusura pratica (da timeout procedimento)">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="M_Throw_3" name="→ stop richieste">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateThrowEvent>
+  </bpmn:process>
+  <bpmn:process id="Proc_EnteTerzo" isExecutable="true">
+    <bpmn:exclusiveGateway id="E_GW_Tipo" name="Tipo? Parere/Provvedimento">
+      <bpmn:incoming>E_F2</bpmn:incoming>
+      <bpmn:outgoing>E_to_Parere_UP</bpmn:outgoing>
+      <bpmn:outgoing>E_to_Provv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="E_Task_PresaInCarico" name="Presa in carico">
+      <bpmn:incoming>E_F1</bpmn:incoming>
+      <bpmn:outgoing>E_F2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="E_Start_RicezionePratica" name="ricezione pratica">
+      <bpmn:outgoing>E_F1</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:startEvent>
+    <bpmn:eventBasedGateway id="E_GW_AttesaInteg" name="Attesa integrazione">
+      <bpmn:incoming>E_to_AttesaInteg</bpmn:incoming>
+      <bpmn:outgoing>E_to_CatchInteg</bpmn:outgoing>
+      <bpmn:outgoing>E_to_TimeoutInteg</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="E_Catch_TimeoutIntegrazione" name="timeout integrazione">
+      <bpmn:incoming>E_to_TimeoutInteg</bpmn:incoming>
+      <bpmn:outgoing>E_to_Merge_AfterInteg</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="E_GW_Merge_AfterInteg">
+      <bpmn:incoming>E_to_Merge_AfterInteg</bpmn:incoming>
+      <bpmn:outgoing>E_to_Smista_PostInteg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateCatchEvent id="E_Catch_RicezioneIntegrazione" name="ricezione integrazione">
+      <bpmn:incoming>E_to_CatchInteg</bpmn:incoming>
+      <bpmn:outgoing>E_to_Merge_AfterInteg</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="E_GW_Smista_PostInteg">
+      <bpmn:incoming>E_to_Smista_PostInteg</bpmn:incoming>
+      <bpmn:incoming>Flow_1701mvf</bpmn:incoming>
+      <bpmn:outgoing>E_to_Valuta_Parere</bpmn:outgoing>
+      <bpmn:outgoing>E_to_Valuta_Provv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="E_End">
+      <bpmn:incoming>E_End_Flow</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="E_Catch_RicezioneConclusione" name="ricezione conclusione">
+      <bpmn:incoming>E_to_Attesa_Conclusione</bpmn:incoming>
+      <bpmn:outgoing>E_End_Flow</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="E_Throw_Parere" name="invio esito">
+      <bpmn:incoming>E_to_Parere_Send</bpmn:incoming>
+      <bpmn:incoming>E_to_Attesa_Conclusione_b</bpmn:incoming>
+      <bpmn:outgoing>E_to_Attesa_Conclusione</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:exclusiveGateway id="Gateway_1szibkb">
+      <bpmn:incoming>E_from_Istr_Provv_to_GW</bpmn:incoming>
+      <bpmn:outgoing>Flow_13hwu2r</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1geo35o</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="E_Task_RilascioProvvedimento" name="Adozione provvedimento">
+      <bpmn:incoming>E_Join_to_ValutazioneFinale</bpmn:incoming>
+      <bpmn:outgoing>E_to_Attesa_Conclusione</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="E_Task_ValutaIntegrazioni_Parere" name="Istruttoria (parere)">
+      <bpmn:incoming>E_to_Valuta_Parere</bpmn:incoming>
+      <bpmn:outgoing>Flow_03ir1d0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="E_Task_Istruttoria_Parere" name="Parere/contributo">
+      <bpmn:incoming>E_to_Parere_UP</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lngrvf</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="E_Task_Istruttoria_Provv" name="Provvedimento">
+      <bpmn:incoming>E_to_Provv</bpmn:incoming>
+      <bpmn:outgoing>E_from_Istr_Provv_to_GW</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="E_GW_Merge_BeforeInteg">
+      <bpmn:incoming>E_V_from_Call_to_Merge</bpmn:incoming>
+      <bpmn:incoming>Flow_0lngrvf</bpmn:incoming>
+      <bpmn:incoming>Flow_13hwu2r</bpmn:incoming>
+      <bpmn:outgoing>E_to_RichiestaInteg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_140d42n">
+      <bpmn:incoming>E_to_RichiestaInteg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nyhckh</bpmn:outgoing>
+      <bpmn:outgoing>E_to_AttesaInteg</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1701mvf</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateThrowEvent id="E_Throw_RichiestaIntegrazione" name="richieste integrazione">
+      <bpmn:incoming>Flow_1nyhckh</bpmn:incoming>
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="E_Catch_TimeoutOsservazioni" name="timeout osservazioni">
+      <bpmn:incoming>E_to_Timeout_Osserv</bpmn:incoming>
+      <bpmn:outgoing>E_to_Join_Osservazioni_b</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="E_Throw_MotiviOstativi" name="invio motivi ostativi">
+      <bpmn:incoming>E_P_to_Motivi</bpmn:incoming>
+      <bpmn:outgoing>E_to_Attesa_Osserv</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:eventBasedGateway id="E_GW_Attesa_Osserv" name="Attesa osservazioni">
+      <bpmn:incoming>E_to_Attesa_Osserv</bpmn:incoming>
+      <bpmn:outgoing>E_to_Catch_Osserv</bpmn:outgoing>
+      <bpmn:outgoing>E_to_Timeout_Osserv</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="E_Catch_RicezioneOsservazioni" name="ricezione osservazioni">
+      <bpmn:incoming>E_to_Catch_Osserv</bpmn:incoming>
+      <bpmn:outgoing>E_to_Join_Osservazioni</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="E_GW_Join_Osservazioni">
+      <bpmn:incoming>E_to_Join_Osservazioni</bpmn:incoming>
+      <bpmn:incoming>E_to_Join_Osservazioni_b</bpmn:incoming>
+      <bpmn:outgoing>E_Join_to_ValutazioneFinale</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="E_Task_ValutaIntegrazioni_Provv" name="Istruttoria (provvedimento)">
+      <bpmn:incoming>E_to_Valuta_Provv</bpmn:incoming>
+      <bpmn:outgoing>E_P_to_Motivi</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="E_Task_ValutazioneFinale_Parere" name="Determinazione parere">
+      <bpmn:incoming>Flow_03ir1d0</bpmn:incoming>
+      <bpmn:outgoing>E_to_Parere_Send</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateThrowEvent id="Event_0qae89v" name="CdSS">
+      <bpmn:incoming>Flow_1rv1qsa</bpmn:incoming>
+      <bpmn:linkEventDefinition id="LinkEventDefinition_1riqno4" name="" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:subProcess id="E_ES_Stop" name="Stop richieste" triggeredByEvent="true">
+      <bpmn:startEvent id="E_ES_Stop_Start" name="stop richieste">
+        <bpmn:messageEventDefinition />
+      </bpmn:startEvent>
+      <bpmn:endEvent id="E_ES_Stop_End" />
+    </bpmn:subProcess>
+    <bpmn:subProcess id="E_ES_Chiusura" name="Chiusura pratica" triggeredByEvent="true">
+      <bpmn:startEvent id="E_ES_Chiusura_Start" name="chiusura pratica">
+        <bpmn:messageEventDefinition />
+      </bpmn:startEvent>
+      <bpmn:endEvent id="E_ES_Chiusura_End" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="E_F2" sourceRef="E_Task_PresaInCarico" targetRef="E_GW_Tipo" />
+    <bpmn:sequenceFlow id="E_to_Provv" sourceRef="E_GW_Tipo" targetRef="E_Task_Istruttoria_Provv" />
+    <bpmn:sequenceFlow id="E_to_Parere_UP" sourceRef="E_GW_Tipo" targetRef="E_Task_Istruttoria_Parere" />
+    <bpmn:sequenceFlow id="E_F1" sourceRef="E_Start_RicezionePratica" targetRef="E_Task_PresaInCarico" />
+    <bpmn:sequenceFlow id="E_to_AttesaInteg" sourceRef="Gateway_140d42n" targetRef="E_GW_AttesaInteg" />
+    <bpmn:sequenceFlow id="E_to_CatchInteg" sourceRef="E_GW_AttesaInteg" targetRef="E_Catch_RicezioneIntegrazione" />
+    <bpmn:sequenceFlow id="E_to_TimeoutInteg" sourceRef="E_GW_AttesaInteg" targetRef="E_Catch_TimeoutIntegrazione" />
+    <bpmn:sequenceFlow id="E_to_Merge_AfterInteg_b" sourceRef="E_Catch_TimeoutIntegrazione" targetRef="E_GW_Merge_AfterInteg" />
+    <bpmn:sequenceFlow id="E_to_Merge_AfterInteg" sourceRef="E_Catch_RicezioneIntegrazione" targetRef="E_GW_Merge_AfterInteg" />
+    <bpmn:sequenceFlow id="E_to_Smista_PostInteg" sourceRef="E_GW_Merge_AfterInteg" targetRef="E_GW_Smista_PostInteg" />
+    <bpmn:sequenceFlow id="Flow_1701mvf" name="Richiesta integrazione non necessaria" sourceRef="Gateway_140d42n" targetRef="E_GW_Smista_PostInteg" />
+    <bpmn:sequenceFlow id="E_to_Valuta_Parere" sourceRef="E_GW_Smista_PostInteg" targetRef="E_Task_ValutaIntegrazioni_Parere" />
+    <bpmn:sequenceFlow id="E_to_Valuta_Provv" sourceRef="E_GW_Smista_PostInteg" targetRef="E_Task_ValutaIntegrazioni_Provv" />
+    <bpmn:sequenceFlow id="E_End_Flow" sourceRef="E_Catch_RicezioneConclusione" targetRef="E_End" />
+    <bpmn:sequenceFlow id="E_to_Attesa_Conclusione" sourceRef="E_Throw_Parere" targetRef="E_Catch_RicezioneConclusione" />
+    <bpmn:sequenceFlow id="E_to_Attesa_Conclusione_b" sourceRef="E_Task_RilascioProvvedimento" targetRef="E_Throw_Parere" />
+    <bpmn:sequenceFlow id="E_to_Parere_Send" sourceRef="E_Task_ValutazioneFinale_Parere" targetRef="E_Throw_Parere" />
+    <bpmn:sequenceFlow id="E_from_Istr_Provv_to_GW" name="Coinvolgimento altri enti?" sourceRef="E_Task_Istruttoria_Provv" targetRef="Gateway_1szibkb" />
+    <bpmn:sequenceFlow id="Flow_13hwu2r" name="No" sourceRef="Gateway_1szibkb" targetRef="E_GW_Merge_BeforeInteg" />
+    <bpmn:sequenceFlow id="Flow_1geo35o" name="Si" sourceRef="Gateway_1szibkb" targetRef="Gateway_1tdtcsk" />
+    <bpmn:sequenceFlow id="E_Join_to_ValutazioneFinale" sourceRef="E_GW_Join_Osservazioni" targetRef="E_Task_RilascioProvvedimento" />
+    <bpmn:sequenceFlow id="Flow_03ir1d0" sourceRef="E_Task_ValutaIntegrazioni_Parere" targetRef="E_Task_ValutazioneFinale_Parere" />
+    <bpmn:sequenceFlow id="Flow_0lngrvf" sourceRef="E_Task_Istruttoria_Parere" targetRef="E_GW_Merge_BeforeInteg" />
+    <bpmn:sequenceFlow id="E_V_from_Call_to_Merge" sourceRef="E_CA_Livello_Provv" targetRef="E_GW_Merge_BeforeInteg" />
+    <bpmn:sequenceFlow id="E_to_RichiestaInteg" sourceRef="E_GW_Merge_BeforeInteg" targetRef="Gateway_140d42n" />
+    <bpmn:sequenceFlow id="Flow_1nyhckh" sourceRef="Gateway_140d42n" targetRef="E_Throw_RichiestaIntegrazione" />
+    <bpmn:sequenceFlow id="E_to_Timeout_Osserv" sourceRef="E_GW_Attesa_Osserv" targetRef="E_Catch_TimeoutOsservazioni" />
+    <bpmn:sequenceFlow id="E_to_Join_Osservazioni_b" sourceRef="E_Catch_TimeoutOsservazioni" targetRef="E_GW_Join_Osservazioni" />
+    <bpmn:sequenceFlow id="E_P_to_Motivi" sourceRef="E_Task_ValutaIntegrazioni_Provv" targetRef="E_Throw_MotiviOstativi" />
+    <bpmn:sequenceFlow id="E_to_Attesa_Osserv" sourceRef="E_Throw_MotiviOstativi" targetRef="E_GW_Attesa_Osserv" />
+    <bpmn:sequenceFlow id="E_to_Catch_Osserv" sourceRef="E_GW_Attesa_Osserv" targetRef="E_Catch_RicezioneOsservazioni" />
+    <bpmn:sequenceFlow id="E_to_Join_Osservazioni" sourceRef="E_Catch_RicezioneOsservazioni" targetRef="E_GW_Join_Osservazioni" />
+    <bpmn:sequenceFlow id="Flow_1rv1qsa" name="CdSS" sourceRef="E_GW_Livello_Provv" targetRef="Event_0qae89v" />
+    <bpmn:exclusiveGateway id="Gateway_1tdtcsk">
+      <bpmn:incoming>Flow_1geo35o</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vsuhqa</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0v2fe70</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="E_GW_Livello_Provv">
+      <bpmn:incoming>Flow_0vsuhqa</bpmn:incoming>
+      <bpmn:outgoing>E_V_to_Call_Livello</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1rv1qsa</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0vsuhqa" name="CdS (pareri almeno da due amministrazioni)" sourceRef="Gateway_1tdtcsk" targetRef="E_GW_Livello_Provv" />
+    <bpmn:sequenceFlow id="Flow_0v2fe70" name="Pareri da una sola amministrazione" sourceRef="Gateway_1tdtcsk" targetRef="E_CA_Livello_Provv" />
+    <bpmn:sequenceFlow id="E_V_to_Call_Livello" name="CdSA" sourceRef="E_GW_Livello_Provv" targetRef="E_CA_Livello_Provv" />
+    <bpmn:callActivity id="E_CA_Livello_Provv" name="Ente Terzo (ricorsivo)" calledElement="Proc_EnteTerzo">
+      <bpmn:incoming>E_V_to_Call_Livello</bpmn:incoming>
+      <bpmn:incoming>Flow_0v2fe70</bpmn:incoming>
+      <bpmn:outgoing>E_V_from_Call_to_Merge</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:association id="Association_1ldu1zi" associationDirection="None" sourceRef="E_Throw_Parere" targetRef="TextAnnotation_0im95er" />
+    <bpmn:association id="Association_1oli0a7" associationDirection="None" sourceRef="Gateway_140d42n" targetRef="TextAnnotation_1loo5gw" />
+    <bpmn:association id="Association_1kvgapc" associationDirection="None" sourceRef="E_CA_Livello_Provv" targetRef="TextAnnotation_0mx8lb7" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="DI_1">
+    <bpmndi:BPMNPlane id="Plane_1" bpmnElement="Collab_EnteTerzo">
+      <bpmndi:BPMNShape id="DI_P_Main" bpmnElement="P_Main" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="3178" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_M1" bpmnElement="M_Throw_1">
+        <dc:Bounds x="222" y="230" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="210" y="192.5" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_M5" bpmnElement="M_Throw_5">
+        <dc:Bounds x="1701" y="230" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1689" y="192.5" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_M6" bpmnElement="M_Throw_6">
+        <dc:Bounds x="1792" y="230" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1790" y="192.5" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_M11" bpmnElement="M_Throw_11">
+        <dc:Bounds x="3141" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3129" y="184.5" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_MC10" bpmnElement="M_Catch_10">
+        <dc:Bounds x="3042" y="225" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3024" y="201" width="72" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_M9" bpmnElement="M_Throw_9">
+        <dc:Bounds x="2582" y="225" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2569" y="187.5" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_M8" bpmnElement="M_Throw_8">
+        <dc:Bounds x="2472" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2459" y="184.5" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_MC7" bpmnElement="M_Catch_7">
+        <dc:Bounds x="2356" y="230" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2339" y="192.5" width="69" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_MC4" bpmnElement="M_Catch_4">
+        <dc:Bounds x="1533" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1521" y="185" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_M2" bpmnElement="M_Throw_2">
+        <dc:Bounds x="550" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="532" y="179" width="71" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_M3" bpmnElement="M_Throw_3">
+        <dc:Bounds x="872" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="850" y="218" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_P_Ente" bpmnElement="P_Ente" isHorizontal="true">
+        <dc:Bounds x="170" y="474" width="3170" height="620" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_GW_Tipo" bpmnElement="E_GW_Tipo" isMarkerVisible="true">
+        <dc:Bounds x="575" y="690" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="536" y="740" width="79" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_Presa" bpmnElement="E_Task_PresaInCarico">
+        <dc:Bounds x="355" y="687" width="170" height="56" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_Start" bpmnElement="E_Start_RicezionePratica">
+        <dc:Bounds x="232" y="694" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="210" y="730" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_GW_AttInteg" bpmnElement="E_GW_AttesaInteg" isMarkerVisible="true">
+        <dc:Bounds x="1618" y="691" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1652" y="721" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_Catch_ToInt" bpmnElement="E_Catch_TimeoutIntegrazione">
+        <dc:Bounds x="1703" y="576" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1691" y="612" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_GW_AfterInteg" bpmnElement="E_GW_Merge_AfterInteg" isMarkerVisible="true">
+        <dc:Bounds x="1947" y="690" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1878" y="697" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_Catch_RicInt" bpmnElement="E_Catch_RicezioneIntegrazione">
+        <dc:Bounds x="1794" y="816" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1782" y="852" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_GW_Smista" bpmnElement="E_GW_Smista_PostInteg" isMarkerVisible="true">
+        <dc:Bounds x="2037" y="690" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2021" y="736" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_End" bpmnElement="E_End">
+        <dc:Bounds x="3284" y="697" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_Catch_Conclusione" bpmnElement="E_Catch_RicezioneConclusione">
+        <dc:Bounds x="3144" y="697" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3132" y="743" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_Throw_Parere" bpmnElement="E_Throw_Parere">
+        <dc:Bounds x="3044" y="697" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2994" y="727" width="49" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1szibkb_di" bpmnElement="Gateway_1szibkb" isMarkerVisible="true">
+        <dc:Bounds x="981" y="760" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_RilProvv" bpmnElement="E_Task_RilascioProvvedimento">
+        <dc:Bounds x="2757" y="816" width="210" height="56" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_ValInt_Par" bpmnElement="E_Task_ValutaIntegrazioni_Parere">
+        <dc:Bounds x="2125" y="585" width="210" height="56" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_IstrParere" bpmnElement="E_Task_Istruttoria_Parere">
+        <dc:Bounds x="679" y="637" width="180" height="56" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_IstrProvv" bpmnElement="E_Task_Istruttoria_Provv">
+        <dc:Bounds x="682" y="757" width="190" height="56" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_GW_BeforeInteg" bpmnElement="E_GW_Merge_BeforeInteg" isMarkerVisible="true">
+        <dc:Bounds x="1434" y="690" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1360" y="691" width="74" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1eoj7b8" bpmnElement="Gateway_140d42n" isMarkerVisible="true">
+        <dc:Bounds x="1527" y="691" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1360" y="691" width="74" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_Throw_RichInt" bpmnElement="E_Throw_RichiestaIntegrazione">
+        <dc:Bounds x="1534" y="617" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1479" y="680" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_Catch_ToObs" bpmnElement="E_Catch_TimeoutOsservazioni">
+        <dc:Bounds x="2476" y="959" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2463" y="995" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_Throw_MO" bpmnElement="E_Throw_MotiviOstativi">
+        <dc:Bounds x="2361" y="828" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2352" y="864" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_GW_AttObs" bpmnElement="E_GW_Attesa_Osserv" isMarkerVisible="true">
+        <dc:Bounds x="2429" y="815" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2489" y="826" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_Catch_RicObs" bpmnElement="E_Catch_RicezioneOsservazioni">
+        <dc:Bounds x="2586" y="744" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2573" y="780" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_GW_JoinObs" bpmnElement="E_GW_Join_Osservazioni" isMarkerVisible="true">
+        <dc:Bounds x="2669" y="819" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2568.5" y="600" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_ValInt_Provv" bpmnElement="E_Task_ValutaIntegrazioni_Provv">
+        <dc:Bounds x="2125" y="817" width="210" height="56" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_DetermParere" bpmnElement="E_Task_ValutazioneFinale_Parere">
+        <dc:Bounds x="2757" y="585" width="210" height="56" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0b9lbvk" bpmnElement="Event_0qae89v">
+        <dc:Bounds x="1138" y="792" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1141" y="768" width="29" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1js5das" bpmnElement="Gateway_1tdtcsk" isMarkerVisible="true">
+        <dc:Bounds x="981" y="879" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="868" y="756" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_GW_LivProv" bpmnElement="E_GW_Livello_Provv" isMarkerVisible="true">
+        <dc:Bounds x="1131" y="879" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="868" y="756" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_E_CallProv" bpmnElement="E_CA_Livello_Provv">
+        <dc:Bounds x="1237" y="871" width="200" height="66" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1ldu1zi_di" bpmnElement="Association_1ldu1zi">
+        <di:waypoint x="3073" y="729" />
+        <di:waypoint x="3149" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1oli0a7_di" bpmnElement="Association_1oli0a7">
+        <di:waypoint x="1543" y="700" />
+        <di:waypoint x="1498" y="614" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="DI_ES_Stop" bpmnElement="E_ES_Stop" isExpanded="true">
+        <dc:Bounds x="830" y="504" width="240" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ES_Stop_Start" bpmnElement="E_ES_Stop_Start">
+        <dc:Bounds x="870" y="526" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="856" y="562" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ES_Stop_End" bpmnElement="E_ES_Stop_End">
+        <dc:Bounds x="1010" y="526" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ES_Chiusura" bpmnElement="E_ES_Chiusura" isExpanded="true">
+        <dc:Bounds x="500" y="504" width="270" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ES_Chiusura_Start" bpmnElement="E_ES_Chiusura_Start">
+        <dc:Bounds x="550" y="526" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="529" y="562" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DI_ES_Chiusura_End" bpmnElement="E_ES_Chiusura_End">
+        <dc:Bounds x="690" y="526" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1kvgapc_di" bpmnElement="Association_1kvgapc">
+        <di:waypoint x="1390" y="937" />
+        <di:waypoint x="1474" y="990" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_F2" bpmnElement="E_F2">
+        <di:waypoint x="525" y="715" />
+        <di:waypoint x="575" y="715" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Provv" bpmnElement="E_to_Provv">
+        <di:waypoint x="625" y="715" />
+        <di:waypoint x="625" y="785" />
+        <di:waypoint x="682" y="785" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Parere_UP" bpmnElement="E_to_Parere_UP">
+        <di:waypoint x="625" y="715" />
+        <di:waypoint x="625" y="665" />
+        <di:waypoint x="679" y="665" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_F1" bpmnElement="E_F1">
+        <di:waypoint x="268" y="712" />
+        <di:waypoint x="355" y="712" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_AttesaInteg" bpmnElement="E_to_AttesaInteg">
+        <di:waypoint x="1577" y="716" />
+        <di:waypoint x="1618" y="716" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_CatchInteg" bpmnElement="E_to_CatchInteg">
+        <di:waypoint x="1643" y="741" />
+        <di:waypoint x="1643" y="834" />
+        <di:waypoint x="1794" y="834" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_TimeoutInteg" bpmnElement="E_to_TimeoutInteg">
+        <di:waypoint x="1643" y="691" />
+        <di:waypoint x="1642" y="594" />
+        <di:waypoint x="1703" y="594" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Merge_AfterInteg_b" bpmnElement="E_to_Merge_AfterInteg_b">
+        <di:waypoint x="1739" y="594" />
+        <di:waypoint x="1972" y="594" />
+        <di:waypoint x="1972" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Merge_AfterInteg" bpmnElement="E_to_Merge_AfterInteg">
+        <di:waypoint x="1828" y="826" />
+        <di:waypoint x="1972" y="826" />
+        <di:waypoint x="1972" y="740" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Smista_PostInteg" bpmnElement="E_to_Smista_PostInteg">
+        <di:waypoint x="1997" y="715" />
+        <di:waypoint x="2037" y="715" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1701mvf_di" bpmnElement="Flow_1701mvf">
+        <di:waypoint x="1552" y="741" />
+        <di:waypoint x="1552" y="920" />
+        <di:waypoint x="2062" y="920" />
+        <di:waypoint x="2062" y="740" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1558" y="876" width="82" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Valuta_Parere" bpmnElement="E_to_Valuta_Parere">
+        <di:waypoint x="2087" y="715" />
+        <di:waypoint x="2087" y="613" />
+        <di:waypoint x="2125" y="613" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Valuta_Provv" bpmnElement="E_to_Valuta_Provv">
+        <di:waypoint x="2087" y="715" />
+        <di:waypoint x="2087" y="845" />
+        <di:waypoint x="2125" y="845" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_End_Flow" bpmnElement="E_End_Flow">
+        <di:waypoint x="3180" y="715" />
+        <di:waypoint x="3284" y="715" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Attesa_Conclusione" bpmnElement="E_to_Attesa_Conclusione">
+        <di:waypoint x="3080" y="715" />
+        <di:waypoint x="3144" y="715" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Attesa_Conclusione_b" bpmnElement="E_to_Attesa_Conclusione_b">
+        <di:waypoint x="2967" y="847" />
+        <di:waypoint x="3059" y="847" />
+        <di:waypoint x="3062" y="733" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Parere_Send" bpmnElement="E_to_Parere_Send">
+        <di:waypoint x="2967" y="613" />
+        <di:waypoint x="3006" y="613" />
+        <di:waypoint x="3006" y="715" />
+        <di:waypoint x="3044" y="715" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_from_Istr_Provv_to_GW" bpmnElement="E_from_Istr_Provv_to_GW">
+        <di:waypoint x="872" y="785" />
+        <di:waypoint x="981" y="785" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="891" y="756" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13hwu2r_di" bpmnElement="Flow_13hwu2r">
+        <di:waypoint x="1006" y="760" />
+        <di:waypoint x="1006" y="715" />
+        <di:waypoint x="1434" y="715" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1012" y="741" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1geo35o_di" bpmnElement="Flow_1geo35o">
+        <di:waypoint x="1006" y="810" />
+        <di:waypoint x="1006" y="879" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1015" y="815" width="10" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_Join_to_ValFinale" bpmnElement="E_Join_to_ValutazioneFinale">
+        <di:waypoint x="2719" y="844" />
+        <di:waypoint x="2757" y="844" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03ir1d0_di" bpmnElement="Flow_03ir1d0">
+        <di:waypoint x="2335" y="613" />
+        <di:waypoint x="2757" y="613" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lngrvf_di" bpmnElement="Flow_0lngrvf">
+        <di:waypoint x="859" y="665" />
+        <di:waypoint x="1459" y="665" />
+        <di:waypoint x="1459" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_V_from_Call_to_Merge" bpmnElement="E_V_from_Call_to_Merge">
+        <di:waypoint x="1437" y="904" />
+        <di:waypoint x="1459" y="904" />
+        <di:waypoint x="1459" y="740" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_RichInt" bpmnElement="E_to_RichiestaInteg">
+        <di:waypoint x="1483" y="716" />
+        <di:waypoint x="1527" y="716" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nyhckh_di" bpmnElement="Flow_1nyhckh">
+        <di:waypoint x="1552" y="691" />
+        <di:waypoint x="1552" y="653" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Timeout_Osserv" bpmnElement="E_to_Timeout_Osserv">
+        <di:waypoint x="2454" y="865" />
+        <di:waypoint x="2454" y="977" />
+        <di:waypoint x="2476" y="977" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Join_Osservazioni_b" bpmnElement="E_to_Join_Osservazioni_b">
+        <di:waypoint x="2511" y="983" />
+        <di:waypoint x="2694" y="983" />
+        <di:waypoint x="2694" y="869" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_P_to_Motivi" bpmnElement="E_P_to_Motivi">
+        <di:waypoint x="2335" y="845" />
+        <di:waypoint x="2348" y="845" />
+        <di:waypoint x="2348" y="846" />
+        <di:waypoint x="2361" y="846" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Attesa_Osserv" bpmnElement="E_to_Attesa_Osserv">
+        <di:waypoint x="2396" y="840" />
+        <di:waypoint x="2429" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Catch_Osserv" bpmnElement="E_to_Catch_Osserv">
+        <di:waypoint x="2454" y="815" />
+        <di:waypoint x="2454" y="762" />
+        <di:waypoint x="2586" y="762" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_to_Join_Osservazioni" bpmnElement="E_to_Join_Osservazioni">
+        <di:waypoint x="2622" y="762" />
+        <di:waypoint x="2694" y="762" />
+        <di:waypoint x="2694" y="819" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_117iv1v" bpmnElement="Flow_1rv1qsa">
+        <di:waypoint x="1156" y="879" />
+        <di:waypoint x="1156" y="828" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1159" y="853" width="29" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vsuhqa_di" bpmnElement="Flow_0vsuhqa">
+        <di:waypoint x="1031" y="904" />
+        <di:waypoint x="1131" y="904" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1033" y="862" width="81" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v2fe70_di" bpmnElement="Flow_0v2fe70">
+        <di:waypoint x="1006" y="929" />
+        <di:waypoint x="1006" y="1014" />
+        <di:waypoint x="1337" y="1014" />
+        <di:waypoint x="1337" y="937" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1033" y="973" width="81" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_E_V_to_Call_Livello" bpmnElement="E_V_to_Call_Livello">
+        <di:waypoint x="1181" y="904" />
+        <di:waypoint x="1237" y="904" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1186" y="889" width="29" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1loo5gw_di" bpmnElement="TextAnnotation_1loo5gw">
+        <dc:Bounds x="1410" y="530" width="100" height="84" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DI_MF1" bpmnElement="MF1">
+        <di:waypoint x="250" y="263" />
+        <di:waypoint x="250" y="694" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="209" y="387" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_MF2" bpmnElement="MF2">
+        <di:waypoint x="568" y="278" />
+        <di:waypoint x="568" y="526" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="537" y="386" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_MF3" bpmnElement="MF3">
+        <di:waypoint x="888" y="278" />
+        <di:waypoint x="888" y="526" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="857" y="390" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_MF4" bpmnElement="MF4">
+        <di:waypoint x="1551" y="617" />
+        <di:waypoint x="1551" y="258" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1511" y="375" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_MF5" bpmnElement="MF5">
+        <di:waypoint x="1721" y="266" />
+        <di:waypoint x="1721" y="576" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1691" y="396" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_MF6" bpmnElement="MF6">
+        <di:waypoint x="1812" y="266" />
+        <di:waypoint x="1812" y="816" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1782" y="396" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_MF7" bpmnElement="MF7">
+        <di:waypoint x="2374" y="829" />
+        <di:waypoint x="2374" y="266" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2346" y="395" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_MF8" bpmnElement="MF8">
+        <di:waypoint x="2494" y="257" />
+        <di:waypoint x="2494" y="959" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2460" y="395" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_MF9" bpmnElement="MF9">
+        <di:waypoint x="2604" y="260" />
+        <di:waypoint x="2604" y="744" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2568" y="395" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_MF10" bpmnElement="MF10">
+        <di:waypoint x="3060" y="697" />
+        <di:waypoint x="3060" y="261" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3021" y="384" width="58" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DI_MF11" bpmnElement="MF11">
+        <di:waypoint x="3162" y="257" />
+        <di:waypoint x="3162" y="697" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3129" y="383" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0im95er_di" bpmnElement="TextAnnotation_0im95er">
+        <dc:Bounds x="3110" y="830" width="170" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0mx8lb7_di" bpmnElement="TextAnnotation_0mx8lb7">
+        <dc:Bounds x="1448" y="990" width="293" height="84" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

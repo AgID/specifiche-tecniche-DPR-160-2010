@@ -1,0 +1,100 @@
+sequenceDiagram 
+    autonumber
+    participant F as FrontOffice SUAP
+    participant B as BackOffice SUAP
+    participant E as Enti Terzi
+    participant C as Catalogo SSU   
+
+    note over B,E: Indizione CdSS
+
+    opt se non sono state ancora inoltrate le istanze o ci sono aggiornamenti
+        par per ogni ente terzo coinvolto sul procedimento
+            B ->> E: send_instance(SendInstanceRequest)
+            E -->> B: ack    
+            loop per ogni documento di interesse parte dell'istanza 
+                E ->> B: request_instance_document(cui, resource_id)
+                note left of E: resource_id da instance_index
+                B -->> E: instanceDocument
+            end
+        end
+    end
+    
+    par per ogni ente terzo coinvolto sul procedimento
+        B ->> E: notify(cui, instance_descriptor_version,cdss_convened)    
+        E -->> B: ack
+
+        B ->> C: audit(cdss_convocation_sent_to_<ET>)
+        C -->> B: ack
+
+        E ->> B: request_instance_document(cui, resource_id)
+        note left of E: recupero del documento di convocazione CDSS
+        B -->> E: instanceDocument
+
+        E ->> C: audit(cdss_convocation_received)
+        
+        C -->> E: ack
+    end
+    B ->> C: audit(cui,cdss_convened)
+    C -->> B: ack
+
+    opt se non sono state risolte le criticità legate alla determinazione del provvedimento
+        loop per ogni altra conferenza necessaria 
+            par per ogni ente terzo coinvolto sul procedimento
+                B ->> E: notify(cui, instance_descriptor_version,cdss_convened)   
+                E -->> B: ack
+                opt
+                    E ->> B: request_instance_document(cui, resource_id)
+                    note left of E: recupero del documento di convocazione CDSS
+                    B -->> E: instanceDocument
+                end
+            end
+        end
+    end
+
+    note over B,E: CDSS conclusa
+    par per ogni ente terzo coinvolto sul procedimento
+        B ->> E: cdss_resolution_forward(cui, resource_id)
+        E -->> B: ack
+        B ->> C: audit(cdss_resolution_sent_to_<ET>)
+        C -->> B: ack
+        opt
+            E ->> B: request_instance_document(cui, resource_id)
+            note left of E: recupero del documento di determinazione conclusiva CDSS
+            B -->> E: instanceDocument
+            E ->> C: audit(cdss_resolution_retrieved)
+            C -->> E: ack
+        end
+    end
+
+    opt ci sono obiezioni sulla determinazione conclusiva CdSS <br> (approvazione sulla base delle posizioni prevalenti)
+        B ->> C: request_update_times(cui,times)
+        Note right of B: Aggiorna i tempi procedimentali per consentire la ricezione delle obiezioni e l'elaborazione dell'aggiornamento della determinazione
+        C -->> B: instanceDescriptor
+        
+        note over B, E: le obiezioni vengono ricevute e gestite mediante canali esterni all'SSU <br> secondo quanto definito dalla norma (Legge 241/90 Art.14-quinquies)
+        
+        B ->> E: cdss_resolution_forward(cui, resource_id)
+        note right of B: resource_id = determinazione conclusiva aggiornata
+        E -->> B: ack
+        B ->> C: audit(cdss_resolution_update_sent_to_<ET>)
+        C -->> B: ack
+        opt
+            E ->> B: request_instance_document(cui, resource_id)
+            note left of E: recupero del documento aggiornato della determinazione conclusiva CDSS
+            B -->> E: instanceDocument
+            E ->> C: audit(cdss_resolution_update_retrieved)
+            C -->> E: ack
+        end
+    end
+
+    B ->> F: cdss_resolution_forward(cui, resource_id)
+    F -->> B: ack
+    B ->> C: audit(cdss_resolution_sent)
+    C -->> B: ack
+    opt
+        F ->> B: request_instance_document(cui, resource_id)
+        note right of F: recupero del documento di determinazione finale CDSS
+        B -->> F: instanceDocument
+    end
+    F ->> C: audit(cdss_resolution_retrieved)
+    C -->> F: ack
