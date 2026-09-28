@@ -43,9 +43,9 @@ sequenceDiagram
 
     alt istanza integrata o conformata (dopo step: 45 SCIA-001 o 65 DomandaAutorizzazione-001 o dopo step 65, 143 di SCIA Condizionata)
 
-        alt
+        alt:
             B ->> RI: send_conformation_documents(SendUpdatedDocuments)
-        else
+        else:
             B ->> RI: send_integration_documents(SendUpdatedDocuments)
         end
         RI -->> B: ack
