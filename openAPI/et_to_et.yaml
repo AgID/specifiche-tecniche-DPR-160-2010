@@ -391,7 +391,7 @@ components:
     ChainContext:
       type: object
       description: Contesto ricorsivo ET→ET
-      required: [cui, code, requester_administration, receiving_administration, chain_link]
+      required: [cui, code, requester_administration, receiving_administration, chain_id, depth, parent_et]
       properties:
         cui:
           $ref: "#/components/schemas/cui"
@@ -405,23 +405,16 @@ components:
         receiving_administration:
           description: amministrazione destinatario
           $ref: "#/components/schemas/AdministrationSchema"
-        chain_link:
-          type: array
-          description: lista di tutti gli anelli della catena
-          items:
-            type: object
-            required: [ chain_id, depth, parent_et ]
-            properties:
-              chain_id:
-                type: string
-                minLength: 1
-                description: Correlazione end-to-end della catena di coinvoglimenti
-              depth:
-                type: integer
-                minimum: 1
-                description: Livello ricorsivo (0=SUAP→ET, 1=primo ET-figlio, etc.)
-              parent_et:
-                $ref: "#/components/schemas/AdministrationSchema"
+        chain_id:
+          type: string
+          minLength: 1
+          description: Correlazione end-to-end della catena di coinvoglimenti
+        depth:
+          type: integer
+          minimum: 1
+          description: Livello ricorsivo (0=SUAP→ET, 1=primo ET-figlio, etc.)
+        parent_et:
+          $ref: "#/components/schemas/AdministrationSchema"
 
     # --- Indici/documenti (riuso) ---
     InstanceIndex:
