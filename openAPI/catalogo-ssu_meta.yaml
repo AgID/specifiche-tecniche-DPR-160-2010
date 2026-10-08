@@ -3033,8 +3033,12 @@ components:
               title: evento della vita dell'attività afferente al procedimento
               type: string
             territorial_scope:
-              title: ambito territoriale del procedimento (codice istat a 6 cifre e 000000 per Nazionale)
+              title: Ambito territoriale del procedimento
               type: string
+              pattern: '^(\d{2}|\d{3}|\d{6})$'
+              description: >-
+                Codice ISTAT: 000000 per Nazionale, 2 cifre per Regionale, 
+                3 cifre per Provinciale, 6 cifre per Comunale.
             status:
               title: stato del procedimento (attivo, non attivo)
               type: string
