@@ -391,8 +391,20 @@ components:
     ChainContext:
       type: object
       description: Contesto ricorsivo ET→ET
-      required: [ chain_id, cui, parent_et ]
+      required: [cui, code, requester_administration, receiving_administration, chain_id, depth, parent_et]
       properties:
+        cui:
+          $ref: "#/components/schemas/cui"
+        code:
+          type: string
+          minLength: 1
+          description: Codice della fattispecie di riferimento
+        requester_administration:
+          description: amministrazione mittente
+          $ref: "#/components/schemas/AdministrationSchema"
+        receiving_administration:
+          description: amministrazione destinatario
+          $ref: "#/components/schemas/AdministrationSchema"
         chain_id:
           type: string
           minLength: 1
@@ -401,8 +413,6 @@ components:
           type: integer
           minimum: 1
           description: Livello ricorsivo (0=SUAP→ET, 1=primo ET-figlio, etc.)
-        cui:
-          $ref: "#/components/schemas/cui"
         parent_et:
           $ref: "#/components/schemas/AdministrationSchema"
 
