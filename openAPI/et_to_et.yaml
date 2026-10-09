@@ -306,45 +306,71 @@ components:
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }
+      headers:
+        Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
 
     NotFound:
       description: Risorsa non trovata
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }
+      headers:
+        Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
 
     Conflict:
       description: conflitto sulla risorsa, la richiesta non può essere elaborata a causa di un conflitto nello stato coerente della risorsa
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }
+      headers:
+        Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
 
     PreconditionFailed:
       description: Precondizione fallita (es. If-Match)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
       headers:
         Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
 
     PreconditionRequired:
       description: Precondizione richiesta (es. If-Match mancante)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+      headers:
+        Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
 
     RangeNotSatisfiable:
       description: Range non soddisfacibile
+      content:
+          application/json:
+              schema:
+                  $ref: "#/components/schemas/Error"
       headers:
-        Content-Range:
-          description: Range atteso
-          schema: { type: string, example: "bytes */47022" }
+          Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+          Content-Range:
+              description: lunghezza attuale della rappresentazione selezionata
+              schema:
+                  type: string
+                  example: bytes */47022
 
     ServerError:
       description: Errore interno
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }
+      headers:
+        Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
 
     ServiceUnavailable:
       description: Servizio non disponibile
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }
+      headers:
+        Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
 
   # ---------- SCHEMAS ----------
   schemas:
