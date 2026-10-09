@@ -344,10 +344,17 @@ components:
     RangeNotSatisfiable:
       description: Range non soddisfacibile
       content:
-        application/json:
-          schema: { $ref: "#/components/schemas/Error" }
+          application/json:
+              schema:
+                  $ref: "#/components/schemas/Error"
       headers:
-        Agid-JWT-Signature: { $ref: "#/components/headers/Agid-JWT-Signature" }
+          Agid-JWT-Signature:
+              $ref: "#/components/headers/Agid-JWT-Signature"
+          Content-Range:
+              description: lunghezza attuale della rappresentazione selezionata
+              schema:
+                  type: string
+                  example: bytes */47022
 
     ServerError:
       description: Errore interno
