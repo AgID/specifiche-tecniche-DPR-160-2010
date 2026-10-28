@@ -555,8 +555,6 @@ components:
       oneOf:
         - $ref: "#/components/schemas/NegativeOutcomeRequired"
         - $ref: "#/components/schemas/PositiveOutcome"
-      discriminator:
-        propertyName: conclusions_type
 
     NegativeOutcomeRequired:
       type: object
@@ -588,12 +586,23 @@ components:
         hash: { type: string }
         alg_hash: { type: string, enum: [ S256, S384, S512 ] }
 
+    BaseMessage:
+      type: object
+      required:
+        - cui
+        - instance_descriptor_version
+      properties:
+        cui:
+          $ref: "#/components/schemas/cui"
+        instance_descriptor_version:
+          type: string
+
     NotifyMessage:
       type: object
-      required: [ cui, instance_descriptor_version, event ]
+      allOf:
+        - $ref: "#/components/schemas/BaseMessage"
+      required: [ event ]
       properties:
-        cui: { $ref: "#/components/schemas/cui" }
-        instance_descriptor_version: { type: string }
         event:
           type: string
           enum:
@@ -606,7 +615,9 @@ components:
 
     TransferOutcomeNotifyMessage:
       type: object
-      required: [ cui, instance_descriptor_version, event, document ]
+      allOf:
+        - $ref: "#/components/schemas/BaseMessage"
+      required: [ event, document ]
       properties:
         cui: { $ref: "#/components/schemas/cui" }
         instance_descriptor_version: { type: string }
@@ -620,7 +631,7 @@ components:
 
     CdssNotifyMessage:
       allOf:
-        - $ref: "#/components/schemas/NotifyMessage"
+        - $ref: "#/components/schemas/BaseMessage"
         - type: object
           required: [ event, cdss_channel, cdss_convocation ]
           properties:
