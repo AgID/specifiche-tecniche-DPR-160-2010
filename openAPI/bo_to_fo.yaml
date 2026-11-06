@@ -315,6 +315,42 @@ paths:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
 
+    /request_cds_istruttoria:
+        post:
+            description: Richiesta convocazione Conferenza dei Servizi Istruttoria (CdS Istruttoria) in relazione a una data instanza di procedimento
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - cui
+                                - instance_descriptor_version
+                            properties:
+                                cui: 
+                                    $ref: "#/components/schemas/cui"
+                                instance_descriptor_version:
+                                    type: string
+                required: true
+            responses:
+                "200":
+                    $ref: "#/components/responses/OKRequest"
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "404":
+                    $ref: "#/components/responses/NotFound"
+                "409":
+                    $ref: "#/components/responses/Conflict"
+                "500":
+                    $ref: "#/components/responses/ServerError"
+                "503":
+                    $ref: "#/components/responses/ServiceUnavailable"
+            security:
+                - bearerAuth: []
+                  Agid-JWT-Signature: []
+                  
 components:
     responses:
         OKRequest:

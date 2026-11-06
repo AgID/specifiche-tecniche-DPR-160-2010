@@ -92,7 +92,21 @@ sequenceDiagram
             B ->> F: notify(cui, instance_descriptor_version,cdss_convened)
             F -->> B: ack    
             note over B, E: gestione della CDSS mediante sequence-diagram CdSS-mermaid
-        else CdS Semplificata da SUAP AND SUAP ente procedente
+        else CdS Istruttoria
+            opt ET richiede indizione CdS Istruttoria
+                E ->> B: request_cds_istruttoria(cui, instance_descriptor_version)
+                B -->> E: ack
+                E ->> C: audit(cui,cds_istruttoria_requested_from_<ET>)
+                C -->> E: ack
+            end
+
+            opt Presentatore/Front-office SUAP richiede indizione CdS Istruttoria
+                F ->> B: request_cds_istruttoria(cui, instance_descriptor_version)
+                B -->> F: ack
+                F ->> C: audit(cui,cds_istruttoria_requested_from_<FO>)
+                C -->> F: ack
+            end
+            
             opt 
                 B ->> C: request_update_times(cui,times)
                 C -->> B: instanceDescriptor
