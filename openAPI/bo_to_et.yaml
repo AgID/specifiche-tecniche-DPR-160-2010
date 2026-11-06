@@ -404,6 +404,14 @@ paths:
                     $ref: "#/components/schemas/AdministrationSchema"
                   document:
                     $ref: "#/components/schemas/Document"
+                  usecase_proceeding:
+                      title: codice della fattispecie presente nel Catalogo
+                      type: string
+                      minLength: 1
+                  notes:
+                      title: eventuali note aggiuntive alla comunicazione
+                      type: string
+                      minLength: 1
           required: true
         responses:
             "200":
