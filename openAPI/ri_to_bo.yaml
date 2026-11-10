@@ -840,7 +840,7 @@ components:
             type: object
             additionalProperties: false
             required:
-              - name
+              - filename
               - mime_type
               - resource_id
               - document_classification_coding
@@ -851,7 +851,7 @@ components:
                   title: id della risorsa del documento
                   type: string
                   minLength: 1
-              name:                      
+              filename:                      
                   title: filename della risorsa del documento
                   type: string
                   minLength: 1
