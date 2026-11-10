@@ -352,7 +352,7 @@ components:
           title: data avvio dell'istanza
           type: string
           format: date
-        max_gg_proc:          
+        max_gg_proc:
           title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
           type: integer
           format: int32
@@ -364,51 +364,51 @@ components:
           title: numero di giorni limite a partire da start per la correzione a valle di un controllo formale
           type: integer
           format: int32
-        max_gg_admissibility:          
+        max_gg_admissibility:
           title: numero di giorni limite a partire da start per la verifica di ammissibilità
           type: integer
           format: int32
-        max_gg_int_req:          
+        max_gg_int_req:
           title: numero di giorni limite a partire da start per la richiesta di integrazione degli enti terzi
           type: integer
           format: int32
-        max_gg_int_resp:          
+        max_gg_int_resp:
           title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
           type: integer
           format: int32
-        max_gg_conf_req:          
+        max_gg_conf_req:
           title: numero di giorni limite a partire da start per la richiesta di conformazione degli enti terzi
           type: integer
           format: int32
-        max_gg_conf_resp:          
+        max_gg_conf_resp:
           title: numero di giorni limite a partire da start per conformazione del soggetto presentatore
           type: integer
           format: int32
-        max_gg_concl_send:          
+        max_gg_concl_send:
           title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
           type: integer
           format: int32
-        max_gg_cds_pre_req:          
+        max_gg_cds_pre_req:
           title: numero di giorni limite a partire da start entro cui può essere richiesta la conferenza di servizi preliminare
           type: integer
           format: int32
-        max_gg_cds_istr_req:          
+        max_gg_cds_istr_req:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi istruttoria
           type: integer
           format: int32
-        max_gg_cds_dec_req:          
+        max_gg_cds_dec_req:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi decisoria
           type: integer
           format: int32
-        max_gg_cdss_req:          
+        max_gg_cdss_req:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
           type: integer
           format: int32
-        max_gg_inspection:          
+        max_gg_inspection:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono effettuare un'ispezione e inviare il relativo esito
           type: integer
           format: int32
-        max_gg_prov_cond_ext_req:          
+        max_gg_prov_cond_ext_req:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono effettuare una richiesta di proroga per il provvedimento condizionato 
           type: integer
           format: int32
@@ -633,7 +633,7 @@ components:
       properties:
         cui:
           $ref: "#/components/schemas/cui"
-        times:          
+        times:
           $ref: "#/components/schemas/Times"
         attachments:
           title: allegati all'istanza relativi al procedimento
@@ -648,11 +648,11 @@ components:
             - alg_hash
             - mime_type
             properties:
-              usec_code:                
+              usec_code:
                 title: codice della fattispecie presente nel Catalogo
                 type: string
                 minLength: 1
-              usec_version:                
+              usec_version:
                 title: versione della fattispecie presente nel Catalogo
                 type: string
                 minLength: 1
@@ -743,11 +743,11 @@ components:
             - alg_hash
             - mime_type
             properties: 
-              usec_code:                
+              usec_code:
                 title: codice della fattispecie presente nel Catalogo
                 type: string
                 minLength: 1
-              usec_version:                
+              usec_version:
                 title: versione della fattispecie presente nel Catalogo
                 type: string
                 minLength: 1
@@ -828,7 +828,7 @@ components:
           properties:
             cui:
               $ref: "#/components/schemas/cui"
-            times:          
+            times:
               $ref: "#/components/schemas/Times"
             instances:
               type: array
@@ -883,19 +883,19 @@ components:
                         title: porzione distinta modello attivita
                         type: object
                         properties:
-                            ref:                    
+                            ref:
                               title: distinta modello attivita
                               type: string
                               minLength: 1
-                            filename:                      
+                            filename:
                                 title: filename del modello distinta attivita
                                 type: string
                                 minLength: 1
-                            hash:                    
+                            hash:
                               title: hash del modello distinta attivita
                               type: string
                               minLength: 1
-                            alg_hash:                    
+                            alg_hash:
                               title: algoritmo hash del modello distinta attivita
                               type: string
                               enum:
@@ -919,28 +919,28 @@ components:
       - times
       - workflow
       properties:
-        version:          
+        version:
           title: numero versione del descrittore
           type: string
         
-        cui:          
+        cui:
           "$ref": "#/components/schemas/cui"
         
         related_uuid:
           title: UUID chiave del CUI del procedimento dipendente relativo allo studio di fattibilità
           type: string
 
-        municipality:          
+        municipality:
           title: codice istat 6 cifre del comune in cui l'istanza è stata presentata
           type: string
           pattern: "^[0-9]{6}$"        
         
-        legal_person:          
+        legal_person:
           title: codice fiscale persona giuridica
           type: string
           pattern: "^[0-9]{11}|^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$"
         
-        instance_status:          
+        instance_status:
           title: stato dell'istanza
           type: array
           items:
@@ -949,7 +949,7 @@ components:
             - state
             - timestamp
             properties:
-              state:                
+              state:
                 title: stato dell'istanza, stato iniziale da impostare in started
                 type: string
                 enum:
@@ -974,15 +974,15 @@ components:
                 - ended_by_submitter_cancel_requested
                 - minutes_cdss_trasmission
                 
-              timestamp:                
+              timestamp:
                 title: timestamp del cambiamento di stato
                 type: string
                 format: date-time
         
-        times:          
-          $ref: "#/components/schemas/Times"  
+        times:
+          $ref: "#/components/schemas/Times"
         
-        workflow:          
+        workflow:
           type: object
           title: workflow del regime amministrativo dell'istanza          
           
@@ -990,7 +990,7 @@ components:
             - id
             - version
           properties:
-            id:              
+            id:
               title: identificativo univoco del workflow del regime amministrativo
               type: string
               enum:
@@ -1005,12 +1005,12 @@ components:
                - WF-SEMPLIFICATO-PROVVEDIMENTO-CONDIZIONATO
                - WF-SEMPLIFICATO-CERS
                
-            version:              
+            version:
               title: version del workflow del regime amministrativo
               type: string
               pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
         
-        usecase_proceedings:          
+        usecase_proceedings:
           title: fattispecie procedimenti avviati
           type: array
           items:
@@ -1021,45 +1021,45 @@ components:
             - competent_administration
             - instance
             properties:
-              code:                
+              code:
                 title: codice della fattispecie presente nel Catalogo
                 type: string
                 minLength: 1
-              version:                
+              version:
                 title: versione della fattispecie presente nel Catalogo
                 type: string
                 minLength: 1
-              competent_administration:                
+              competent_administration:
                 title: amministrazione competente del procedimento
                 $ref: "#/components/schemas/AdministrationSchema"
-              interested_administration:                
+              interested_administration:
                 title: amministrazione interessata al procedimento
                 $ref: "#/components/schemas/InterestedAdministrationSchema"
-              interested_administration_fiscal_code:                
+              interested_administration_fiscal_code:
                 title: amministrazione ghost interessata al procedimento
-                $ref: "#/components/schemas/InterestedAdministrationCFSchema"              
-              form:                
+                $ref: "#/components/schemas/InterestedAdministrationCFSchema"
+              form:
                 title: riferimento agli oggetti per la validazione
                 type: object
                 required:
                 - xsd
                 properties:
-                  xsd:                    
+                  xsd:
                     title: xsd per la validazione
                     type: object
                     required:
                     - code
                     - version
                     properties:
-                      code:                        
+                      code:
                         title: codice dell'XSD per la validazione
                         type: string
                         minLength: 1
-                      version:                        
+                      version:
                         title: versione dell'XSD per la validazione
                         type: string
                         minLength: 1
-                  schematron:                    
+                  schematron:
                     title: schematron per la validazione
                     type: object
                     required:
@@ -1067,20 +1067,20 @@ components:
                     - version
                     - phase
                     properties:
-                      code:                        
+                      code:
                         title: codice dello schematron per la validazione
                         type: string
                         minLength: 1
-                      version:                        
+                      version:
                         title: versione dello schematron per la validazione
                         type: string
                         minLength: 1
-                      phase:                        
+                      phase:
                         title: fasi dello schematron per la validazione
                         type: array
                         items:
                           type: string
-              instance:                
+              instance:
                 title: porzione istanza relativa al procedimento
                 type: object
                 required:
@@ -1088,19 +1088,19 @@ components:
                 - hash
                 - alg_hash
                 properties:
-                  ref:                    
+                  ref:
                     title: riferimento all'elemento dell'istanza relativo al procedimento
                     type: string
                     minLength: 1
-                  filename:                      
+                  filename:
                       title: filename dell'istanza
                       type: string
                       minLength: 1
-                  hash:                    
+                  hash:
                     title: hash dell'istanza relativo al procedimento
                     type: string
                     minLength: 1
-                  alg_hash:                    
+                  alg_hash:
                     title: algoritmo hash dell'istanza relativo al procedimento
                     type: string
                     enum:
@@ -1108,36 +1108,36 @@ components:
                     - S384
                     - S512
                   code:
-                    title: identificativo dell'allegato presente nel Catalogo
+                    title: identificativo presente nel Catalogo
                     type: string
                     minLength: 1
                   version:
-                    title: versione dell'allegato presente nel Catalogo
+                    title: versione presente nel Catalogo
                     type: string
                     minLength: 1
                   mime_type:
                     type: string
-                    enum: 
+                    enum:
                        - application/xml
                        - application/pkcs7-mime
                   activity_model: 
-                     title: porzione distinta modello attivita 
+                     title: porzione distinta modello attivita
                      type: object
                      properties:
-                        ref:                    
-                          title: distinta modello attivita 
+                        ref:
+                          title: distinta modello attivita
                           type: string
                           minLength: 1
-                        filename:                      
-                            title: filename del modello distinta attivita 
+                        filename:
+                            title: filename del modello distinta attivita
                             type: string
                             minLength: 1
-                        hash:                    
-                          title: hash del modello distinta attivita 
+                        hash:
+                          title: hash del modello distinta attivita
                           type: string
                           minLength: 1
-                        alg_hash:                    
-                          title: algoritmo hash del modello distinta attivita 
+                        alg_hash:
+                          title: algoritmo hash del modello distinta attivita
                           type: string
                           enum:
                           - S256
@@ -1148,7 +1148,7 @@ components:
                           enum: 
                              - application/pdf
                              - application/pkcs7-mime
-              attachments:                
+              attachments:
                 title: allegati all'istanza relativi al procedimento
                 type: array
                 items:
@@ -1161,26 +1161,26 @@ components:
                   - description
                   properties:
 
-                    ref:                      
+                    ref:
                       title: riferimento all'allegato dell'istanza relativo al procedimento, definito sul Catalogo
                       type: string
                       minLength: 1
-                    filename:                      
+                    filename:
                       title: filename dell'allegato
                       type: string
                       minLength: 1
                     file_size:
                       description: dimensione del file
                       type: integer
-                    description:                      
+                    description:
                       title: descrizione dell'allegato
                       type: string
-                      minLength: 1                      
-                    hash:                      
+                      minLength: 1
+                    hash:
                       title: hash dell'allegato
                       type: string
                       minLength: 1
-                    alg_hash:                      
+                    alg_hash:
                       title: algoritmo hash dell'allegato 
                       type: string
                       enum:
@@ -1194,29 +1194,29 @@ components:
                     attach_version:
                       title: versione dell'allegato presente nel Catalogo
                       type: string
-                      minLength: 1                      
-                    form:                      
+                      minLength: 1
+                    form:
                       title: riferimento agli oggetti per la validazione
                       type: object
                       required:
                       - xsd
                       properties:
-                        xsd:                          
+                        xsd:
                           title: xsd per la validazione
                           type: object
                           required:
                           - code
                           - version
                           properties:
-                            code:                              
+                            code:
                               title: codice dell'XSD per la validazione
                               type: string
                               minLength: 1
-                            version:                              
+                            version:
                               title: versione dell'XSD per la validazione
                               type: string
                               minLength: 1
-                        schematron:                          
+                        schematron:
                           title: schematron per la validazione
                           type: object
                           required:
@@ -1224,15 +1224,15 @@ components:
                           - version
                           - phase
                           properties:
-                            code:                              
+                            code:
                               title: codice dello schematron per la validazione
                               type: string
                               minLength: 1
-                            version:                              
+                            version:
                               title: versione dello schematron per la validazione
                               type: string
                               minLength: 1
-                            phase:                              
+                            phase:
                               title: fasi dello schematron per la validazione
                               type: array
                               items:
@@ -1275,43 +1275,43 @@ components:
                       - S512
                     mime_type:
                       type: string
-        permit_document:
-            type: object
-            required:
-            - ref
-            - hash
-            - alg_hash
-            - mime_type
-            - filename
-            - file_size
-            properties:
-                ref:
-                    title: riferimento dell'allegato
-                    type: string
-                    minLength: 1
-                filename:
-                    title: filename dell'allegato
-                    type: string
-                    minLength: 1
-                file_size:
-                    description: dimensione del file.
-                    type: integer
-                hash:
-                    title: hash dell'allegato
-                    type: string
-                    minLength: 1
-                alg_hash:
-                    title: algoritmo hash dell'allegato 
-                    type: string
-                    enum:
-                    - S256
-                    - S384
-                    - S512
-                mime_type:
-                    type: string
-                revoked_document:
-                    title: indica se il documento è stato revocato
-                    type: boolean
+              permit_document:
+                type: object
+                required:
+                - ref
+                - hash
+                - alg_hash
+                - mime_type
+                - filename
+                - file_size
+                properties:
+                    ref:
+                        title: riferimento dell'allegato
+                        type: string
+                        minLength: 1
+                    filename:
+                        title: filename dell'allegato
+                        type: string
+                        minLength: 1
+                    file_size:
+                        description: dimensione del file.
+                        type: integer
+                    hash:
+                        title: hash dell'allegato
+                        type: string
+                        minLength: 1
+                    alg_hash:
+                        title: algoritmo hash dell'allegato 
+                        type: string
+                        enum:
+                        - S256
+                        - S384
+                        - S512
+                    mime_type:
+                        type: string
+                    revoked_document:
+                        title: indica se il documento è stato revocato
+                        type: boolean
   headers:
     Agid-JWT-Signature:
       schema:
