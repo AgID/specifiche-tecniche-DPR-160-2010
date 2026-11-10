@@ -353,7 +353,7 @@ components:
     cui:
       type: object
       description: Codice Unico dell'Istanza
-      required: [ context, data, progressivo, uuid ]
+      required: [ context, sub_context, data, progressivo, uuid ]
       properties:
         context: { type: string }
         sub_context: { type: string }
