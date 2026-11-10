@@ -496,7 +496,7 @@ components:
           type: array
           items:
             type: object
-            required: [ code, ref, integration_request ]
+            required: [ code, integration_request ]
             properties:
               code: { type: string }
               integration_request:
@@ -530,7 +530,7 @@ components:
           type: array
           items:
             type: object
-            required: [ code, ref, conformation_request ]
+            required: [ code, conformation_request ]
             properties:
               code: { type: string }
               conformation_request:
