@@ -638,7 +638,7 @@ components:
             event: 
               type: string
               pattern: >-
-                        ^cdss_convened|endo_cdss_convened_from_[0-9]{1,10}$ 
+                        ^cdss_convened|endo_cdss_convened_from_[0-9]{1,10}$
             document: { $ref: "#/components/schemas/__doc_pdf_base" }
             cdss_channel: { type: string }
             cdss_convocation: { type: string, format: date }
