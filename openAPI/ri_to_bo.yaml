@@ -1001,7 +1001,6 @@ components:
             required:
                 - cui
                 - instance_descriptor_version
-                - event
                 - c_fiscale_impresa
             properties:
                 cui:
@@ -1129,8 +1128,6 @@ components:
         Provision:
             type: object
             required:
-                - cui
-                - instance_descriptor_version
                 - date
                 - outcome
                 - document_classification_coding
