@@ -172,61 +172,74 @@ components:
                     title: UUID chiave del CUI
                     type: string
         
-        InstanceIndex:
-            type: array
-            description: indice istanza
-            items:
-                type: object
-                required:
-                - usec_code
-                - usec_version
-                - ref
-                - description
+        Document:
+            type: object
+            required:
                 - resource_id
+                - mime_type
                 - hash
                 - alg_hash
-                properties:
-                    usec_code:                            
-                      title: codice della fattispecie presente nel Catalogo
-                      type: string
-                      minLength: 1
-                    usec_version:
-                      title: versione della fattispecie presente nel Catalogo
-                      type: string
-                      minLength: 1
-                    ref:                            
-                        title: riferimento all'elemento dell'istanza relativo al procedimento
-                        type: string
-                        minLength: 1
-                    description:                            
-                        title: dscrizione della risorsa
-                        type: string
-                        minLength: 1                        
-                    resource_id:                            
-                        title: id della risorsa, univoco per erogatore e CUI.UUID
-                        type: string
-                        minLength: 1
-                    filename:                      
-                        title: filename della risorsa "documento di parere negativo"
-                        type: string
-                        minLength: 1
-                    file_size:
-                        description: Dimensione del file.
-                        type: integer
-                    mime_type:
-                        title: "indica il formato dei dati previsto per il documento di parere negativo"
-                        type: string
-                    hash:                            
-                        title: hash dell'elemento dell'istanza relativo al procedimento
-                        type: string
-                        minLength: 1
-                    alg_hash:                                
-                        title: algoritmo hash applicato
-                        type: string
-                        enum:
-                        - S256
-                        - S384
-                        - S512
+            properties:
+                resource_id:
+                    title: id della risorsa del documento
+                    type: string
+                    minLength: 1
+                filename:
+                    title: filename della risorsa del documento
+                    type: string
+                    minLength: 1
+                mime_type:
+                    title: indica il formato dei dati previsto per il documento
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                file_size:
+                    description: dimensione del file
+                    type: integer
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
+        
+        InstanceIndex:
+          type: array
+          description: indice istanza
+          items:
+            type: object
+            required:
+            - usec_code
+            - usec_version
+            - ref
+            - description
+            - document
+            properties:
+                usec_code:
+                    title: codice della fattispecie presente nel Catalogo
+                    type: string
+                    minLength: 1
+                usec_version:
+                  title: versione della fattispecie presente nel Catalogo
+                  type: string
+                  minLength: 1
+                ref:
+                    title: riferimento all'elemento dell'istanza relativo al procedimento
+                    type: string
+                    minLength: 1
+                description:
+                    title: descrizione della risorsa
+                    type: string
+                    minLength: 1
+                document:
+                    $ref: "#/components/schemas/Document"
+
         GeneralIndex:
                       type: array
                       description: indice allegati trasversali

@@ -538,7 +538,7 @@ components:
             - description
             - document
             properties:
-                usec_code:                            
+                usec_code:
                     title: codice della fattispecie presente nel Catalogo
                     type: string
                     minLength: 1
@@ -546,11 +546,11 @@ components:
                   title: versione della fattispecie presente nel Catalogo
                   type: string
                   minLength: 1
-                ref:                            
+                ref:
                     title: riferimento all'elemento dell'istanza relativo al procedimento
                     type: string
                     minLength: 1
-                description:                            
+                description:
                     title: descrizione della risorsa
                     type: string
                     minLength: 1
@@ -595,7 +595,7 @@ components:
                 type: string
                 enum:
                   - application/xml
-                  
+                  - application/pkcs7-mime
               resource_id:
                 type: string
                 minLength: 1
@@ -957,7 +957,7 @@ components:
                     title: id della risorsa del documento
                     type: string
                     minLength: 1
-                filename:                      
+                filename:
                     title: filename della risorsa del documento
                     type: string
                     minLength: 1
