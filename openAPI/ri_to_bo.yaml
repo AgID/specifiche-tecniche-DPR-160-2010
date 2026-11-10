@@ -840,7 +840,7 @@ components:
             type: object
             additionalProperties: false
             required:
-              - name
+              - filename
               - mime_type
               - resource_id
               - document_classification_coding
@@ -851,7 +851,7 @@ components:
                   title: id della risorsa del documento
                   type: string
                   minLength: 1
-              name:                      
+              filename:
                   title: filename della risorsa del documento
                   type: string
                   minLength: 1
@@ -868,7 +868,7 @@ components:
                   description: La classificazione viene recuperata dal Catalogo SSU, tuttavia, resta in capo al Back-Office la responsabilità di tale associazione e, qualora venga ritenuto opportuno, può ad ogni modo apportare una correzione. I valori ammissibili sono recuperabili al path catalogo-ssu_meta/classifications, filtrando per Classe 2.
                   type: string
                   pattern: "C2_[a-z]"
-              tags: 
+              tags:
                   description: Tag associati al documento.
                   type: array
                   items:
