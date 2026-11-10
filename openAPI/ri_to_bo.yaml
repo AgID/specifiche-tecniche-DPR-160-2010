@@ -840,7 +840,7 @@ components:
             type: object
             additionalProperties: false
             required:
-              - name
+              - filename
               - mime_type
               - resource_id
               - document_classification_coding
