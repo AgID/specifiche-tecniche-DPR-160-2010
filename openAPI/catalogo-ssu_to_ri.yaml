@@ -295,8 +295,8 @@ components:
             description: tempi amministrativi dell'istanza
             type: object
             required:
-                - start
-                - max_gg_proc
+            - start
+            - max_gg_proc
             properties:
               start:
                 title: data avvio dell'istanza

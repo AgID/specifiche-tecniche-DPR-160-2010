@@ -279,7 +279,7 @@ paths:
                                   type: string
                               cdss_resolution:
                                   $ref: "#/components/schemas/CdssResolution"
-                              outcome:  
+                              outcome:
                                   type: string
                                   enum: 
                                     - positive_outcome
@@ -945,7 +945,7 @@ components:
                     title: id della risorsa del documento
                     type: string
                     minLength: 1
-                filename:                      
+                filename:
                     title: filename della risorsa del documento
                     type: string
                     minLength: 1

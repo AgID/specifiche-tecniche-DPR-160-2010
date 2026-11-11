@@ -1198,7 +1198,7 @@ components:
                     $ref: "#/components/schemas/Provision"
 
         SecondProvisionOutcome:
-            type: object               
+            type: object
             required:
                 - cui
                 - c_fiscale_impresa
