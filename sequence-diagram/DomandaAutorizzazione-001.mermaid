@@ -124,7 +124,7 @@ sequenceDiagram
             else ET ente procedente AND CDSS da ET
                 E ->> B: notify(cui,instance_descriptor_version,cdss_convened_from_<ET>)
                 B -->> E: ack
-                B ->> F: notify(cui, instance_descriptor_version,cdss_convened_from_<ET>)
+                B ->> F: notify(cui, instance_descriptor_version,cdss_convened)
                 F -->> B: ack    
                 par ET procedente convoca gli altri ET interessati
                     E ->> E: notify(cui, instance_descriptor_version,cdss_convened_from_<ET>)
