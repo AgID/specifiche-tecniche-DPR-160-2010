@@ -995,6 +995,7 @@ components:
                 - $ref: "#/components/schemas/ConditionalProvisionGranted"
                 - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                 - $ref: "#/components/schemas/ConditionalProvisionDenied" 
+                - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
                         
         TransferMessage:
             type: object
@@ -1013,6 +1014,28 @@ components:
                     type: string
                 resource_document:
                     $ref: "#/components/schemas/resource_document"
+        
+        ObservationsToImpedimentsMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+                - c_fiscale_impresa
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                c_fiscale_impresa:
+                    description: Codice fiscale dell'impresa
+                    type: string
+                resource_document:
+                    $ref: "#/components/schemas/resource_document"
+                event:
+                    type: string
+                    enum:
+                        - observations_to_impediments_provided
         
         ImpedimentsMessage:
             type: object
