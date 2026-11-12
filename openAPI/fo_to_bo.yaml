@@ -238,6 +238,7 @@ paths:
                                 - $ref: "#/components/schemas/NotifyMessage"
                                 - $ref: "#/components/schemas/PreliminaryResolutionMessage"
                                 - $ref: "#/components/schemas/TransferNotifyMessage"
+                                - $ref: "#/components/schemas/ReopenProceedingNotification"
                 required: true
             responses:
                 "200":
@@ -727,7 +728,6 @@ components:
                         - cds_istruttoria_convened
                         - cds_decisoria_convened
                         - cds_preliminare_convened
-                        - reopen_definitive_provision
 
         TransferNotifyMessage:
             type: object
@@ -913,6 +913,35 @@ components:
                 document:
                     description: documento relativo alla CdS preliminare
                     $ref: "#/components/schemas/Document"
+        
+        ReopenProceedingNotification:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+                - reason
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    enum:
+                        - reopen_definitive_provision
+                reason:
+                    type: string
+                    enum:
+                        - ex_officio_annulment
+                        - procedural_defects
+                reopen_proceeding_document:
+                    type: object
+                    required:
+                        - document
+                    properties:
+                        document:
+                            $ref: "#/components/schemas/Document"
 
         Document:
             type: object
