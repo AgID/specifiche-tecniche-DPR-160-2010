@@ -925,6 +925,7 @@ components:
             type: object
             oneOf:
                 - $ref: "#/components/schemas/OutcomeMessage"
+                - $ref: "#/components/schemas/SecondProvisionOutcomeMessage"
                 - $ref: "#/components/schemas/PreliminaryResolutionMessage"
                 - $ref: "#/components/schemas/ObservationsToImpedimentsMessage"
                 - $ref: "#/components/schemas/GenericCommunicationMessage"
@@ -953,17 +954,28 @@ components:
                 document:
                     $ref: "#/components/schemas/Document"
         
-        ReopenProceedingNotification: 
+        ReopenProceedingNotification:
             type: object
             required:
                 - cui
                 - instance_descriptor_version
+                - event
+                - reason
                 - reopen_proceeding_document
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
                     type: string
+                event:
+                    type: string
+                    enum:
+                        - reopen_definitive_provision
+                reason:
+                    type: string
+                    enum:
+                        - ex_officio_annulment
+                        - procedural_defects
                 reopen_proceeding_document:
                     type: object
                     required:
@@ -1037,6 +1049,26 @@ components:
                         - end_by_suspension_requested
                         - end_by_positive_outcome
                         - end_by_negative_outcome
+        
+        SecondProvisionOutcomeMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    enum:
+                        - end_by_suspension_requested
+                        - end_by_positive_outcome
+                        - end_by_negative_outcome
+                document:
+                    $ref: "#/components/schemas/Document"
 
         MinutesCdssTrasmissionMessage:
           type: object

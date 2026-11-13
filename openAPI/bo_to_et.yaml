@@ -779,7 +779,7 @@ components:
                     oneOf:
                         - $ref: "#/components/schemas/NegativeOutcome"
                         - $ref: "#/components/schemas/PositiveOutcome"
-                        - $ref: "#/components/schemas/SecondProvisionOutcome"                        
+                        - $ref: "#/components/schemas/SecondProvisionOutcome"
                         - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                         - $ref: "#/components/schemas/ConditionalProvisionDenied"
                         - $ref: "#/components/schemas/DefinitiveProvision"

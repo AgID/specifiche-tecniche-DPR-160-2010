@@ -11,6 +11,10 @@ properties:
     title: data avvio dell'istanza
     type: string
     format: date
+  re-start:
+    title: data di riapertura del procedimento per gestire la riapertura del provvedimento
+    type: string
+    format: date
   max_gg_proc:
     title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
     type: integer

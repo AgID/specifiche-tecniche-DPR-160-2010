@@ -10,9 +10,14 @@ sequenceDiagram
 
     
     alt annullamento di un provvedimento amministrativo adottato in violazione di legge o viziato da eccesso di potere o da incompetenza
+        opt
+            B ->> C: request_update_times(cui,times)
+            Note right of B: Aggiorna i tempi procedimentali per consentire la gestione del procedimento di seconda istanza
+            C -->> B: instanceDescriptor
+        end
+        
         note over B: Riapertura d'ufficio o per istanza di parte
-        B ->> F: notify(NotifyMessage)
-        note left of B: NotifyMessage.event = reopen_definitive_provision
+        B ->> F: notify(ReopenProceedingNotification)
         F -->> B: ack
 
         B ->> C: audit(cui, reopen_definitive_provision)
@@ -72,7 +77,7 @@ sequenceDiagram
         note over F, E: avvio del sotto-processo per gestire per gestire le istruttorie degli Enti Terzi (a partire dalla ricezione delle istanze fino all'inoltro del parere) adottando lo stesso workflow applicato durante il provvedimento di prima istanza 
 
         par monitoggio della scadenza del secondo provvedimento
-            alt oltre i 12 mesi dal rilascio del primo provvedimento
+            alt oltre i 6 mesi dal rilascio del primo provvedimento
                 B ->> C: audit(cui, second_provision_time_expired)
                 C -->> B: ack
                 par per ogni ente terzo coinvolto sul procedimento
@@ -189,6 +194,17 @@ sequenceDiagram
                     end
                 end
 
+                par per ogni ente terzo
+                    B ->> E: notify(SecondProvisionOutcomeMessage)
+                    E -->> B: ack
+
+                    opt
+                        E ->> B: request_instance_document(cui, resource_id)
+                        note right of F: recupero documento del secondo provvedimento finale
+                        B -->> E: instanceDocument
+                    end
+                end
+
                 B ->> F: notify(SecondProvisionOutcome)
                 F -->> B: ack
 
@@ -214,6 +230,12 @@ sequenceDiagram
                 B -->> RI: instanceDocument      
 
             else false rappresentazione dei fatti inoltrati dall'Istante
+                opt
+                    B ->> C: request_update_times(cui,times)
+                    Note right of B: Aggiorna i tempi procedimentali per consentire la gestione del procedimento di seconda istanza
+                    C -->> B: instanceDescriptor
+                end
+                
                 B ->> E: notify(ReopenProceedingNotification)
                 note right of B: ReopenProceedingNotification = include il documento che attesta la riapertura del procedimento per gestire l'annullamento d'ufficio
                 E -->> B: ack
@@ -253,6 +275,17 @@ sequenceDiagram
                         E -->> B: ack
                         B ->> C: audit(cui, second_provision_response_time_expired)
                         C -->> B: ack
+                    end
+                end
+
+                par per ogni ente terzo
+                    B ->> E: notify(SecondProvisionOutcomeMessage)
+                    E -->> B: ack
+
+                    opt
+                        E ->> B: request_instance_document(cui, resource_id)
+                        note right of F: recupero documento del secondo provvedimento finale
+                        B -->> E: instanceDocument
                     end
                 end
 
