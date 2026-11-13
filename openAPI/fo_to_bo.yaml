@@ -268,7 +268,7 @@ paths:
                     application/json:
                         schema:
                             type: object
-                            required:	
+                            required:
                                 - cui
                                 - instance_descriptor_version
                                 - cdss_resolution
@@ -277,9 +277,9 @@ paths:
                                   $ref: "#/components/schemas/cui"
                               instance_descriptor_version:
                                   type: string
-                              cdss_resolution:  	
+                              cdss_resolution:
                                   $ref: "#/components/schemas/CdssResolution"
-                              outcome:  
+                              outcome:
                                   type: string
                                   enum: 
                                     - positive_outcome
@@ -288,7 +288,7 @@ paths:
                                   title: data di trasferimento della determinazione conclusiva
                                   type: string
                                   format: date
-                              additional_document_list:  
+                              additional_document_list:
                                   type: array
                                   items:
                                       type: object
@@ -296,7 +296,7 @@ paths:
                                           - description
                                           - document
                                       properties:
-                                          description:                            
+                                          description:
                                               title: descrizione della risorsa
                                               type: string
                                               minLength: 1
@@ -945,7 +945,7 @@ components:
                     title: id della risorsa del documento
                     type: string
                     minLength: 1
-                filename:                      
+                filename:
                     title: filename della risorsa del documento
                     type: string
                     minLength: 1

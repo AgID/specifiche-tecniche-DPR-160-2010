@@ -840,7 +840,7 @@ components:
             type: object
             additionalProperties: false
             required:
-              - name
+              - filename
               - mime_type
               - resource_id
               - document_classification_coding
@@ -1001,7 +1001,6 @@ components:
             required:
                 - cui
                 - instance_descriptor_version
-                - event
                 - c_fiscale_impresa
             properties:
                 cui:
@@ -1129,8 +1128,6 @@ components:
         Provision:
             type: object
             required:
-                - cui
-                - instance_descriptor_version
                 - date
                 - outcome
                 - document_classification_coding
@@ -1201,7 +1198,7 @@ components:
                     $ref: "#/components/schemas/Provision"
 
         SecondProvisionOutcome:
-            type: object               
+            type: object
             required:
                 - cui
                 - c_fiscale_impresa
@@ -1225,7 +1222,7 @@ components:
                         - negative_outcome
                 second_provision: 
                     $ref: "#/components/schemas/Provision"
-                instance_index:
+                instance_index_fii:
                     description: Per gestire la riapertura del Fascocolo e il rilascio del secondo provvedimento, è necessario ritrasmettere tutti i documenti della pratica alla loro ultima versione
                     $ref: "#/components/schemas/InstanceIndexFII"
                 resource_rea_update:

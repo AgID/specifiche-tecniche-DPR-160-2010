@@ -64,7 +64,7 @@ sequenceDiagram
     note left of B: resource_id da instance_index
     F -->> B: instanceDocument
     end
-    B ->> C: audit(cui,instance_retrived)
+    B ->> C: audit(cui,instance_retrieved)
     C -->> B: ack
     
     O -) B: lookup_instance(cui)
@@ -94,7 +94,7 @@ sequenceDiagram
             B ->> F: request_instance_document(cui, resource_id)
             F -->> B: instanceDocument
             end
-            B ->> C: audit(cui,corrected_instance_retrived)
+            B ->> C: audit(cui,corrected_instance_retrieved)
             C -->> B: ack           
         end
     end

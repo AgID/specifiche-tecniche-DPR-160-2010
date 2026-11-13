@@ -40,7 +40,7 @@ paths:
                                         - request_cdss
                                         - request_integration
                                         - request_conformation
-                                usecase_proceeding:        
+                                usecase_proceeding:
                                     title: codice della fattispecie presente nel Catalogo
                                     type: string
                                     minLength: 1
@@ -248,9 +248,9 @@ paths:
                                   type: string
                               cdss_resolution:
                                   $ref: "#/components/schemas/CdssResolution"
-                              outcome:  
+                              outcome:
                                   type: string
-                                  enum: 
+                                  enum:
                                     - positive_outcome
                                     - negative_outcome
                               resolution_update:
@@ -260,7 +260,7 @@ paths:
                                   title: data di trasferimento della determinazione conclusiva
                                   type: string
                                   format: date
-                              additional_document_list:  
+                              additional_document_list:
                                   type: array
                                   items:
                                       type: object
@@ -268,7 +268,7 @@ paths:
                                           - description
                                           - document
                                       properties:
-                                          description:                            
+                                          description:
                                               title: descrizione della risorsa
                                               type: string
                                               minLength: 1
@@ -428,6 +428,43 @@ components:
                 uuid:
                     title: UUID chiave del CUI
                     type: string
+        
+        Document:
+            type: object
+            required:
+                - resource_id
+                - mime_type
+                - hash
+                - alg_hash
+            properties:
+                resource_id:
+                    title: id della risorsa del documento
+                    type: string
+                    minLength: 1
+                filename:
+                    title: filename della risorsa del documento
+                    type: string
+                    minLength: 1
+                mime_type:
+                    title: indica il formato dei dati previsto per il documento
+                    type: string
+                    enum: 
+                        - application/pdf
+                        - application/pkcs7-mime
+                file_size:
+                    description: dimensione del file
+                    type: integer
+                hash:
+                    title: hash risorsa
+                    type: string
+                    minLength: 1
+                alg_hash:
+                    title: algoritmo hash applicato
+                    type: string
+                    enum:
+                    - S256
+                    - S384
+                    - S512
                     
         InstanceIndex:
             type: array
@@ -438,12 +475,9 @@ components:
                 - usec_code
                 - usec_version
                 - ref
-                - description
-                - resource_id
-                - hash
-                - alg_hash
+                - document
                 properties:
-                    usec_code:                            
+                    usec_code:
                         title: codice della fattispecie presente nel Catalogo
                         type: string
                         minLength: 1
@@ -451,39 +485,17 @@ components:
                         title: versione della fattispecie presente nel Catalogo
                         type: string
                         minLength: 1
-                    ref:                            
+                    ref:
                         title: riferimento all'elemento dell'istanza relativo al procedimento
                         type: string
                         minLength: 1
-                    description:                            
+                    description:
                         title: dscrizione della risorsa
                         type: string
                         minLength: 1
-                    resource_id:                            
-                        title: id della risorsa, univoco per erogatore e CUI.UUID
-                        type: string
-                        minLength: 1
-                    filename:                      
-                        title: filename della risorsa 
-                        type: string
-                        minLength: 1
-                    file_size:
-                        description: Dimensione del file.
-                        type: integer
-                    mime_type:
-                        title: "indica il formato dei dati previsto per la risorsa"
-                        type: string
-                    hash:                            
-                        title: hash dell'elemento dell'istanza relativo al procedimento
-                        type: string
-                        minLength: 1
-                    alg_hash:                                
-                        title: algoritmo hash applicato
-                        type: string
-                        enum:
-                        - S256
-                        - S384
-                        - S512
+                    document:
+                    $ref: "#/components/schemas/Document"
+
         GeneralIndex:
                       type: array
                       description: indice allegati trasversali
@@ -996,7 +1008,7 @@ components:
                                         request:
                                             title: testo integrazione richiesta
                                             type: string
-                integration_document_list:  
+                integration_document_list:
                     type: array
                     description: le presenti integrazioni possono essere richieste per rispondere a quanto definito dall'articolo 21-decies della Legge 241/90
                     items:
@@ -1138,7 +1150,7 @@ components:
                     title: id della risorsa del documento
                     type: string
                     minLength: 1
-                filename:                      
+                filename:
                     title: filename della risorsa del documento
                     type: string
                     minLength: 1

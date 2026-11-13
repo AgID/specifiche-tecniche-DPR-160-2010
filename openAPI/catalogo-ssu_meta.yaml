@@ -2066,7 +2066,7 @@ paths:
                   type: object
                   required:
                     - form
-                    - schematron
+                    - xsd
                   properties:
                     form:
                       $ref: "#/components/schemas/GenericEntity"
@@ -2658,9 +2658,14 @@ components:
       description: tempi amministrativi dell'istanza
       type: object
       required:
+      - start
       - max_gg_proc
       properties:
-        max_gg_proc:          
+        start:
+          title: data avvio dell'istanza
+          type: string
+          format: date
+        max_gg_proc:
           title: numero di giorni limite a partire da start entro cui l'istanza deve concludersi
           type: integer
           format: int32
@@ -2672,54 +2677,58 @@ components:
           title: numero di giorni limite a partire da start per la correzione a valle di un controllo formale
           type: integer
           format: int32
-        max_gg_admissibility:          
+        max_gg_admissibility:
           title: numero di giorni limite a partire da start per la verifica di ammissibilità
           type: integer
           format: int32
-        max_gg_int_req:          
+        max_gg_int_req:
           title: numero di giorni limite a partire da start per la richiesta di integrazione degli enti terzi
           type: integer
           format: int32
-        max_gg_int_resp:          
+        max_gg_int_resp:
           title: numero di giorni limite a partire da start per integrazione del soggetto presentatore
           type: integer
           format: int32
-        max_gg_conf_req:          
+        max_gg_conf_req:
           title: numero di giorni limite a partire da start per la richiesta di conformazione degli enti terzi
           type: integer
           format: int32
-        max_gg_conf_resp:          
+        max_gg_conf_resp:
           title: numero di giorni limite a partire da start per conformazione del soggetto presentatore
           type: integer
           format: int32
-        max_gg_concl_send:          
+        max_gg_concl_send:
           title: numero di giorni limite a partire da start per inoltro delle conclusioni degli enti terzi
           type: integer
           format: int32
-        max_gg_cds_pre_req:          
+        max_gg_cds_pre_req:
           title: numero di giorni limite a partire da start entro cui può essere richiesta la conferenza di servizi preliminare
           type: integer
           format: int32
-        max_gg_cds_istr_req:          
+        max_gg_cds_istr_req:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi istruttoria
           type: integer
           format: int32
-        max_gg_cds_dec_req:          
+        max_gg_cds_dec_req:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi decisoria
           type: integer
           format: int32
-        max_gg_cdss_req:          
+        max_gg_cdss_req:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono richiedere conferenza di servizi sincrona
           type: integer
           format: int32
-        max_gg_inspection:          
+        max_gg_inspection:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono effettuare un'ispezione e inviare il relativo esito
           type: integer
           format: int32
-        max_gg_prov_cond_ext_req:          
+        max_gg_prov_cond_ext_req:
           title: numero di giorni limite a partire da start entro cui gli enti terzi possono effettuare una richiesta di proroga per il provvedimento condizionato 
           type: integer
           format: int32
+        date_cdss:
+          title: data evetuale conferenza di servizi sincrona
+          type: string
+          format: date
 
     Error:
       type: object
