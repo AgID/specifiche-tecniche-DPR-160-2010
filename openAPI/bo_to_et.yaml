@@ -331,8 +331,8 @@ paths:
                     application/json:
                         schema:
                             oneOf:
-                                - $ref: "#/components/schemas/CdssNotifyMessage"
                                 - $ref: "#/components/schemas/NotifyMessage"
+                                - $ref: "#/components/schemas/CdssNotifyMessage"
                                 - $ref: "#/components/schemas/PreliminaryResolutionMessage"
                 required: true
             responses:
@@ -953,51 +953,62 @@ components:
                         type: string
                         enum: 
                             - conditional_provision_rescinded
-
-        NotifyMessage:
+        
+        BaseMessage:
             type: object
             required:
                 - cui
                 - instance_descriptor_version
-                - event
-
             properties:
                 cui:
                     $ref: "#/components/schemas/cui"
                 instance_descriptor_version:
                     type: string
+
+        NotifyMessage:
+            allOf:
+                - $ref: "#/components/schemas/BaseMessage"
+            type: object
+            required:
+                - event
+            properties:
                 event:
                     type: string
                     pattern: >-
-                        ^cdss_convened|involved_et_[0-9]{1,10}$
-        
+                        ^involved_et_[0-9]{1,10}$
+
+
         CdssNotifyMessage:
             allOf:
-              - $ref: "#/components/schemas/NotifyMessage"
-              - type: object
-                required:
-                    - cdss_channel
-                    - cdss_convocation
-                properties:
-                    cdss_channel:
-                        type: string
-                        title: "canale utilizzato per la convocazione della Conferenza dei Servizi Sincrona"
-                        minLength: 1
-                    cdss_convocation:
-                        title: "data della convocazione della Conferenza dei Servizi Sincrona"
-                        type: string
-                        format: date
-                        minLength: 1
-                    document:
-                        $ref: "#/components/schemas/Document"
-        
-        PreliminaryResolutionMessage:
+                - $ref: "#/components/schemas/BaseMessage"
             type: object
-            allOf:
-                - $ref: "#/components/schemas/NotifyMessage"
             required:
                 - event
-                - document
+                - cdss_channel
+                - cdss_convocation
+            properties:
+                event:
+                    type: string
+                    enum:
+                        - cdss_convened
+                cdss_channel:
+                    type: string
+                    title: "canale utilizzato per la convocazione della Conferenza dei Servizi Sincrona"
+                    minLength: 1
+                cdss_convocation:
+                    title: "data della convocazione della Conferenza dei Servizi Sincrona"
+                    type: string
+                    format: date
+                    minLength: 1
+                document:
+                    $ref: "#/components/schemas/Document"
+        
+        PreliminaryResolutionMessage:
+            allOf:
+                - $ref: "#/components/schemas/ConditionalProvision"
+            type: object
+            required:
+                - event
             properties:
                 event:
                     type: string

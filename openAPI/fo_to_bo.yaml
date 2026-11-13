@@ -761,7 +761,7 @@ components:
                     title: Inserire la motivazione dell'aggiornamento dell'Instance Descriptor
                     type: string
 
-        BaseTransferMessage:
+        BaseMessage:
             type: object
             required:
                - cui
@@ -775,24 +775,17 @@ components:
 
         TransferMessage:
             allOf:
-              - $ref: "#/components/schemas/BaseTransferMessage"
+              - $ref: "#/components/schemas/BaseMessage"
               - type: object
-                required: [event]
                 properties:
-                    event:
-                        type: string
-                        enum:
-                            - end_by_suspension_requested
-                            - end_by_positive_outcome
-                            - end_by_negative_outcome
-                            - existence_of_impediments
-                            - end_by_integration_time_expired
                     document:
                         $ref: "#/components/schemas/Document"
             
 
         ImpedimentsMessage:
             type: object
+            required:
+               - event
             allOf:
                 - $ref: "#/components/schemas/TransferMessage"
             properties:
@@ -807,6 +800,8 @@ components:
 
         OutcomeMessage:
             type: object
+            required:
+               - cui
             allOf:
                 - $ref: "#/components/schemas/TransferMessage"
             properties:
@@ -823,7 +818,7 @@ components:
         GenericCommunication:
             type: object
             allOf:
-                - $ref: "#/components/schemas/BaseTransferMessage"
+                - $ref: "#/components/schemas/TransferMessage"
                 - type: object
                   required: [ event, document ]
                   properties:
@@ -831,13 +826,11 @@ components:
                         type: string
                         enum:
                             - generic_communication
-                    document:
-                        $ref: "#/components/schemas/Document"
                       
                         
         ConditionalProvisionGranted:
             allOf:
-                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/Provision"
                 - type: object
                   properties:
                     outcome:
@@ -847,7 +840,7 @@ components:
         
         ConditionalProvisionDenied:
             allOf:
-                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/Provision"
                 - type: object
                   properties:
                     outcome:
@@ -857,7 +850,7 @@ components:
         
         ConditionalProvisionRescinded:
             allOf:
-                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/Provision"
                 - type: object
                   properties:
                     outcome:
@@ -865,32 +858,33 @@ components:
                         enum: 
                             - conditional_provision_rescinded
         
-        DefinitiveProvision:
+        Provision:
             type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
             required:
-                - cui
-                - instance_descriptor_version
                 - date
-                - outcome
                 - competent_administration
                 - document
             properties:
-                cui:
-                    $ref: "#/components/schemas/cui"
-                instance_descriptor_version:
-                    type: string
                 date:
                     type: string
                     format: date
+                competent_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+
+        DefinitiveProvision:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/Provision"
+            required:
+                - outcome
+            properties:
                 outcome:
                     type: string
                     enum: 
                         - definitive_provision_granted
-                competent_administration:
-                    title: amministrazione richiedente
-                    $ref: "#/components/schemas/AdministrationSchema"
-                document:
-                    $ref: "#/components/schemas/Document"
 
         CdssResolution:
             type: object
@@ -905,7 +899,7 @@ components:
                     
         SecondProvisionOutcome:
             allOf:
-                - $ref: "#/components/schemas/DefinitiveProvision"
+                - $ref: "#/components/schemas/Provision"
             properties:
                 outcome:
                     type: string
@@ -916,7 +910,7 @@ components:
         PreliminaryResolutionMessage:
             type: object
             allOf:
-                - $ref: "#/components/schemas/NotifyMessage"
+                - $ref: "#/components/schemas/TransferMessage"
             required:
                 - event
                 - document
@@ -929,9 +923,6 @@ components:
                 competent_administration:
                     title: amministrazione richiedente
                     $ref: "#/components/schemas/AdministrationSchema"
-                document:
-                    description: documento relativo alla CdS preliminare
-                    $ref: "#/components/schemas/Document"
 
         Document:
             type: object

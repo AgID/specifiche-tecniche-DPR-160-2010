@@ -456,24 +456,7 @@ components:
                 - $ref: "#/components/schemas/GenericCommunication"
                 - $ref: "#/components/schemas/PreliminaryResolutionObservationMessage"
 
-        TransferMessage:
-            allOf:
-                - $ref: "#/components/schemas/BaseTransferMessage"
-                - type: object
-                  required: [event]
-                  properties:
-                      cui:
-                          $ref: "#/components/schemas/cui"
-                      instance_descriptor_version:
-                          type: string
-                      event:
-                          type: string
-                          enum:
-                              - observations_to_impediments_provided
-                      document:
-                          $ref: "#/components/schemas/Document"
-        
-        BaseTransferMessage:
+        BaseMessage:
             type: object
             required:
                - cui
@@ -484,25 +467,32 @@ components:
                 instance_descriptor_version:
                     type: string
 
+        TransferMessage:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/BaseMessage"
+            properties:
+                document:
+                    $ref: "#/components/schemas/Document"
+    
         ObservationsToImpedimentsMessage:
             type: object
             allOf:
-                - $ref: "#/components/schemas/BaseTransferMessage"
+                - $ref: "#/components/schemas/TransferMessage"
             required:
                 - event
-                - document
             properties:
                 event:
                     type: string
                     enum:
                         - observations_to_impediments_provided
-                document:
-                    $ref: "#/components/schemas/Document"
         
         PreliminaryResolutionObservationMessage:
             type: object
             allOf:
                 - $ref: "#/components/schemas/TransferMessage"
+            required:
+                - event
             properties:
                 event:
                     type: string
@@ -510,21 +500,18 @@ components:
                         - observations_to_preliminary_observation
         
         GenericCommunication:
-          type: object
-          allOf:
-            - $ref: "#/components/schemas/BaseTransferMessage"
-            - type: object
-              required: [
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/TransferMessage"
+            required: [
                 event, 
                 document
                 ]
-              properties:
+            properties:
                 event:
                     type: string
                     enum:
                         - generic_communication
-                document:
-                    $ref: "#/components/schemas/Document"
                     
         InstanceIndex:
           type: array
@@ -910,7 +897,6 @@ components:
                     type: string
                 updated_documents:
                     $ref: "#/components/schemas/InstanceIndex"
-                    description:
         
         AdministrationSchema:
             description: Amministrazione compentente censita nel Catalogo SSU
