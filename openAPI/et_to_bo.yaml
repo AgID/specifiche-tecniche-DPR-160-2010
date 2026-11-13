@@ -863,29 +863,48 @@ components:
                     type: boolean
         
         AdministrationSchema:
-            description: Amministrazione compentente censita nel Catalogo SSU
-            type: object
-            required:
-                - ipacode
-                - officecode
-                - version
-                - description
-            properties:
-                ipacode:
-                    title: codice IPA dell'amministrazione
-                    type: string
-                    minLength: 1
-                officecode:
-                    title: codice dell'ufficio dell'amministrazione 
-                    type: string
-                    minLength: 1
-                version:
-                    title: versione dell'ufficio dell'amministrazione 
-                    type: string
-                    pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
-                description:
-                    title: descrizione dell'amministrazione
-                    type: string
+            description: Amministrazione censita nel Catalogo SSU
+            oneOf:
+                - type: object
+                  required:
+                      - ipacode
+                      - officecode
+                      - version
+                      - description
+                  properties:
+                      ipacode:
+                          title: codice IPA dell'amministrazione
+                          type: string
+                          minLength: 1
+                      officecode:
+                          title: codice dell'ufficio dell'amministrazione
+                          type: string
+                          minLength: 1
+                      version:
+                          title: versione dell'ufficio dell'amministrazione
+                          type: string
+                          pattern: "[0-9]{2}.[0-9]{2}.[0-9]{2}"
+                      description:
+                          title: descrizione dell'amministrazione
+                          type: string
+                - type: object
+                  required:
+                      - fiscal_code
+                      - id
+                      - description
+                  properties:
+                      fiscal_code:
+                          title: codice fiscale dell'amministrazione non presente su IPA
+                          type: string
+                          minLength: 1
+                      id:
+                          title: identificativo dell'amministrazione
+                          type: string
+                          minLength: 1
+                      description:
+                          title: descrizione dell'amministrazione
+                          type: string
+                          minLength: 1
         
         NotifyMessage:
             type: object
