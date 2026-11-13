@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0" version="29.6.6">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0">
   <diagram id="K2JQPsV1o4M9DW_nq5-Z" name="Pagina-1">
-    <mxGraphModel dx="2370" dy="1219" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1459" dy="672" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -10,7 +10,7 @@
         <mxCell id="NuIHAraIDTzX2-PyyU_d-5" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#E6E6E6;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;html=1;" value="presented" vertex="1">
           <mxGeometry height="174" width="540" x="40" y="380" as="geometry" />
         </mxCell>
-        <mxCell id="NuIHAraIDTzX2-PyyU_d-28" parent="NuIHAraIDTzX2-PyyU_d-5" style="text;strokeColor=none;fillColor=#AEE0D7;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="RI:&amp;nbsp;instance_to_&amp;lt;ET&amp;gt;_sended" vertex="1">
+        <mxCell id="NuIHAraIDTzX2-PyyU_d-28" parent="NuIHAraIDTzX2-PyyU_d-5" style="text;strokeColor=none;fillColor=#AEE0D7;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="RI:&amp;nbsp;instance_to_&amp;lt;BO&amp;gt;_sended" vertex="1">
           <mxGeometry height="22" width="540" y="26" as="geometry" />
         </mxCell>
         <mxCell id="0DFn-lnuqJ0unNcBvtO5-1" parent="NuIHAraIDTzX2-PyyU_d-5" style="text;strokeColor=none;fillColor=#AEE0D7;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="RI:&amp;nbsp;receipt_sended" vertex="1">
