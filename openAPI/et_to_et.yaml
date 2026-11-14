@@ -162,6 +162,31 @@ paths:
         - bearerAuth: []
         - Agid-JWT-Signature: []
 
+  /request_endo_cdss:
+    post:
+      summary: Richiesta CdSS endoprocedimentale (quando applicabile)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ cui, requester_administration, chain ]
+              properties:
+                cui: { $ref: "#/components/schemas/cui" }
+                requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
+                chain: { $ref: "#/components/schemas/ChainContext" }
+      responses:
+        "200": { $ref: "#/components/responses/OKRequest" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "500": { $ref: "#/components/responses/ServerError" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+      security:
+        - bearerAuth: []
+        - Agid-JWT-Signature: []
+
   /send_conclusions:
     post:
       summary: Invio conclusioni (parere/provvedimento) dal figlio al padre
@@ -627,7 +652,7 @@ components:
             event: 
               type: string
               pattern: >-
-                        ^cdss_convened|endo_cdss_convened_from_[0-9]{1,10}$ 
+                        ^cdss_convened|cdss_convened_from_<ET>|endo_cdss_convened_from_[0-9]{1,10}$ 
             document: { $ref: "#/components/schemas/__doc_pdf_base" }
             cdss_channel: { type: string }
             cdss_convocation: { type: string, format: date }
