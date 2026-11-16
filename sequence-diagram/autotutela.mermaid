@@ -65,7 +65,7 @@ sequenceDiagram
                 end
             end
 
-            E ->> C: audit(cui,reopen_proceeding_documents_received)
+            E ->> C: audit(cui,reopen_proceeding_documents_received_from_<ET>)
             C -->> E: ack
         end
 
@@ -160,7 +160,7 @@ sequenceDiagram
                         end
                     end
 
-                    E ->> C: audit(cui,reopen_proceeding_documents_received)
+                    E ->> C: audit(cui,reopen_proceeding_documents_received_from_<ET>)
                     C -->> E: ack
                 end
 
@@ -229,7 +229,7 @@ sequenceDiagram
                     
                 end
 
-                E ->> C: audit(cui,reopen_proceeding_documents_received)
+                E ->> C: audit(cui,reopen_proceeding_documents_received_from_<ET>)
                 C -->> E: ack
 
                 alt entro i tempi concessi per fornire l'esito dei controlli
