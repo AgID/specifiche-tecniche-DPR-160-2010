@@ -30,7 +30,7 @@ sequenceDiagram
         note left of E: recupero del documento di convocazione CDSS
         B -->> E: instanceDocument
 
-        E ->> C: audit(cdss_convocation_received)
+        E ->> C: audit(cdss_convocation_received_from_<ET>)
         
         C -->> E: ack
     end
@@ -61,7 +61,7 @@ sequenceDiagram
             E ->> B: request_instance_document(cui, resource_id)
             note left of E: recupero del documento di determinazione conclusiva CDSS
             B -->> E: instanceDocument
-            E ->> C: audit(cdss_resolution_retrieved)
+            E ->> C: audit(cdss_resolution_retrieved_from_<ET>)
             C -->> E: ack
         end
     end
@@ -82,7 +82,7 @@ sequenceDiagram
             E ->> B: request_instance_document(cui, resource_id)
             note left of E: recupero del documento aggiornato della determinazione conclusiva CDSS
             B -->> E: instanceDocument
-            E ->> C: audit(cdss_resolution_update_retrieved)
+            E ->> C: audit(cdss_resolution_update_retrieved_from_<ET>)
             C -->> E: ack
         end
     end
@@ -96,5 +96,5 @@ sequenceDiagram
         note right of F: recupero del documento di determinazione finale CDSS
         B -->> F: instanceDocument
     end
-    F ->> C: audit(cdss_resolution_retrieved)
+    F ->> C: audit(cdss_resolution_retrieved_from_<ET>)
     C -->> F: ack

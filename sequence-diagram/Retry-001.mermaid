@@ -22,7 +22,11 @@ sequenceDiagram
         B->> A: retry(cui, operation_XXX, requester_administration, error)
         A -->> B: ack
 
-        B->> C: audit(cui,retry_requested_for_<operation_XXX>)
+        alt se Component B = Ente Terzo
+            B->> C: audit(cui,retry_requested_for_<operation_XXX>_from_<ET>)
+        else
+            B->> C: audit(cui,retry_requested_for_<operation_XXX>)
+        end
         C -->> B: ack
 
         A -) O: retry_request_notification
