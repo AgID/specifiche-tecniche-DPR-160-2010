@@ -65,7 +65,7 @@ paths:
             security:
                 - bearerAuth: []
                   Agid-JWT-Signature: []
-    
+
     /send_impediments:
         description: Inoltro dei motivi ostativi relativi alle proprie istruttorie in relazione a una data instanza di procedimento
         post:
@@ -162,7 +162,7 @@ paths:
                                 - cui
                                 - requester_administration
                             properties:
-                                cui: 
+                                cui:
                                     $ref: "#/components/schemas/cui"
                                 requester_administration:
                                     title: amministrazione richiedente
@@ -247,7 +247,7 @@ paths:
         get:
             description: | 
                 Recupero di una specifica risorsa (xml, documento digitale) in relazione a una data istanza di procedimento.
-            
+
             parameters:
                 - in: header
                   name: Range
@@ -334,6 +334,7 @@ paths:
                                 - $ref: "#/components/schemas/CdssNotifyMessage"
                                 - $ref: "#/components/schemas/NotifyMessage"
                                 - $ref: "#/components/schemas/PreliminaryResolutionMessage"
+                                - $ref: "#/components/schemas/InvolvedEtNotifyMessage"
                 required: true
             responses:
                 "200":
@@ -425,7 +426,7 @@ paths:
           - bearerAuth: [ ]
             Agid-JWT-Signature: [ ]
 
-components:    
+components:
     responses:
         OKRequest:
             description: Richiesta completata con successo
@@ -442,7 +443,7 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
-        
+
         NotFound:
             description: risorsa non trovata
             content:
@@ -462,7 +463,7 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
-                
+
         PreconditionFailed:
             description: precondizione fallita, rappresentazione risorsa non correttamente individuata
             content:
@@ -472,7 +473,7 @@ components:
             headers:
                 Agid-JWT-Signature:
                     $ref: "#/components/headers/Agid-JWT-Signature"
-        
+
         RangeNotSatisfiable:
             description: richiesta di range non soddisfacibile
             content:
@@ -550,7 +551,7 @@ components:
                     title: data emissione cui
                     type: string
                     format: date
-                
+
                 progressivo:
                     title: numero progressivo a rotazione annuale
                     type: string
@@ -573,7 +574,7 @@ components:
                         type: string
                         minLength: 1
                     officecode:
-                        title: codice dell'ufficio dell'amministrazione 
+                        title: codice dell'ufficio dell'amministrazione
                         type: string
                         minLength: 1
                     version:
@@ -601,7 +602,7 @@ components:
                         title: id univoco dell'amministrazione
                         type: string
                         minLength: 1
-                    
+
         Error:
             type: object
             description: codice e descrizione condizione di errore
@@ -720,7 +721,7 @@ components:
                         properties:
                             document:
                                 $ref: "#/components/schemas/Document"
-        
+
         Impediments:
             type: object
             required:
@@ -779,11 +780,11 @@ components:
                     oneOf:
                         - $ref: "#/components/schemas/NegativeOutcome"
                         - $ref: "#/components/schemas/PositiveOutcome"
-                        - $ref: "#/components/schemas/SecondProvisionOutcome"                        
+                        - $ref: "#/components/schemas/SecondProvisionOutcome"
                         - $ref: "#/components/schemas/ConditionalProvisionRescinded"
                         - $ref: "#/components/schemas/ConditionalProvisionDenied"
                         - $ref: "#/components/schemas/DefinitiveProvision"
-                additional_document_list:  
+                additional_document_list:
                     type: array
                     items:
                         type: object
@@ -791,7 +792,7 @@ components:
                             - description
                             - document
                         properties:
-                            description:                            
+                            description:
                                 title: descrizione della risorsa
                                 type: string
                                 minLength: 1
@@ -808,7 +809,7 @@ components:
             properties:
                 conclusions_type:
                     type: string
-                    enum: 
+                    enum:
                     - suspension_requested
                     - suspension_requested_for_impediments
                     - negative_outcome
@@ -819,7 +820,7 @@ components:
                     type: string
                     minLength: 1
                 document:
-                    $ref: "#/components/schemas/Document"                
+                    $ref: "#/components/schemas/Document"
 
         PositiveOutcome:
             required:
@@ -830,7 +831,7 @@ components:
             properties:
                 conclusions_type:
                     type: string
-                    enum: 
+                    enum:
                     - positive_outcome
                 positive_outcome:
                     type: string
@@ -840,7 +841,7 @@ components:
                     minLength: 1
                 document:
                     $ref: "#/components/schemas/Document"
-        
+
         ConditionalProvision:
             type: object
             required:
@@ -862,7 +863,7 @@ components:
                     $ref: "#/components/schemas/AdministrationSchema"
                 document:
                     $ref: "#/components/schemas/Document"
-        
+
         DefinitiveProvision:
             type: object
             required:
@@ -884,10 +885,10 @@ components:
                     $ref: "#/components/schemas/AdministrationSchema"
                 document:
                     $ref: "#/components/schemas/Document"
-        
+
         ConditionalProvisionExtended:
             type: object
-            required:   
+            required:
                 - cui
                 - instance_descriptor_version
                 - competent_administration
@@ -914,10 +915,10 @@ components:
             properties:
                 outcome:
                     type: string
-                    enum: 
+                    enum:
                         - positive_outcome
                         - negative_outcome
-        
+
         ConditionalProvisionGranted:
             allOf:
                 - $ref: "#/components/schemas/ConditionalProvision"
@@ -927,9 +928,9 @@ components:
                   properties:
                     outcome:
                         type: string
-                        enum: 
+                        enum:
                             - conditional_provision_granted
-        
+
         ConditionalProvisionDenied:
             allOf:
                 - $ref: "#/components/schemas/ConditionalProvision"
@@ -939,9 +940,9 @@ components:
                   properties:
                     outcome:
                         type: string
-                        enum: 
+                        enum:
                             - conditional_provision_denied
-        
+
         ConditionalProvisionRescinded:
             allOf:
                 - $ref: "#/components/schemas/ConditionalProvision"
@@ -951,7 +952,7 @@ components:
                   properties:
                     outcome:
                         type: string
-                        enum: 
+                        enum:
                             - conditional_provision_rescinded
 
         NotifyMessage:
@@ -969,8 +970,8 @@ components:
                 event:
                     type: string
                     pattern: >-
-                        ^cdss_convened|involved_et_[0-9]{1,10}$
-        
+                        ^cdss_convened$
+
         CdssNotifyMessage:
             allOf:
               - $ref: "#/components/schemas/NotifyMessage"
@@ -990,7 +991,7 @@ components:
                         minLength: 1
                     document:
                         $ref: "#/components/schemas/Document"
-        
+
         PreliminaryResolutionMessage:
             type: object
             allOf:
@@ -1011,6 +1012,26 @@ components:
                     description: documento relativo alla CdS preliminare
                     $ref: "#/components/schemas/Document"
 
+        InvolvedEtNotifyMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+                - requester_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    pattern: >-
+                        ^involved_et_[0-9]{1,10}$
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
+
         Document:
             type: object
             required:
@@ -1023,14 +1044,14 @@ components:
                     title: id della risorsa del documento
                     type: string
                     minLength: 1
-                filename:                      
+                filename:
                     title: filename della risorsa del documento
                     type: string
                     minLength: 1
                 mime_type:
                     title: indica il formato dei dati previsto per il documento
                     type: string
-                    enum: 
+                    enum:
                         - application/pdf
                         - application/pkcs7-mime
                 file_size:
@@ -1047,7 +1068,7 @@ components:
                     - S256
                     - S384
                     - S512
-        
+
     headers:
         Agid-JWT-Signature:
             schema:
