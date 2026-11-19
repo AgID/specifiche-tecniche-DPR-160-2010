@@ -334,6 +334,7 @@ paths:
                                 - $ref: "#/components/schemas/CdssNotifyMessage"
                                 - $ref: "#/components/schemas/NotifyMessage"
                                 - $ref: "#/components/schemas/PreliminaryResolutionMessage"
+                                - $ref: "#/components/schemas/InvolvedEtNotifyMessage"
                 required: true
             responses:
                 "200":
@@ -969,7 +970,7 @@ components:
                 event:
                     type: string
                     pattern: >-
-                        ^cdss_convened|involved_et_[0-9]{1,10}$
+                        ^cdss_convened$
         
         CdssNotifyMessage:
             allOf:
@@ -1010,6 +1011,26 @@ components:
                 document:
                     description: documento relativo alla CdS preliminare
                     $ref: "#/components/schemas/Document"
+
+        InvolvedEtNotifyMessage:
+            type: object
+            required:
+                - cui
+                - instance_descriptor_version
+                - event
+                - requester_administration
+            properties:
+                cui:
+                    $ref: "#/components/schemas/cui"
+                instance_descriptor_version:
+                    type: string
+                event:
+                    type: string
+                    pattern: >-
+                        ^involved_et_[0-9]{1,10}$
+                requester_administration:
+                    title: amministrazione richiedente
+                    $ref: "#/components/schemas/AdministrationSchema"
 
         Document:
             type: object
