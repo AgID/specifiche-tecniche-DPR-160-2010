@@ -496,9 +496,13 @@ components:
           type: array
           items:
             type: object
-            required: [ code, ref, integration_request ]
+            required: [ code, integration_request ]
             properties:
               code: { type: string }
+              ref:
+                title: riferimento all'elemento dell'istanza relativo al procedimento (procedimento o allegato)
+                type: string
+                minLength: 1
               integration_request:
                 title: elenco integrazioni richieste da uno o più enti terzi
                 type: array
@@ -515,7 +519,7 @@ components:
             properties:
               requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
               document: { $ref: "#/components/schemas/__doc_pdf_base" }
-    
+
     ConformationRequest:
       type: object
       required: [ cui, instance_descriptor_version, conformation_list ]
@@ -523,16 +527,20 @@ components:
         cui: { $ref: "#/components/schemas/cui" }
         instance_descriptor_version: { type: string }
         expirationDate:
-              type: string
-              format: date
-              description: Scadenza concessa al presentatore per la conformazione
+          type: string
+          format: date
+          description: Scadenza concessa al presentatore per la conformazione
         conformation_list:
           type: array
           items:
             type: object
-            required: [ code, ref, conformation_request ]
+            required: [ code, conformation_request ]
             properties:
               code: { type: string }
+              ref:
+                title: riferimento all'elemento dell'istanza relativo al procedimento (procedimento o allegato)
+                type: string
+                minLength: 1
               conformation_request:
                 title: elenco conformazioni richieste da uno o più enti terzi
                 type: array
@@ -545,7 +553,7 @@ components:
           type: array
           items:
             type: object
-            required: [requester_administration, document ]
+            required: [ requester_administration, document ]
             properties:
               requester_administration: { $ref: "#/components/schemas/AdministrationSchema" }
               document: { $ref: "#/components/schemas/__doc_pdf_base" }    
